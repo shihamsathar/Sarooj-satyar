@@ -1,0 +1,39 @@
+# Render.com Infrastructure as Code Blueprint
+# https://render.com/docs/blueprint-spec
+
+version: "1"
+
+databases:
+  # Managed PostgreSQL Database for Sarooj Sattar Community Forum
+  - name: sarooj-sattar-db
+    databaseName: sarooj_community_db
+    user: sarooj_admin
+    region: singapore # High speed for Sri Lanka & Asia Pacific (or oregon, frankfurt)
+    plan: free # Can be upgraded to starter or standard
+    postgresMajorVersion: "16"
+    ipAllowList: [] # Accessible securely via SSL connection string
+
+services:
+  # Full-Stack Web Application (Express API + Vite React Frontend)
+  - type: web
+    name: sarooj-sattar-community-forum
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Seamlessly injects the managed PostgreSQL database connection string
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sarooj-sattar-db
+          property: connectionString
+      # Gemini API Key for civic AI auto-categorization & citizen chatbot
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 3000

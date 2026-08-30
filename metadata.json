@@ -1,0 +1,6 @@
+{
+  "name": "Sarooj Sattar Community Forum",
+  "description": "Civic grievance reporting, community project tracking, emergency contacts, and citizen empowerment platform for Negombo Municipal Council with PostgreSQL managed database on Render.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
