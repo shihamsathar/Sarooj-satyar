@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   X, 
   Award, 
@@ -9,8 +9,12 @@ import {
   Building2, 
   CheckCircle2, 
   Sparkles,
-  Quote
+  Quote,
+  Camera,
+  ExternalLink,
+  ShieldCheck
 } from 'lucide-react';
+import { RoundLogo } from './RoundLogo.js';
 
 interface AboutSaroojModalProps {
   isOpen: boolean;
@@ -23,17 +27,48 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
   onClose,
   onOpenContact,
 }) => {
+  const [activeTab, setActiveTab] = useState<'bio' | 'gallery' | 'priorities'>('bio');
+
   if (!isOpen) return null;
+
+  const leadershipMoments = [
+    {
+      title: 'Listening to Ward 5 Residents on St. Lazarus Road',
+      date: 'Field Inspection 2024',
+      image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80',
+      description: 'Councillor Sarooj Sattar conducting regular weekly grassroots hearings to address resident concerns directly.',
+    },
+    {
+      title: 'Municipal Public Works & Stormwater Drain Review',
+      date: 'Engineering Site Visit',
+      image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
+      description: 'Supervising asphalt carpeting and concrete drainage culvert construction to ensure high quality and zero waste.',
+    },
+    {
+      title: 'Free Community Health & Medical Care Drive',
+      date: 'Periyamulla Health Clinic',
+      image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80',
+      description: 'Organizing free vision checkups, medicine distribution, and pediatric health screening for underprivileged families.',
+    },
+    {
+      title: 'Negombo Dutch Canal & Coastal Cleanliness Initiative',
+      date: 'Environmental Campaign',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+      description: 'Mobilizing community volunteers and municipal sanitation units to desilt waterways and safeguard the ecosystem.',
+    },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-8 max-h-[90vh] flex flex-col">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-stone-900 text-white p-6 sm:p-8 flex items-center justify-between shrink-0 border-b border-emerald-800">
+        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-stone-900 text-white p-6 sm:p-7 flex items-center justify-between shrink-0 border-b border-emerald-800">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-800 border border-emerald-600/40 text-amber-300 font-serif-quote font-black text-2xl flex items-center justify-center shadow-lg">
-              SS
+            <div className="w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-amber-400 via-emerald-600 to-emerald-900 flex items-center justify-center shadow-lg">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                <RoundLogo size={52} />
+              </div>
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase tracking-wider mb-1">
@@ -56,6 +91,41 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
           </button>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="bg-stone-100 px-6 py-2 border-b border-stone-200 flex gap-2">
+          <button
+            onClick={() => setActiveTab('bio')}
+            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'bio'
+                ? 'bg-white text-emerald-900 shadow-xs border border-stone-300'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            Vision & Leadership
+          </button>
+          <button
+            onClick={() => setActiveTab('gallery')}
+            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'gallery'
+                ? 'bg-white text-emerald-900 shadow-xs border border-stone-300'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>Civic Photo Album</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('priorities')}
+            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'priorities'
+                ? 'bg-white text-emerald-900 shadow-xs border border-stone-300'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            Secretariat & Contact
+          </button>
+        </div>
+
         {/* Modal Body */}
         <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 text-stone-800">
           
@@ -70,85 +140,172 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
             </p>
           </div>
 
-          {/* Biography & Mission */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            
-            <div className="md:col-span-7 space-y-4 text-sm leading-relaxed text-stone-700">
-              <h3 className="font-heading font-bold text-stone-950 text-xl">
-                Dedicated Grassroots Leadership in Negombo
-              </h3>
+          {activeTab === 'bio' && (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
               
-              <p>
-                Councillor <b>Sarooj Sattar</b> represents the vibrant citizens of Ward 05 (Periyamulla) and the broader Negombo municipality. With decades of hands-on community engagement, Sarooj has championed transparent municipal governance, flood prevention infrastructure, and direct civic grievance redressal.
-              </p>
+              <div className="md:col-span-7 space-y-4 text-sm leading-relaxed text-stone-700">
+                <h3 className="font-heading font-bold text-stone-950 text-xl">
+                  Dedicated Grassroots Leadership in Negombo
+                </h3>
+                
+                <p>
+                  Councillor <b>Sarooj Sattar</b> represents the vibrant citizens of Ward 05 (Periyamulla) and the broader Negombo municipality. With decades of hands-on community engagement, Sarooj has championed transparent municipal governance, flood prevention infrastructure, and direct civic grievance redressal.
+                </p>
 
-              <p>
-                The <b>Sarooj Sattar Community Forum</b> was founded to bridge the gap between residents and municipal authorities, ensuring that every road defect, drainage block, sanitation need, or welfare emergency receives prompt action without bureaucratic delays.
-              </p>
+                <p>
+                  The <b>Sarooj Sattar Community Forum</b> was founded to bridge the gap between residents and municipal authorities, ensuring that every road defect, drainage block, sanitation need, or welfare emergency receives prompt action without bureaucratic delays.
+                </p>
 
-              <div className="pt-2 space-y-2">
-                <h4 className="font-heading font-bold text-stone-900 text-sm uppercase tracking-wider">
-                  Core Civic Pillars
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium">
-                  <div className="flex items-center gap-2 p-2 rounded-lg bg-stone-50 border border-stone-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Drainage & Flood Mitigation</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 rounded-lg bg-stone-50 border border-stone-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Free Healthcare & Eye Camps</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 rounded-lg bg-stone-50 border border-stone-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Youth Employment & Sports</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-2 rounded-lg bg-stone-50 border border-stone-200">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Solar Street Lighting</span>
+                <div className="pt-2 space-y-2">
+                  <h4 className="font-heading font-bold text-stone-900 text-sm uppercase tracking-wider">
+                    Core Civic Pillars
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium">
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Drainage & Flood Mitigation</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Free Healthcare & Eye Camps</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Youth Employment & Sports</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Solar Street Lighting</span>
+                    </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Secretariat Office Details */}
+              <div className="md:col-span-5 bg-stone-50 rounded-2xl p-6 border border-stone-200 space-y-4">
+                <h4 className="font-heading font-extrabold text-stone-900 text-base flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-emerald-800" />
+                  <span>Field Office & Secretariat</span>
+                </h4>
+
+                <div className="space-y-3 text-xs text-stone-700">
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                    <span>36 - St. Lasarus Road, Periyamulla, Negombo.</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span className="font-bold text-stone-900">0702475248 / 0768787382</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <Mail className="w-4 h-4 text-blue-600 shrink-0" />
+                    <span>saroojsattar@gmail.com</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-stone-200">
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenContact();
+                    }}
+                    className="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
+                  >
+                    Send Direct WhatsApp Message (0702475248)
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {activeTab === 'gallery' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-heading font-bold text-stone-900 text-lg">
+                  Photographic Records of Civic Engagement
+                </h3>
+                <span className="text-xs text-stone-500 font-medium">Ward 05 Field Archives</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {leadershipMoments.map((m, i) => (
+                  <div key={i} className="bg-stone-50 rounded-2xl overflow-hidden border border-stone-200 group">
+                    <div className="aspect-[16/10] overflow-hidden bg-stone-900">
+                      <img
+                        src={m.image}
+                        alt={m.title}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-4 space-y-1.5">
+                      <div className="flex items-center justify-between text-[11px] text-stone-500 font-bold">
+                        <span className="text-emerald-800">{m.date}</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      </div>
+                      <h4 className="font-heading font-bold text-stone-900 text-sm">
+                        {m.title}
+                      </h4>
+                      <p className="text-xs text-stone-600 leading-relaxed font-normal">
+                        {m.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          )}
 
-            {/* Secretariat Office Details */}
-            <div className="md:col-span-5 bg-stone-50 rounded-2xl p-6 border border-stone-200 space-y-4">
-              <h4 className="font-heading font-extrabold text-stone-900 text-base flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-emerald-800" />
-                <span>Field Office & Secretariat</span>
-              </h4>
-
-              <div className="space-y-3 text-xs text-stone-700">
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  <span>36 - St. Lasarus Road, Periyamulla, Negombo.</span>
+          {activeTab === 'priorities' && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                  <ShieldCheck className="w-6 h-6 text-emerald-700" />
+                  <h4 className="font-bold text-emerald-950 text-sm">Zero Corruption Policy</h4>
+                  <p className="text-xs text-emerald-900">
+                    All council funds, contractor bids, and material distributions are published publicly on this portal.
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span className="font-bold text-stone-900">0702475248 / 0768787382</span>
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
+                  <Award className="w-6 h-6 text-amber-700" />
+                  <h4 className="font-bold text-amber-950 text-sm">48-Hour Rapid Redress</h4>
+                  <p className="text-xs text-amber-900">
+                    Every grievance submitted through the portal is reviewed and inspected on site within two working days.
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>saroojsattar@gmail.com</span>
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 space-y-2">
+                  <HeartHandshake className="w-6 h-6 text-blue-700" />
+                  <h4 className="font-bold text-blue-950 text-sm">Community Welfare Fund</h4>
+                  <p className="text-xs text-blue-900">
+                    Emergency medical, educational, and funeral aid provided for vulnerable families in Negombo.
+                  </p>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-stone-200">
+              <div className="p-5 rounded-2xl bg-stone-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-heading font-bold text-base text-amber-300">Need a Personal Meeting?</h4>
+                  <p className="text-xs text-stone-300 mt-0.5">
+                    Visit the Secretariat on St. Lazarus Road, Monday to Saturday (8:00 AM - 7:00 PM).
+                  </p>
+                </div>
                 <button
                   onClick={() => {
                     onClose();
                     onOpenContact();
                   }}
-                  className="w-full py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
+                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shrink-0 shadow-md"
                 >
-                  Send Direct WhatsApp / Message
+                  Schedule Appointment
                 </button>
               </div>
             </div>
-
-          </div>
+          )}
 
         </div>
 

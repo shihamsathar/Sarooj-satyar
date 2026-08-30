@@ -45,33 +45,33 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
   };
 
   return (
-    <section className="py-8 bg-stone-50 border-t border-stone-200">
+    <section className="py-10 bg-gradient-to-b from-[#F8F3EA] via-[#FDF9F2] to-white border-t-2 border-amber-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* Left Card: Quick Contact */}
-          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-stone-200 shadow-xs flex flex-col justify-between relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/70 rounded-3xl p-6 sm:p-7 border-2 border-emerald-200 shadow-md flex flex-col justify-between relative overflow-hidden group">
             
             {/* Top Header */}
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-800 text-white flex items-center justify-center shadow-xs">
-                    <Phone className="w-5 h-5" />
+              <div className="flex items-center justify-between pb-4 border-b-2 border-emerald-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-700 to-teal-900 text-white flex items-center justify-center shadow-md">
+                    <Phone className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-extrabold text-stone-900 text-lg sm:text-xl tracking-tight">
+                    <h3 className="font-heading font-black text-[#134234] text-xl sm:text-2xl tracking-tight">
                       Quick Contact
                     </h3>
-                    <p className="text-xs text-stone-500 font-medium">
+                    <p className="text-xs text-stone-600 font-bold">
                       Negombo Secretariat & Field Office
                     </p>
                   </div>
                 </div>
 
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-950 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 shadow-2xs">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                   <span>Open for Citizens</span>
                 </span>
               </div>
@@ -87,25 +87,25 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                     href="https://wa.me/94702475248?text=Hello%20Councillor%20Sarooj%20Sattar,%20I%20am%20a%20resident%20of%20Negombo."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-emerald-50 text-stone-800 hover:text-emerald-800 transition-colors group/item"
+                    className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-green-200 hover:bg-green-50 text-stone-900 hover:text-emerald-900 transition-all shadow-2xs group/item"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-green-100 text-green-700 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-green-500 text-white flex items-center justify-center shrink-0 shadow-xs">
                       <MessageCircle className="w-4 h-4" />
                     </div>
-                    <span className="font-bold text-stone-900 group-hover/item:text-emerald-700">
+                    <span className="font-extrabold text-stone-950 group-hover/item:text-emerald-800">
                       0702475248
                     </span>
-                    <span className="text-[10px] uppercase font-semibold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded ml-auto">
+                    <span className="text-[10px] uppercase font-black text-green-950 bg-green-200 px-2 py-0.5 rounded-full ml-auto">
                       WhatsApp
                     </span>
                   </a>
 
                   {/* Hotlines */}
-                  <div className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-stone-50 transition-colors">
-                    <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-amber-200 text-stone-900 shadow-2xs">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
                       <Phone className="w-4 h-4" />
                     </div>
-                    <span className="font-semibold text-stone-800">
+                    <span className="font-extrabold text-stone-900">
                       0702475248 / 0768787382
                     </span>
                   </div>
@@ -113,20 +113,20 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                   {/* Email */}
                   <a
                     href="mailto:saroojsattar@gmail.com"
-                    className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-stone-50 text-stone-800 hover:text-emerald-800 transition-colors truncate"
+                    className="flex items-center gap-2.5 p-2 rounded-xl bg-white/80 border border-blue-200 text-stone-900 hover:text-blue-900 hover:bg-blue-50 transition-all shadow-2xs truncate"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                       <Mail className="w-4 h-4" />
                     </div>
-                    <span className="font-medium truncate">saroojsattar@gmail.com</span>
+                    <span className="font-bold truncate">saroojsattar@gmail.com</span>
                   </a>
 
                   {/* Physical Address */}
-                  <div className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-stone-50 transition-colors">
-                    <div className="w-7 h-7 rounded-lg bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/80 border border-rose-200 text-stone-900 shadow-2xs">
+                    <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                       <MapPin className="w-4 h-4" />
                     </div>
-                    <span className="font-medium text-stone-700 leading-snug">
+                    <span className="font-bold text-stone-800 leading-snug">
                       36 - St. Lasarus Road, Periyamulla, Negombo.
                     </span>
                   </div>
@@ -134,17 +134,15 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                 </div>
 
                 {/* Negombo Coastal Lighthouse / Lagoon Image Card */}
-                <div className="sm:col-span-5 h-44 sm:h-full rounded-xl overflow-hidden shadow-inner relative border border-stone-200 group/img">
-                  <img
-                    src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
-                    alt="Negombo Coastline and Lagoon"
-                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent flex items-end p-2.5">
-                    <span className="text-[11px] font-bold text-white tracking-wide flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-amber-400" />
-                      <span>Negombo, Western Province</span>
+                <div className="sm:col-span-5 h-48 sm:h-full rounded-2xl overflow-hidden shadow-md relative border-2 border-amber-200 group/img">
+                  <div className="w-full h-full bg-gradient-to-tr from-amber-600 via-orange-500 to-teal-700 flex flex-col justify-end p-3 text-white">
+                    <span className="text-xs font-black text-amber-200 uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Periyamulla • Ward 05</span>
                     </span>
+                    <p className="text-[11px] font-medium text-amber-100/90 leading-tight">
+                      Serving Negombo Municipal Council with dedication and open civic transparency.
+                    </p>
                   </div>
                 </div>
 
@@ -152,82 +150,82 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
             </div>
 
             {/* Bottom Direct Message Link */}
-            <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between">
-              <span className="text-xs text-stone-500 flex items-center gap-1 font-medium">
-                <Clock className="w-3.5 h-3.5" />
+            <div className="mt-5 pt-3 border-t-2 border-emerald-100 flex items-center justify-between">
+              <span className="text-xs text-stone-600 flex items-center gap-1.5 font-bold">
+                <Clock className="w-4 h-4 text-emerald-700" />
                 <span>Visiting Hours: 8:00 AM - 7:00 PM</span>
               </span>
               <button
                 onClick={onOpenContactForm}
-                className="text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 group/btn"
+                className="text-xs font-black text-emerald-900 hover:text-emerald-950 bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-full border border-emerald-300 flex items-center gap-1 transition-all"
               >
                 <span>Send Direct Inquiry</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             </div>
 
           </div>
 
           {/* Right Card: Ongoing Project */}
-          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-stone-200 shadow-xs flex flex-col justify-between relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-white via-amber-50/50 to-orange-50/70 rounded-3xl p-6 sm:p-7 border-2 border-amber-200 shadow-md flex flex-col justify-between relative overflow-hidden group">
             
             <div>
               {/* Top Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-xs">
-                    <HardHat className="w-5 h-5" />
+              <div className="flex items-center justify-between pb-4 border-b-2 border-amber-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-700 text-white flex items-center justify-center shadow-md">
+                    <HardHat className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-extrabold text-stone-900 text-lg sm:text-xl tracking-tight">
+                    <h3 className="font-heading font-black text-stone-900 text-xl sm:text-2xl tracking-tight">
                       Ongoing Project
                     </h3>
-                    <p className="text-xs text-stone-500 font-medium">
+                    <p className="text-xs text-stone-600 font-bold">
                       Municipal Public Works Tracking
                     </p>
                   </div>
                 </div>
 
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200">
-                  <Sparkles className="w-3 h-3 text-amber-700" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-amber-950 bg-amber-200 px-3 py-1 rounded-full border border-amber-300 shadow-2xs">
+                  <Sparkles className="w-3 h-3 text-amber-800" />
                   <span>Ward 05 Milestone</span>
                 </span>
               </div>
 
-              {/* Project Card Content: Construction Photo + Progress */}
+              {/* Project Card Content: Construction Info + Progress */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
-                {/* Construction Photo */}
-                <div className="sm:col-span-5 h-36 sm:h-38 rounded-xl overflow-hidden shadow-inner relative border border-stone-200 group/pimg">
-                  <img
-                    src={project.imageUrl || 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=600&q=80'}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover/pimg:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-2 left-2 bg-stone-900/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                    Active Site
+                {/* Project Badge Card */}
+                <div className="sm:col-span-5 h-40 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-300 bg-gradient-to-br from-amber-500 via-orange-600 to-amber-800 p-4 text-white flex flex-col justify-between">
+                  <div className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-xs text-amber-200 text-[10px] font-black px-2.5 py-1 rounded-full w-fit">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Active Site</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-extrabold text-amber-100 block">St. Lazarus Road</span>
+                    <span className="text-sm font-black text-white leading-tight block">Asphalt & Stormwater Drains</span>
                   </div>
                 </div>
 
                 {/* Project Details */}
-                <div className="sm:col-span-7 space-y-2.5">
-                  <h4 className="font-heading font-bold text-stone-900 text-base sm:text-lg leading-snug group-hover:text-amber-800 transition-colors">
+                <div className="sm:col-span-7 space-y-3">
+                  <h4 className="font-heading font-black text-stone-900 text-base sm:text-lg leading-snug group-hover:text-amber-900 transition-colors">
                     {project.title}
                   </h4>
                   
-                  <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed font-normal">
+                  <p className="text-xs text-stone-700 line-clamp-2 leading-relaxed font-medium">
                     {project.description}
                   </p>
 
                   {/* Progress Bar */}
                   <div className="space-y-1.5 pt-1">
-                    <div className="flex items-center justify-between text-xs font-bold">
+                    <div className="flex items-center justify-between text-xs font-extrabold">
                       <span className="text-stone-700">Execution Progress</span>
-                      <span className="text-amber-700 font-extrabold">{project.progressPercentage}% Completed</span>
+                      <span className="text-amber-800 font-black">{project.progressPercentage}% Completed</span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full bg-stone-100 overflow-hidden border border-stone-200">
+                    <div className="w-full h-3 rounded-full bg-stone-200/80 overflow-hidden border border-amber-300">
                       <div 
-                        className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-1000"
+                        className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-600 rounded-full transition-all duration-1000"
                         style={{ width: `${project.progressPercentage}%` }}
                       />
                     </div>
@@ -239,16 +237,16 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
             </div>
 
             {/* Bottom Link: View All Projects */}
-            <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between">
-              <span className="text-xs text-stone-500 font-medium">
+            <div className="mt-5 pt-3 border-t-2 border-amber-100 flex items-center justify-between">
+              <span className="text-xs text-stone-600 font-bold">
                 Contractor: {project.contractor.split('&')[0]}
               </span>
               <button
                 onClick={onViewAllProjects}
-                className="text-xs font-bold text-stone-900 hover:text-amber-700 flex items-center gap-1 group/pbtn"
+                className="text-xs font-black text-amber-950 bg-amber-200 hover:bg-amber-300 px-3 py-1.5 rounded-full border border-amber-400 flex items-center gap-1 transition-all"
               >
                 <span>View All Projects</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover/pbtn:translate-x-0.5 transition-transform" />
+                <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             </div>
 

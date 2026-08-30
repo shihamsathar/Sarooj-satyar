@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar.js';
 import { HeroSection } from './components/HeroSection.js';
 import { EightModulesGrid } from './components/EightModulesGrid.js';
+import { CivicGallery } from './components/CivicGallery.js';
 import { QuickContactAndOngoingProject } from './components/QuickContactAndOngoingProject.js';
 import { NewsletterSubscribe } from './components/NewsletterSubscribe.js';
 import { Footer } from './components/Footer.js';
@@ -20,12 +21,14 @@ import { AboutSaroojModal } from './components/AboutSaroojModal.js';
 import { AiCivicChatbot } from './components/AiCivicChatbot.js';
 
 import type { Complaint, CommunityProject, Announcement } from './types.js';
+import type { Language } from './utils/translations.js';
 
 export default function App() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [projects, setProjects] = useState<CommunityProject[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState<Language>('en');
 
   // Active Modal State
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -154,11 +157,13 @@ export default function App() {
       {/* 1. Municipal Top Header & Navbar */}
       <Navbar
         onOpenModule={handleOpenModule}
-        unreadCount={announcements.filter((a) => a.isUrgent).length || 3}
+        unreadCount={announcements.filter((a) => a.priority === 'high').length || 3}
       />
 
-      {/* 2. Hero Section matching reference mockup */}
+      {/* 2. Hero Section with verified portrait, tri-lingual switcher & voice audio */}
       <HeroSection
+        language={language}
+        onLanguageChange={setLanguage}
         onBuildCommunityClick={() => handleOpenModule('submit_complaint')}
         onExploreProjectsClick={() => handleOpenModule('community_projects')}
       />
@@ -172,20 +177,26 @@ export default function App() {
         memberCount={18}
       />
 
-      {/* 4. Bottom Cards: Quick Contact & Ongoing Project matching reference mockup */}
+      {/* 4. Civic Photo Gallery & Ground Reality Documentation */}
+      <CivicGallery
+        onOpenSubmitModal={() => handleOpenModule('submit_complaint')}
+        onOpenContactModal={() => handleOpenModule('whatsapp')}
+      />
+
+      {/* 5. Quick Contact & Ongoing Project Section */}
       <QuickContactAndOngoingProject
         ongoingProject={ongoingProject}
         onViewAllProjects={() => handleOpenModule('community_projects')}
         onOpenContactForm={() => handleOpenModule('whatsapp')}
       />
 
-      {/* 5. Stay Connected Newsletter Subscription matching reference mockup */}
+      {/* 6. Stay Connected Newsletter Subscription */}
       <NewsletterSubscribe />
 
-      {/* 6. Footer matching reference mockup */}
+      {/* 7. Municipal Footer */}
       <Footer onOpenModule={handleOpenModule} />
 
-      {/* 7. Floating AI Civic Assistant */}
+      {/* 8. Floating AI Civic Assistant powered by Gemini */}
       <AiCivicChatbot onOpenModule={handleOpenModule} />
 
       {/* MODALS */}

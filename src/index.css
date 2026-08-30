@@ -16,6 +16,18 @@
   .font-brand-crest {
     font-family: 'Cinzel', serif;
   }
+
+  .font-signature {
+    font-family: 'Great Vibes', 'Alex Brush', cursive;
+  }
+
+  .font-quote-script {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  }
+
+  .font-handwriting {
+    font-family: 'Caveat', cursive;
+  }
 }
 
 /* Custom smooth transitions and animations */

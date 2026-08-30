@@ -1,5 +1,6 @@
 import React from 'react';
 import { Database, ShieldCheck, Heart } from 'lucide-react';
+import { RoundLogo } from './RoundLogo.js';
 
 interface FooterProps {
   onOpenModule: (moduleId: string) => void;
@@ -18,12 +19,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
             
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-amber-300 shadow-xs border border-emerald-600/40">
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-3.74-1.47-3.74-3.23 0-1.54 1.18-2.82 2.67-3.18V4.5h2.67v1.94c1.47.33 2.63 1.34 2.8 2.96h-1.96c-.16-.83-.82-1.48-2.17-1.48-1.51 0-2.15.75-2.15 1.45 0 .76.54 1.3 2.63 1.84 2.6.66 3.78 1.49 3.78 3.32 0 1.63-1.19 2.92-2.89 3.25z" fill="none" />
-                  <path d="M19.07 4.93C17.22 3.08 14.73 2 12 2 6.48 2 2 6.48 2 12c0 2.73 1.08 5.22 2.93 7.07l1.41-1.41C4.89 16.21 4 14.21 4 12c0-4.41 3.59-8 8-8 2.21 0 4.21.89 5.66 2.34l1.41-1.41zM20 12c0 2.21-.89 4.21-2.34 5.66l1.41 1.41C20.92 17.22 22 14.73 22 12c0-2.73-1.08-5.22-2.93-7.07l-1.41 1.41C19.11 7.79 20 9.79 20 12z"/>
-                  <circle cx="12" cy="12" r="3" fill="#FBBF24" />
-                </svg>
+              <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-amber-400 via-emerald-600 to-emerald-900 flex items-center justify-center shadow-xs">
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                  <RoundLogo size={42} />
+                </div>
               </div>
               <div>
                 <span className="font-heading font-extrabold text-white text-base tracking-tight block">
