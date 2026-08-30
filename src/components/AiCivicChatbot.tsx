@@ -1,19 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  MessageSquare, 
   X, 
   Send, 
   Sparkles, 
   Bot, 
-  User, 
   Loader2, 
-  HelpCircle,
-  Minimize2,
-  Maximize2
 } from 'lucide-react';
+import type { Language } from '../utils/translations.js';
+import { translations } from '../utils/translations.js';
 
 interface AiCivicChatbotProps {
   onOpenModule?: (moduleId: string) => void;
+  language?: Language;
 }
 
 interface ChatMessage {
@@ -23,19 +21,46 @@ interface ChatMessage {
   timestamp: string;
 }
 
-export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) => {
+export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ language = 'en' }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const currentLang: Language = (language === 'si' || language === 'ta') ? language : 'en';
+  const t = translations[currentLang];
+
+  const getInitialWelcome = (lang: Language = 'en') => {
+    if (lang === 'ta') {
+      return 'வணக்கம்! உறுப்பினர் சரூஜ் சத்தாரின் மக்கள் சேவை வழிகாட்டலுக்கு வரவேற்கிறோம். நீர்கொழும்பு மாநகர சபை சேவைகள் அல்லது உங்கள் குறைகளை பதிவு செய்ய நான் எவ்வாறு உதவ முடியும்?';
+    }
+    if (lang === 'si') {
+      return 'ආයුබෝවන්! මන්ත්‍රී සරූජ් සත්තාර්ගේ ප්‍රජා සේවා සහයක වෙත සාදරයෙන් පිළිගනිමු. මීගමුව නගර සභා සේවාවන් හෝ ගැටලු වාර්තා කිරීම සම්බන්ධයෙන් මට ඔබට කෙසේ උපකාර කළ හැකිද?';
+    }
+    return 'Ayubowan & Vanakkam! Welcome to Councillor Sarooj Sattar’s Civic Helpdesk. How can I assist you with municipal services, reporting an issue, or public works in Negombo today?';
+  };
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
       sender: 'assistant',
-      text: 'Ayubowan & Vanakkam! Welcome to Councillor Sarooj Sattar’s Civic Helpdesk. How can I assist you with municipal services, reporting an issue, or public works in Negombo today?',
+      text: getInitialWelcome(currentLang),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Update initial message when language changes if no user messages sent yet
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].id === 'welcome') {
+      setMessages([
+        {
+          id: 'welcome',
+          sender: 'assistant',
+          text: getInitialWelcome(currentLang),
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+    }
+  }, [currentLang]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -75,6 +100,7 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
         body: JSON.stringify({
           message: query,
           conversationHistory,
+          language,
         }),
       });
 
@@ -94,7 +120,11 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
       const fallbackMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'assistant',
-        text: 'Councillor Sarooj Sattar’s office is available directly on WhatsApp at 0702475248 or by phone at 0702475248 / 0768787382. You can also submit an official grievance using the "Submit Complaint" button.',
+        text: language === 'ta'
+          ? 'உறுப்பினர் சரூஜ் சத்தாரின் அலுவலகத்தை வாட்ஸ்அப் (0702475248) அல்லது தொலைபேசி (0702475248 / 0768787382) ஊடாக நேரடியாக தொடர்பு கொள்ளலாம்.'
+          : (language === 'si'
+            ? 'මන්ත්‍රී සරූජ් සත්තාර්ගේ කාර්යාලය වට්ස්ඇප් (0702475248) හෝ දුරකථන (0702475248 / 0768787382) මගින් සෘජුවම සම්බන්ධ කරගත හැක.'
+            : 'Councillor Sarooj Sattar’s office is available directly on WhatsApp at 0702475248 or by phone at 0702475248 / 0768787382. You can also submit an official grievance using the "Submit Complaint" button.'),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);
@@ -103,12 +133,22 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
     }
   };
 
-  const quickPrompts = [
+  const quickPrompts = language === 'ta' ? [
+    'பெரியமுல்லையில் வடிகால் அடைப்பை எவ்வாறு அறிவிப்பது?',
+    'உறுப்பினர் சரூஜை சந்திக்கும் நேரம் என்ன?',
+    'நீர்கொழும்பு மாநகர சபை பொறியியல் பிரிவு எங்குள்ளது?',
+    'அவசர தொலைபேசி இலக்கங்கள்',
+  ] : (language === 'si' ? [
+    'පෙරියමුල්ලේ කානු අවහිරයක් වාර්තා කරන්නේ කෙසේද?',
+    'මන්ත්‍රී සරූජ් හමුවිය හැකි වේලාවන් මොනවාද?',
+    'මීගමුව නගර සභා ඉංජිනේරු අංශය පිහිටා ඇත්තේ කොහේද?',
+    'හදිසි ඇමතුම් අංක',
+  ] : [
     'How do I report a blocked drain in Periyamulla?',
     'What are the visiting hours for Councillor Sarooj?',
     'Where is the Negombo MC engineering unit located?',
     'Emergency phone numbers in Negombo',
-  ];
+  ]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -116,7 +156,7 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2.5 px-4 py-3.5 bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-emerald-500/40"
+          className="group relative flex items-center gap-2.5 px-4 py-3.5 bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-emerald-500/40 cursor-pointer"
           aria-label="Open Civic AI Assistant"
         >
           <div className="relative">
@@ -124,8 +164,12 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
           </div>
           <div className="text-left hidden sm:block">
-            <span className="block text-xs font-bold leading-tight">Ask Councillor&apos;s Desk</span>
-            <span className="block text-[10px] text-emerald-200 font-medium">AI Civic Counselor</span>
+            <span className="block text-xs font-bold leading-tight">
+              {language === 'ta' ? 'உறுப்பினரின் AI உதவி' : (language === 'si' ? 'මන්ත්‍රී AI උපදේශක' : "Ask Councillor's Desk")}
+            </span>
+            <span className="block text-[10px] text-emerald-200 font-medium">
+              {language === 'ta' ? 'நேரடி மக்கள் வழிகாட்டல்' : (language === 'si' ? 'සෘජු මහජන සේවය' : 'AI Civic Counselor')}
+            </span>
           </div>
         </button>
       )}
@@ -142,19 +186,19 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
               </div>
               <div>
                 <h3 className="font-heading font-bold text-sm text-white flex items-center gap-1.5">
-                  <span>Councillor&apos;s Civic AI</span>
+                  <span>{language === 'ta' ? 'உறுப்பினரின் AI உதவி' : (language === 'si' ? 'මන්ත්‍රී AI උපදේශක' : "Councillor's Civic AI")}</span>
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 </h3>
                 <span className="text-[10px] text-emerald-200 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Negombo Municipal Council Knowledge Base</span>
+                  <span>Negombo MC Knowledge Base</span>
                 </span>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-800/80 transition-colors"
+              className="p-1.5 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-800/80 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -195,7 +239,7 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
             {loading && (
               <div className="flex gap-2 items-center text-xs text-stone-500 bg-white p-2.5 rounded-xl border border-stone-200 max-w-[70%]">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700" />
-                <span>Checking municipal gazette & records...</span>
+                <span>{language === 'ta' ? 'பதிலை தயாரித்து வருகிறோம்...' : (language === 'si' ? 'තොරතුරු පරීක්ෂා කරමින් පවතී...' : 'Checking municipal records...')}</span>
               </div>
             )}
 
@@ -208,7 +252,7 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
               <button
                 key={q}
                 onClick={() => handleSend(q)}
-                className="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-emerald-100 hover:text-emerald-900 text-stone-600 transition-colors shrink-0"
+                className="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-emerald-100 hover:text-emerald-900 text-stone-600 transition-colors shrink-0 cursor-pointer"
               >
                 {q}
               </button>
@@ -225,15 +269,15 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ onOpenModule }) 
           >
             <input
               type="text"
-              placeholder="Ask about council matters or services..."
+              placeholder={language === 'ta' ? 'கேள்வியை உள்ளிடவும்...' : (language === 'si' ? 'ඔබගේ පැනය මෙහි සටහන් කරන්න...' : 'Ask about council matters or services...')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 px-3.5 py-2.5 rounded-xl bg-stone-100 border border-stone-200 text-xs font-medium focus:bg-white focus:ring-2 focus:ring-emerald-600 focus:outline-hidden"
+              className="flex-1 px-3.5 py-2.5 rounded-xl bg-stone-100 border border-stone-200 text-xs font-medium focus:bg-white focus:ring-2 focus:ring-emerald-600 focus:outline-hidden text-stone-900"
             />
             <button
               type="submit"
               disabled={!input.trim() || loading}
-              className="p-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white transition-colors disabled:opacity-50"
+              className="p-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white transition-colors disabled:opacity-50 cursor-pointer"
             >
               <Send className="w-4 h-4" />
             </button>

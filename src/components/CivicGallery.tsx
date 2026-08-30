@@ -12,336 +12,445 @@ import {
   Camera,
   Layers
 } from 'lucide-react';
+import type { Language } from '../utils/translations.js';
+import { translations } from '../utils/translations.js';
 
 export interface GalleryItem {
   id: string;
-  title: string;
-  category: 'Infrastructure' | 'Healthcare & Relief' | 'Youth & Sports' | 'Environment' | 'Community Meetings';
-  location: string;
-  date: string;
+  categoryKey: 'Infrastructure' | 'Healthcare' | 'Youth' | 'Environment' | 'Meetings';
+  titleEn: string;
+  titleSi: string;
+  titleTa: string;
+  locationEn: string;
+  locationSi: string;
+  locationTa: string;
+  dateEn: string;
+  dateSi: string;
+  dateTa: string;
   gradient: string;
   border: string;
-  caption: string;
-  impact: string;
-  councillorNote: string;
+  captionEn: string;
+  captionSi: string;
+  captionTa: string;
+  impactEn: string;
+  impactSi: string;
+  impactTa: string;
+  councillorNoteEn: string;
+  councillorNoteSi: string;
+  councillorNoteTa: string;
 }
 
 export const civicGalleryItems: GalleryItem[] = [
   {
     id: 'g1',
-    title: 'Councillor Sarooj Sattar Direct Citizen Hearing in Ward 05',
-    category: 'Community Meetings',
-    location: 'Periyamulla Community Secretariat, St. Lazarus Road',
-    date: 'August 2024',
+    categoryKey: 'Meetings',
+    titleEn: 'Councillor Sarooj Sattar Direct Citizen Hearing in Ward 05',
+    titleSi: 'මන්ත්‍රී සරූජ් සත්තාර්ගේ කොට්ඨාශ 05 සෘජු මහජන හමුව',
+    titleTa: 'வட்டாரம் 05 இல் உறுப்பினர் சரூஜ் சத்தாரின் நேரடி மக்கள் சந்திப்பு',
+    locationEn: 'Periyamulla Community Secretariat, St. Lazarus Road',
+    locationSi: 'පෙරියමුල්ල ප්‍රජා ලේකම් කාර්යාලය, ශාන්ත ලාසරස් පාර',
+    locationTa: 'பெரியமுல்லை சமூக செயலகம், புனித லாசரஸ் வீதி',
+    dateEn: 'August 2024',
+    dateSi: '2024 අගෝස්තු',
+    dateTa: 'ஆகஸ்ட் 2024',
     gradient: 'from-emerald-700 via-teal-800 to-[#134234]',
     border: 'border-emerald-300',
-    caption: 'Councillor Sarooj Sattar listening to neighborhood elders and residents regarding drainage challenges and pension paperwork.',
-    impact: 'Resolved 18 on-the-spot civic grievances and expedited municipal welfare cards.',
-    councillorNote: 'Every resident’s voice must reach the council chambers without obstacle.',
+    captionEn: 'Councillor Sarooj Sattar listening to neighborhood elders and residents regarding drainage challenges and pension paperwork.',
+    captionSi: 'කානු පද්ධති හා විශ්‍රාම වැටුප් ලිපි ලේඛන පිළිබඳව වැඩිහිටියන්ගේ ගැටලුවලට සවන් දීම.',
+    captionTa: 'வடிகால் பிரச்சனை மற்றும் ஓய்வூதிய ஆவணங்கள் தொடர்பாக பெரியோர்களிடம் குறைகளைக் கேட்டறிதல்.',
+    impactEn: 'Resolved 18 on-the-spot civic grievances and expedited municipal welfare cards.',
+    impactSi: 'ක්ෂණික පැමිණිලි 18ක් විසඳා සුභසාධන කාඩ්පත් කඩිනම් කිරීම.',
+    impactTa: '18 உடனடி குறைகளுக்கு தீர்வு காணப்பட்டு நலன்புரி அட்டைகள் வழங்கப்பட்டன.',
+    councillorNoteEn: 'Every resident’s voice must reach the council chambers without obstacle.',
+    councillorNoteSi: 'සෑම පුරවැසියෙකුගේම හඬ නගර සභාවට කිසිදු බාධාවකින් තොරව ළඟා විය යුතුය.',
+    councillorNoteTa: 'ஒவ்வொரு குடிமகனின் குரலும் தடையின்றி மாநகர சபையை அடைய வேண்டும்.',
   },
   {
     id: 'g2',
-    title: 'St. Lazarus Road Asphalt Carpeting & Curb Construction',
-    category: 'Infrastructure',
-    location: 'St. Lazarus Road, Periyamulla Ward 5',
-    date: 'July 2024',
+    categoryKey: 'Infrastructure',
+    titleEn: 'St. Lazarus Road Asphalt Carpeting & Curb Construction',
+    titleSi: 'ශාන්ත ලාසරස් පාරේ තාර ඇතිරීම සහ කානු ඉදිකිරීම්',
+    titleTa: 'புனித லாசரஸ் வீதி தார் இடுதல் மற்றும் வடிகால் புனரமைப்பு',
+    locationEn: 'St. Lazarus Road, Periyamulla Ward 5',
+    locationSi: 'ශාන්ත ලාසරස් පාර, පෙරියමුල්ල කොට්ඨාශය 5',
+    locationTa: 'புனித லாசரஸ் வீதி, பெரியமுல்லை வட்டாரம் 5',
+    dateEn: 'July 2024',
+    dateSi: '2024 ජූලි',
+    dateTa: 'ஜூலை 2024',
     gradient: 'from-amber-600 via-orange-700 to-amber-900',
     border: 'border-amber-300',
-    caption: 'Heavy road-paving machinery executing sub-base asphalt carpeting to eliminate deep monsoon ruts.',
-    impact: 'Smooth, durable transit for 4,200+ households, three-wheelers, and school transport vans.',
-    councillorNote: 'High engineering standards and proper side-curbing ensure this road lasts for decades.',
+    captionEn: 'Heavy road-paving machinery executing sub-base asphalt carpeting to eliminate deep monsoon ruts.',
+    captionSi: 'වැසි කාලයේ මාර්ග අබලන් වීම වැළැක්වීමට උසස් තත්ත්වයේ තාර ඇතිරීම.',
+    captionTa: 'மழைக்கால பள்ளங்களை அகற்றி தரமான தார் இடும் பணிகள் முன்னெடுப்பு.',
+    impactEn: 'Smooth, durable transit for 4,200+ households, three-wheelers, and school transport vans.',
+    impactSi: 'පවුල් 4,200කට අධික පිරිසකට සහ පාසල් ප්‍රවාහන සේවා සඳහා පහසු ගමනාගමනය.',
+    impactTa: '4,200க்கும் மேற்பட்ட குடும்பங்கள் மற்றும் முச்சக்கர வண்டிகளுக்கு பாதுகாப்பான போக்குவரத்து.',
+    councillorNoteEn: 'High engineering standards and proper side-curbing ensure this road lasts for decades.',
+    councillorNoteSi: 'උසස් ප්‍රමිතියෙන් යුතු ඉදිකිරීම් මගින් මෙම මාර්ගය දිගුකල් පවතිනු ඇත.',
+    councillorNoteTa: 'உயர்தர பொறியியல் வடிவமைப்பு இந்த வீதியை நீண்ட காலம் பாதுகாக்கும்.',
   },
   {
     id: 'g3',
-    title: 'Free Vision & Cataract Screening Health Camp',
-    category: 'Healthcare & Relief',
-    location: 'Ward 05 Health Center, Periyamulla',
-    date: 'June 2024',
+    categoryKey: 'Healthcare',
+    titleEn: 'Free Vision & Cataract Screening Health Camp',
+    titleSi: 'නොමිලේ අක්ෂි සායනය සහ ඇස් කණ්ණාඩි බෙදාදීම',
+    titleTa: 'இலவச கண் பரிசோதனை மற்றும் மூக்குக்கண்ணாடி வழங்கும் முகாம்',
+    locationEn: 'Ward 05 Health Center, Periyamulla',
+    locationSi: 'කොට්ඨාශ 05 සෞඛ්‍ය මධ්‍යස්ථානය, පෙරියමුල්ල',
+    locationTa: 'வட்டாரம் 05 சுகாதார நிலையம், பெரியமுல்லை',
+    dateEn: 'June 2024',
+    dateSi: '2024 ජූනි',
+    dateTa: 'ஜூன் 2024',
     gradient: 'from-blue-600 via-indigo-700 to-blue-900',
     border: 'border-blue-300',
-    caption: 'Certified ophthalmologists and municipal medical officers providing free eye tests and prescription spectacles.',
-    impact: '320+ seniors examined, 185 custom reading glasses distributed at zero cost.',
-    councillorNote: 'Healthcare is a fundamental human dignity that we must bring directly to our doorsteps.',
+    captionEn: 'Certified ophthalmologists and municipal medical officers providing free eye tests and prescription spectacles.',
+    captionSi: 'සුදුසුකම්ලත් වෛද්‍යවරුන් මගින් නොමිලේ ඇස් පරීක්ෂාව සහ කණ්ණාඩි බෙදාදීම.',
+    captionTa: 'சிறப்பு கண் மருத்துவர்கள் மூலம் இலவச பரிசோதனை மற்றும் மூக்குக்கண்ணாடிகள் வழங்கப்பட்டன.',
+    impactEn: '320+ seniors examined, 185 custom reading glasses distributed at zero cost.',
+    impactSi: 'වැඩිහිටියන් 320ක් පරීක්ෂා කර නොමිලේ කණ්ණාඩි 185ක් ලබාදෙන ලදී.',
+    impactTa: '320 முதியவர்கள் பரிசோதிக்கப்பட்டு 185 கண்ணாடிகள் இலவசமாக வழங்கப்பட்டன.',
+    councillorNoteEn: 'Healthcare is a fundamental human dignity that we must bring directly to our doorsteps.',
+    councillorNoteSi: 'සෞඛ්‍ය සම්පන්න ජීවිතයක් ගත කිරීම සෑම පුරවැසියෙකුගේම මූලික අයිතිවාසිකමකි.',
+    councillorNoteTa: 'சுகாதாரம் என்பது மக்களின் அடிப்படை உரிமை, அதை வீட்டு வாசலுக்கு கொண்டு சேர்க்க வேண்டும்.',
   },
   {
     id: 'g4',
-    title: 'Solar LED Streetlight Network Installation',
-    category: 'Infrastructure',
-    location: 'Periyamulla Commercial Stretch & Canal Bridge',
-    date: 'May 2024',
+    categoryKey: 'Infrastructure',
+    titleEn: 'Solar LED Streetlight Network Installation',
+    titleSi: 'සූර්ය බලශක්ති වීදි ලාම්පු පද්ධති සවි කිරීම',
+    titleTa: 'சூரிய சக்தி தெருவிளக்குகள் அமைக்கும் பணி',
+    locationEn: 'Periyamulla Commercial Stretch & Canal Bridge',
+    locationSi: 'පෙරියමුල්ල ප්‍රධාන මාර්ගය සහ ඇල පාලම',
+    locationTa: 'பெரியமுல்லை வர்த்தக வீதி மற்றும் கால்வாய் பாலம்',
+    dateEn: 'May 2024',
+    dateSi: '2024 මැයි',
+    dateTa: 'மே 2024',
     gradient: 'from-amber-500 via-yellow-600 to-orange-700',
     border: 'border-amber-300',
-    caption: 'Municipal technical crew mounting 90W high-lumen solar LED luminaires on concrete utility posts.',
-    impact: 'Zero electricity cost for council; 100% nighttime visibility for women and evening commuters.',
-    councillorNote: 'Well-lit streets build safe, vibrant, crime-free neighborhoods.',
+    captionEn: 'Municipal technical crew mounting 90W high-lumen solar LED luminaires on concrete utility posts.',
+    captionSi: 'රාත්‍රී කාලයේ ආරක්ෂාව තහවුරු කරමින් සූර්ය බලශක්ති වීදි ලාම්පු සවි කිරීම.',
+    captionTa: 'இரவு நேர பாதுகாப்பை உறுதி செய்யும் 90W சூரிய ஒளி தெருவிளக்குகள் நிறுவல்.',
+    impactEn: 'Zero electricity cost for council; 100% nighttime visibility for women and evening commuters.',
+    impactSi: 'නගර සභාවට විදුලි බිලක් නොමැති අතර කාන්තාවන්ගේ රාත්‍රී ආරක්ෂාව තහවුරු විය.',
+    impactTa: 'மாநகர சபைக்கு மின்சார செலவின்றி பெண்கள் மற்றும் பொதுமக்களுக்கு இரவு நேர பாதுகாப்பு.',
+    councillorNoteEn: 'Well-lit streets build safe, vibrant, crime-free neighborhoods.',
+    councillorNoteSi: 'ආලෝකමත් වීදි මගින් අපරාධවලින් තොර සුරක්ෂිත ප්‍රදේශයක් ගොඩනැගේ.',
+    councillorNoteTa: 'ஒளிரும் வீதிகள் பாதுகாப்பான மற்றும் குற்றமற்ற சூழலை உருவாக்கும்.',
   },
   {
     id: 'g5',
-    title: 'Dutch Canal Desilting & Stormwater Clearance',
-    category: 'Environment',
-    location: 'Hamilton Canal & Periyamulla Outlet',
-    date: 'April 2024',
+    categoryKey: 'Environment',
+    titleEn: 'Dutch Canal Desilting & Stormwater Clearance',
+    titleSi: 'ලන්දේසි ඇල සුද්ධ පවිත්‍ර කිරීම හා ජල ගැලීම් පාලනය',
+    titleTa: 'ஒல்லாந்தர் கால்வாய் தூர்வாருதல் மற்றும் வெள்ளத்தடுப்பு',
+    locationEn: 'Hamilton Canal & Periyamulla Outlet',
+    locationSi: 'හැමිල්ටන් ඇල සහ පෙරියමුල්ල බැස්ම',
+    locationTa: 'ஹமில்டன் கால்வாய் மற்றும் பெரியமுல்லை வழித்தடம்',
+    dateEn: 'April 2024',
+    dateSi: '2024 අප්‍රේල්',
+    dateTa: 'ஏப்ரல் 2024',
     gradient: 'from-teal-600 via-cyan-700 to-teal-900',
     border: 'border-teal-300',
-    caption: 'Excavator and municipal gully units clearing silt and water hyacinth before the southwestern monsoon.',
-    impact: 'Prevented flash-flooding across 6 adjoining residential lanes in low-lying zones.',
-    councillorNote: 'Proactive canal maintenance saves our families from devastating water damage.',
+    captionEn: 'Excavator and municipal gully units clearing silt and water hyacinth before the southwestern monsoon.',
+    captionSi: 'මෝසම් වැසි කාලයට පෙර ඇල මාර්ගවල රොන්මඩ හා ජපන් ජබර ඉවත් කිරීම.',
+    captionTa: 'பருவமழைக்கு முன்னதாக கால்வாய்களை தூர்வாரி ஆகாயத்தாமரைகளை அகற்றுதல்.',
+    impactEn: 'Prevented flash-flooding across 6 adjoining residential lanes in low-lying zones.',
+    impactSi: 'පහත් බිම් ප්‍රදේශවල මාර්ග 6ක ජල ගැලීම් සම්පූර්ණයෙන්ම පාලනය විය.',
+    impactTa: 'தாழ்வான பகுதிகளில் உள்ள 6 குடியிருப்பு வீதிகளில் திடீர் வெள்ளம் தடுக்கப்பட்டது.',
+    councillorNoteEn: 'Proactive canal maintenance saves our families from devastating water damage.',
+    councillorNoteSi: 'කල්තියා පිරිසිදු කිරීම මගින් ජනතාවගේ දේපළ ආරක්ෂා කරගත හැක.',
+    councillorNoteTa: 'முன்கூட்டியே வடிகால்களை சீரமைப்பது குடும்பங்களின் உடைமைகளை வெள்ளத்திலிருந்து பாதுகாக்கும்.',
   },
   {
     id: 'g6',
-    title: 'Youth Sports & Athletics Equipment Distribution',
-    category: 'Youth & Sports',
-    location: 'Negombo Municipal Community Playground',
-    date: 'March 2024',
+    categoryKey: 'Youth',
+    titleEn: 'Youth Sports & Athletics Equipment Distribution',
+    titleSi: 'යෞවන ක්‍රීඩා උපකරණ බෙදාදීමේ වැඩසටහන',
+    titleTa: 'இளைஞர் விளையாட்டு உபகரணங்கள் வழங்கும் திட்டம்',
+    locationEn: 'Negombo Municipal Community Playground',
+    locationSi: 'මීගමුව නාගරික ප්‍රජා ක්‍රීඩාංගණය',
+    locationTa: 'நீர்கொழும்பு மாநகர சபை விளையாட்டு மைதானம்',
+    dateEn: 'March 2024',
+    dateSi: '2024 මාර්තු',
+    dateTa: 'மார்ச் 2024',
     gradient: 'from-purple-600 via-violet-700 to-purple-900',
     border: 'border-purple-300',
-    caption: 'Handing over cricket kits, footballs, and track gear to Periyamulla youth sports clubs.',
-    impact: 'Empowering 120+ local youth with healthy recreational activities and tournament support.',
-    councillorNote: 'Our youth are the heartbeat of Negombo. We must invest in their talents.',
+    captionEn: 'Handing over cricket kits, footballs, and track gear to Periyamulla youth sports clubs.',
+    captionSi: 'පෙරියමුල්ල තරුණ ක්‍රීඩා සමාජ වෙත ක්‍රිකට් සහ පාපන්දු උපකරණ පරිත්‍යාග කිරීම.',
+    captionTa: 'பெரியமுல்லை இளைஞர் விளையாட்டு கழகங்களுக்கு கிரிக்கெட் மற்றும் உதைபந்தாட்ட உபகரணங்கள் வழங்கல்.',
+    impactEn: 'Empowering 120+ local youth with healthy recreational activities and tournament support.',
+    impactSi: 'ප්‍රදේශයේ තරුණයින් 120කට අධික පිරිසකට ක්‍රීඩා සඳහා පහසුකම් සලසා දීම.',
+    impactTa: '120க்கும் மேற்பட்ட இளைஞர்களுக்கு ஆரோக்கியமான விளையாட்டு வழிகாட்டல்.',
+    councillorNoteEn: 'Our youth are the heartbeat of Negombo. We must invest in their talents.',
+    councillorNoteSi: 'අපගේ තරුණ පරපුර මීගමුවේ හදවතයි. ඔවුන්ගේ දක්ෂතාවලට අප අතහිත දිය යුතුය.',
+    councillorNoteTa: 'இளைஞர்களே நீர்கொழும்பின் உயிர்நாடி. அவர்களின் திறமைகளை நாம் வளர்த்தெடுக்க வேண்டும்.',
   },
 ];
 
 interface CivicGalleryProps {
   onOpenSubmitModal: () => void;
   onOpenContactModal: () => void;
+  language: Language;
 }
 
 export const CivicGallery: React.FC<CivicGalleryProps> = ({
   onOpenSubmitModal,
   onOpenContactModal,
+  language,
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const t = translations[language];
 
-  const categories = ['All', 'Infrastructure', 'Healthcare & Relief', 'Youth & Sports', 'Environment', 'Community Meetings'];
+  const categories = [
+    { key: 'All', label: t.galleryFilterAll },
+    { key: 'Infrastructure', label: t.galleryFilterInfrastructure },
+    { key: 'Healthcare', label: t.galleryFilterHealth },
+    { key: 'Youth', label: t.galleryFilterYouth },
+    { key: 'Meetings', label: t.galleryFilterMeetings },
+    { key: 'Environment', label: t.galleryFilterEnvironment },
+  ];
 
   const filteredItems = activeCategory === 'All'
     ? civicGalleryItems
-    : civicGalleryItems.filter(item => item.category === activeCategory);
+    : civicGalleryItems.filter(item => item.categoryKey === activeCategory);
+
+  const getTitle = (item: GalleryItem) => {
+    if (language === 'si') return item.titleSi;
+    if (language === 'ta') return item.titleTa;
+    return item.titleEn;
+  };
+
+  const getLocation = (item: GalleryItem) => {
+    if (language === 'si') return item.locationSi;
+    if (language === 'ta') return item.locationTa;
+    return item.locationEn;
+  };
+
+  const getDate = (item: GalleryItem) => {
+    if (language === 'si') return item.dateSi;
+    if (language === 'ta') return item.dateTa;
+    return item.dateEn;
+  };
+
+  const getCaption力 = (item: GalleryItem) => {
+    if (language === 'si') return item.captionSi;
+    if (language === 'ta') return item.captionTa;
+    return item.captionEn;
+  };
+
+  const getImpact = (item: GalleryItem) => {
+    if (language === 'si') return item.impactSi;
+    if (language === 'ta') return item.impactTa;
+    return item.impactEn;
+  };
+
+  const getCouncillorNote = (item: GalleryItem) => {
+    if (language === 'si') return item.councillorNoteSi;
+    if (language === 'ta') return item.councillorNoteTa;
+    return item.councillorNoteEn;
+  };
 
   return (
-    <section className="py-14 sm:py-18 bg-gradient-to-b from-[#F8F3EA] via-white to-[#FDFBF7] border-t-2 border-amber-300 relative overflow-hidden">
+    <section className="py-14 sm:py-18 bg-white border-t-2 border-amber-200 relative overflow-hidden">
       
-      {/* Colourful Ambient Glows */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Decor */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-5 border-b-2 border-amber-200 gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-xs font-black text-emerald-950 uppercase tracking-wider mb-2">
-              <Camera className="w-4 h-4 text-emerald-800" />
-              <span>Ground Realities & Community Action • Ward 05</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#134234] tracking-tight">
-              Civic Progress & Ground Inspections
-            </h2>
-            <p className="text-sm text-stone-700 mt-1 font-semibold max-w-2xl">
-              Authentic documentation of municipal engineering, health camps, and neighborhood hearings led by Councillor Sarooj Sattar.
-            </p>
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border-2 border-amber-300 text-xs font-black text-amber-950 uppercase tracking-wider shadow-2xs">
+            <Camera className="w-3.5 h-3.5 text-amber-700" />
+            <span>{t.civicGalleryBadge}</span>
           </div>
-
-          {/* Category Filter Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition-all ${
-                  activeCategory === cat
-                    ? 'bg-gradient-to-r from-emerald-800 to-teal-950 text-amber-300 shadow-md border border-emerald-700'
-                    : 'bg-white text-stone-800 hover:bg-amber-100 border border-stone-300 shadow-2xs'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-2xl sm:text-4xl font-black text-[#134234] tracking-tight">
+            {t.civicGalleryTitle}
+          </h2>
+          <p className="text-sm sm:text-base text-stone-700 font-semibold leading-relaxed">
+            {t.civicGallerySubtitle}
+          </p>
         </div>
 
-        {/* Photo Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedPhoto(item)}
-              className="group cursor-pointer bg-white rounded-3xl overflow-hidden border-2 border-stone-200 hover:border-amber-400 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between"
+        {/* Category Filters */}
+        <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+          {categories.map((cat) => (
+            <button
+              key={cat.key}
+              onClick={() => setActiveCategory(cat.key)}
+              className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${
+                activeCategory === cat.key
+                  ? 'bg-gradient-to-r from-[#1B4D3E] to-emerald-900 text-amber-300 shadow-md border border-emerald-700'
+                  : 'bg-stone-100 text-stone-700 hover:bg-amber-100 hover:text-stone-950 border border-stone-300'
+              }`}
             >
-              {/* Vibrant Illustrated / Gradient Scene Card */}
-              <div className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${item.gradient} p-5 text-white flex flex-col justify-between`}>
-                
-                {/* Top Row: Category Badge */}
-                <div className="flex items-center justify-between">
-                  <span className="inline-block px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-amber-200 text-xs font-black border border-white/20">
-                    {item.category}
-                  </span>
-                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Eye className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-
-                {/* Card Title on Banner */}
-                <div>
-                  <span className="text-[11px] font-bold text-amber-200/90 uppercase tracking-wider block">
-                    {item.location.split(',')[0]}
-                  </span>
-                  <h3 className="font-heading font-black text-white text-lg leading-snug drop-shadow-sm">
-                    {item.title}
-                  </h3>
-                </div>
-
-                {/* View Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                  <span className="text-white text-xs font-black flex items-center gap-1.5 bg-amber-500 text-stone-950 px-3 py-1.5 rounded-xl shadow-lg">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Open Detailed Log</span>
-                  </span>
-                </div>
-              </div>
-
-              {/* Card Details */}
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs text-stone-600 font-bold">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                      <span className="truncate">{item.location.split(',')[0]}</span>
-                    </span>
-                    <span className="flex items-center gap-1 text-stone-500">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{item.date}</span>
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-stone-700 line-clamp-2 leading-relaxed font-semibold">
-                    {item.caption}
-                  </p>
-                </div>
-
-                {/* Impact Metric Highlight */}
-                <div className="pt-3 border-t border-stone-200 flex items-center justify-between text-xs">
-                  <span className="font-black text-emerald-900 flex items-center gap-1.5 text-xs bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span className="truncate">{item.impact}</span>
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-1 group-hover:text-stone-900 transition-all shrink-0 ml-1" />
-                </div>
-              </div>
-            </div>
+              {cat.label}
+            </button>
           ))}
         </div>
 
-        {/* Bottom Callout Banner */}
-        <div className="mt-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#134234] via-emerald-800 to-teal-950 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 border-2 border-amber-400">
+        {/* Visual Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredItems.map((item) => {
+            const title = getTitle(item);
+            const location = getLocation(item);
+            const date = getDate(item);
+            const caption = getCaption力(item);
+            const impact = getImpact(item);
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedPhoto(item)}
+                className={`group rounded-3xl bg-white border-2 ${item.border} shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer transform hover:-translate-y-1.5`}
+              >
+                {/* Visual Header Banner */}
+                <div className={`h-48 w-full bg-gradient-to-tr ${item.gradient} p-5 flex flex-col justify-between relative overflow-hidden text-white`}>
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+                  
+                  <div className="flex items-center justify-between relative z-10">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-amber-300">
+                      {date}
+                    </span>
+                    <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-400 group-hover:text-stone-950 transition-all text-white shadow-xs">
+                      <Eye className="w-4 h-4" />
+                    </span>
+                  </div>
+
+                  <div className="relative z-10 space-y-1">
+                    <h3 className="font-heading font-black text-white text-lg sm:text-xl leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
+                      {title}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-emerald-100 text-xs font-semibold">
+                      <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span className="truncate">{location}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Body Content */}
+                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
+                  <p className="text-xs sm:text-sm text-stone-700 leading-relaxed font-medium">
+                    {caption}
+                  </p>
+
+                  <div className="pt-3 border-t border-stone-200 space-y-1.5">
+                    <div className="flex items-start gap-2 text-xs font-bold text-[#134234] bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                      <span>{impact}</span>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPhoto(item);
+                      }}
+                      className="w-full mt-2 py-2 px-3 rounded-xl bg-stone-100 group-hover:bg-amber-400 text-stone-800 group-hover:text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
+                    >
+                      <span>{t.galleryViewPhotoBtn}</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Citizen Report Prompt Card */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-emerald-950 via-teal-950 to-emerald-900 text-white border-2 border-amber-400 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black border border-amber-400/40">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Ward 05 Direct Municipal Action</span>
-            </div>
-            <h3 className="text-xl sm:text-3xl font-black tracking-tight">
-              Have a Road, Drain, or Civic Issue in Your Lane?
+            <h3 className="font-heading font-black text-2xl sm:text-3xl text-amber-300 tracking-tight">
+              {t.gallerySubmitPromptTitle}
             </h3>
-            <p className="text-xs sm:text-sm text-emerald-100 max-w-xl font-medium">
-              Report it directly to our dashboard. Councillor Sarooj Sattar and the municipal engineering crew inspect reported sites within 48 hours.
+            <p className="text-xs sm:text-sm text-emerald-100 max-w-xl font-medium leading-relaxed">
+              {t.gallerySubmitPromptDesc}
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
+          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
             <button
               onClick={onOpenSubmitModal}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-stone-950 text-xs sm:text-sm font-black shadow-lg hover:shadow-xl transition-all text-center border border-amber-200"
+              className="px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FFC72C] via-amber-500 to-orange-600 text-stone-950 font-black text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 cursor-pointer border border-amber-300"
             >
-              + Report New Civic Issue
+              {t.gallerySubmitActionBtn}
             </button>
             <button
               onClick={onOpenContactModal}
-              className="px-6 py-3.5 rounded-2xl bg-emerald-900/90 hover:bg-emerald-800 text-white border-2 border-emerald-400 text-xs sm:text-sm font-black shadow-md transition-all text-center"
+              className="px-5 py-3.5 rounded-full bg-emerald-900/80 hover:bg-emerald-900 text-emerald-200 hover:text-white font-bold text-xs sm:text-sm border border-emerald-600 transition-colors"
             >
-              WhatsApp Councillor Desk
+              {t.openWhatsApp}
             </button>
           </div>
         </div>
 
       </div>
 
-      {/* Lightbox Modal */}
+      {/* DETAIL MODAL FOR SELECTED CIVIC WORK */}
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden my-8 max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-amber-400 animate-in zoom-in-95 duration-200">
             
             {/* Modal Header Banner */}
-            <div className={`relative aspect-[16/9] w-full bg-gradient-to-br ${selectedPhoto.gradient} p-6 sm:p-8 text-white overflow-hidden shrink-0 flex flex-col justify-between`}>
-              <div className="flex items-center justify-between">
-                <span className="bg-black/50 backdrop-blur-md text-amber-300 text-xs font-black px-3 py-1 rounded-full border border-white/20">
-                  {selectedPhoto.category}
-                </span>
-                <button
-                  onClick={() => setSelectedPhoto(null)}
-                  className="p-2 rounded-full bg-black/60 text-white hover:bg-black transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+            <div className={`p-6 bg-gradient-to-tr ${selectedPhoto.gradient} text-white relative`}>
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/40 text-white hover:bg-black/60 flex items-center justify-center transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
 
-              <div>
-                <span className="text-xs font-black text-amber-200 uppercase tracking-wider block mb-1">
-                  {selectedPhoto.location}
-                </span>
-                <h3 className="font-heading font-black text-2xl sm:text-3xl leading-tight">
-                  {selectedPhoto.title}
-                </h3>
-              </div>
+              <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 text-amber-300 inline-block mb-3">
+                {getDate(selectedPhoto)} • {getLocation(selectedPhoto)}
+              </span>
+
+              <h3 className="font-heading font-black text-2xl text-white leading-tight">
+                {getTitle(selectedPhoto)}
+              </h3>
             </div>
 
-            {/* Modal Body Details */}
-            <div className="p-6 sm:p-8 space-y-4 overflow-y-auto">
-              <div className="flex items-center gap-3 text-xs text-stone-600 font-bold mb-1">
-                <span className="flex items-center gap-1 text-red-600">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span>{selectedPhoto.location}</span>
+            {/* Modal Body */}
+            <div className="p-6 space-y-4">
+              <div className="space-y-1">
+                <span className="text-xs font-black text-stone-500 uppercase tracking-wider">
+                  {t.serviceDashboardTitle}
                 </span>
-                <span>•</span>
-                <span>{selectedPhoto.date}</span>
-              </div>
-
-              <p className="text-sm text-stone-800 leading-relaxed font-semibold">
-                {selectedPhoto.caption}
-              </p>
-
-              {/* Impact Banner */}
-              <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 space-y-1">
-                <span className="text-xs font-black text-emerald-950 uppercase tracking-wider block">
-                  Measured Community Impact
-                </span>
-                <p className="text-xs sm:text-sm text-emerald-950 font-bold">
-                  {selectedPhoto.impact}
+                <p className="text-sm text-stone-800 leading-relaxed font-medium">
+                  {getCaption力(selectedPhoto)}
                 </p>
               </div>
 
-              {/* Councillor's Quote */}
-              <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200">
-                <span className="text-[11px] font-black text-amber-950 uppercase tracking-wider block mb-0.5">
-                  Councillor Sarooj Sattar&apos;s Field Note
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
+                <span className="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>{t.galleryImpactLabel}</span>
                 </span>
-                <p className="font-serif-quote italic text-xs sm:text-sm text-stone-950 font-bold">
-                  &ldquo;{selectedPhoto.councillorNote}&rdquo;
+                <p className="text-xs text-emerald-900 font-semibold">
+                  {getImpact(selectedPhoto)}
                 </p>
               </div>
 
-              <div className="pt-2 flex items-center justify-between border-t border-stone-200">
-                <span className="text-xs text-stone-600 font-bold">
-                  Verified by Negombo Municipal Council
+              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-1">
+                <span className="text-xs font-black text-amber-950 flex items-center gap-1.5">
+                  <HeartHandshake className="w-4 h-4 text-amber-700" />
+                  <span>{t.galleryCouncillorNoteLabel}</span>
                 </span>
+                <p className="text-xs text-stone-800 italic font-medium">
+                  &ldquo;{getCouncillorNote(selectedPhoto)}&rdquo;
+                </p>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
                 <button
                   onClick={() => setSelectedPhoto(null)}
-                  className="px-5 py-2.5 rounded-xl bg-stone-950 hover:bg-stone-800 text-white text-xs font-black shadow-md"
+                  className="px-5 py-2.5 rounded-full bg-stone-900 text-white text-xs font-black hover:bg-stone-800 transition-colors"
                 >
-                  Close Inspection
+                  {t.formCloseBtn}
                 </button>
               </div>
-
             </div>
 
           </div>

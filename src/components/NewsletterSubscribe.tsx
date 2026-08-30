@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { Mail, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import type { Language } from '../utils/translations.js';
+import { translations } from '../utils/translations.js';
 
-export const NewsletterSubscribe: React.FC = () => {
+interface NewsletterSubscribeProps {
+  language?: Language;
+}
+
+export const NewsletterSubscribe: React.FC<NewsletterSubscribeProps> = ({ language = 'en' }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const t = translations[language];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
-      setError('Please provide both your name and email address.');
+      setError(language === 'ta' ? 'தயவுசெய்து உங்கள் பெயர் மற்றும் மின்னஞ்சலை உள்ளிடவும்.' : (language === 'si' ? 'කරුණාකර ඔබගේ නම සහ ඊමේල් ලිපිනය ඇතුළත් කරන්න.' : 'Please provide both your name and email address.'));
       return;
     }
 
@@ -62,10 +70,10 @@ export const NewsletterSubscribe: React.FC = () => {
             </div>
             <div>
               <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-white tracking-tight leading-tight">
-                Stay Connected
+                {t.stayConnectedTitle}
               </h3>
               <p className="text-emerald-200 text-xs sm:text-sm font-normal mt-1 leading-snug">
-                Subscribe to get the latest news, updates and community information.
+                {t.stayConnectedSubtitle}
               </p>
             </div>
           </div>
@@ -76,9 +84,9 @@ export const NewsletterSubscribe: React.FC = () => {
               <div className="bg-emerald-800/80 border border-emerald-600 rounded-xl p-4 flex items-center gap-3 text-emerald-100">
                 <CheckCircle2 className="w-6 h-6 text-amber-400 shrink-0" />
                 <div>
-                  <p className="font-bold text-sm text-white">Thank you, {name}!</p>
+                  <p className="font-bold text-sm text-white">{t.subscribeSuccessTitle} {name}!</p>
                   <p className="text-xs text-emerald-200">
-                    You are now subscribed to Councillor Sarooj Sattar&apos;s community updates.
+                    {t.subscribeSuccessDesc}
                   </p>
                 </div>
               </div>
@@ -90,7 +98,7 @@ export const NewsletterSubscribe: React.FC = () => {
                   <input
                     type="text"
                     required
-                    placeholder="Your Name"
+                    placeholder={t.subscribeNamePlaceholder}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full sm:w-5/12 px-4 py-3 rounded-xl bg-white text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-amber-400 border border-emerald-700/50 shadow-inner"
@@ -100,7 +108,7 @@ export const NewsletterSubscribe: React.FC = () => {
                   <input
                     type="email"
                     required
-                    placeholder="Your Email"
+                    placeholder={t.subscribeEmailPlaceholder}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full sm:w-5/12 px-4 py-3 rounded-xl bg-white text-stone-900 placeholder:text-stone-400 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-amber-400 border border-emerald-700/50 shadow-inner"
@@ -110,14 +118,14 @@ export const NewsletterSubscribe: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full sm:w-auto sm:px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-stone-950 text-sm font-extrabold shadow-md hover:shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-1.5 shrink-0"
+                    className="w-full sm:w-auto sm:px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-stone-950 text-sm font-extrabold shadow-md hover:shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin text-stone-900" />
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4 text-stone-900" />
-                        <span>Subscribe</span>
+                        <span>{t.subscribeBtn}</span>
                       </>
                     )}
                   </button>
@@ -127,10 +135,6 @@ export const NewsletterSubscribe: React.FC = () => {
                 {error && (
                   <p className="text-red-300 text-xs font-semibold">{error}</p>
                 )}
-
-                <p className="text-emerald-300/80 text-[11px] font-medium text-center sm:text-left">
-                  We respect your privacy. Unsubscribe at any time.
-                </p>
               </form>
             )}
           </div>

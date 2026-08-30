@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   ArrowRight, 
   ChevronRight, 
@@ -17,7 +17,13 @@ import {
   Sun,
   Flame,
   Layers,
-  Heart
+  Heart,
+  Camera,
+  Image as ImageIcon,
+  Upload,
+  RefreshCw,
+  Sliders,
+  Check
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
 import { CouncillorPortrait } from './CouncillorPortrait.js';
@@ -40,10 +46,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onLanguageChange,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [activePosterId, setActivePosterId] = useState<string>('poster_en_white');
-  const t = translations[language];
+  const [activePosterId, setActivePosterId] = useState<string>('poster_ta_striped');
+  const [bgImage, setBgImage] = useState<string | null>(() => {
+    return localStorage.getItem('dashboard_bg_photo');
+  });
+  const [bgOpacity, setBgOpacity] = useState<number>(30); // 0 to 100
+  const [showBgSettings, setShowBgSettings] = useState(false);
+  const bgFileInputRef = useRef<HTMLInputElement>(null);
 
-  const activePoster = OFFICIAL_POSTERS.find((p) => p.id === activePosterId) || OFFICIAL_POSTERS[0];
+  const t不易 = translations[language];
+
+  const activePoster推进 = OFFICIAL_POSTERS.find((p) => p.id === activePosterId) || OFFICIAL_POSTERS[0];
 
   const handleToggleAudio = () => {
     setIsPlayingAudio(!isPlayingAudio);
@@ -59,18 +72,77 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#FFF5E5] via-[#FDEBD0] to-[#F7DFC1] border-b-4 border-amber-400">
-      
-      {/* Colourful Ambient Glows & Sunburst Layers directly inspired by Councillor Sarooj Sattar Posters */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-amber-400/35 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-10 right-10 w-96 h-96 bg-emerald-500/25 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/3 w-[600px] h-64 bg-orange-500/25 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-20 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
+  const handleBgFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file不易 = e.target.files?.[0];
+    if (file不易) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        setBgImage(result);
+        localStorage.setItem('dashboard_bg_photo', result);
+        localStorage.setItem('sarooj_custom_hero_photo', result);
+      };
+      reader.readAsDataURL(file不易);
+    }
+  };
 
-      {/* Top Center Hanging Arched Logo Badge matching Reference */}
+  const handleResetBg = () => {
+    setBgImage(null);
+    localStorage.removeItem('dashboard_bg_photo');
+  };
+
+  return (
+    <section className="relative overflow-hidden border-b-4 border-amber-400 transition-colors duration-500 bg-gradient-to-b from-[#FFF5E5] via-[#FDEBD0] to-[#F5D8B3]">
+      
+      {/* HIDDEN BACKGROUND FILE INPUT */}
+      <input
+        type="file"
+        ref={bgFileInputRef}
+        onChange={handleBgFileUpload}
+        accept="image/*"
+        className="hidden"
+      />
+
+      {/* DYNAMIC BACKGROUND IMAGE LAYER (If user uploaded / custom background photo) */}
+      {bgImage ? (
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src={bgImage}
+            alt="Dashboard Background Poster"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover object-center filter saturate-125"
+            style={{ opacity: bgOpacity / 100 }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5E5]/75 via-[#FDEBD0]/80 to-[#F5D8B3]/90 backdrop-blur-[1px]" />
+        </div>
+      ) : (
+        /* DEFAULT HIGH-IMPACT GOLDEN SUNRISE VILLAGE BACKGROUND MATCHING THE ATTACHED PHOTO */
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-85">
+          {/* Golden Sunrise Sunburst in Top-Left */}
+          <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-gradient-to-br from-[#FFE082] via-[#FFA726] to-transparent rounded-full blur-3xl opacity-70" />
+          <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-[#FFB74D]/40 via-[#FB8C00]/30 to-transparent rounded-full blur-3xl" />
+          
+          {/* Subtle Village Street & Palm Silhouettes SVG */}
+          <svg className="absolute bottom-0 left-0 right-0 w-full h-72 opacity-25" preserveAspectRatio="none" viewBox="0 0 1200 300">
+            <defs>
+              <linearGradient id="villageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#D97706" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#78350F" stopOpacity="0.95" />
+              </linearGradient>
+            </defs>
+            {/* Palm Trees & Rooflines */}
+            <path d="M0,240 Q150,180 300,240 T600,220 T900,250 T1200,210 L1200,300 L0,300 Z" fill="url(#villageGrad)" />
+            <circle cx="120" cy="180" r="45" fill="#B45309" opacity="0.4" />
+            <circle cx="480" cy="160" r="35" fill="#B45309" opacity="0.3" />
+            <circle cx="850" cy="170" r="50" fill="#B45309" opacity="0.35" />
+            <circle cx="1080" cy="150" r="40" fill="#B45309" opacity="0.4" />
+          </svg>
+        </div>
+      )}
+
+      {/* Top Center Hanging Arched Municipal Logo Badge */}
       <div className="relative flex justify-center -mt-1 z-30 pointer-events-auto">
-        <div className="bg-white/95 backdrop-blur-md px-6 sm:px-10 pt-2.5 pb-3.5 rounded-b-3xl shadow-xl border-x-2 border-b-2 border-amber-300 flex flex-col items-center text-center">
+        <div className="bg-white/95 backdrop-blur-md px-6 sm:px-10 pt-2.5 pb-3.5 rounded-b-3xl shadow-xl border-x-2 border-b-2 border-amber-400 flex flex-col items-center text-center">
           <RoundLogo
             size={74}
             showText={true}
@@ -79,29 +151,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
 
-      {/* Top Utility Row: Poster Selector, Tri-Lingual Language Switcher & Ward Status */}
+      {/* Top Utility Row: Poster Preset Selector, Tri-Lingual Language Switcher & Background Control */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-1 flex flex-wrap items-center justify-between gap-3 relative z-20">
         
-        {/* Ward Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-900 to-teal-950 text-amber-300 text-xs font-black shadow-md border border-emerald-700/60">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-          <span>{t.wardInfo}</span>
+        {/* Ward Status Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-900 via-teal-950 to-[#134234] text-amber-300 text-xs font-black shadow-lg border-2 border-amber-400/70">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-xs shadow-amber-400" />
+          <span>{t不易.wardInfo}</span>
         </div>
 
-        {/* 5 Official Attached Photos Quick-Switcher Buttons */}
-        <div className="hidden md:flex items-center gap-1.5 bg-white/90 backdrop-blur-xs p-1 rounded-full border-2 border-amber-300 shadow-sm">
-          <span className="text-[10px] font-black text-stone-700 uppercase tracking-wider pl-2 pr-1 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-amber-600" />
-            <span>Campaign Photos:</span>
+        {/* 5 Official Campaign Photos Switcher */}
+        <div className="hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-full border-2 border-amber-400 shadow-md">
+          <span className="text-[11px] font-black text-amber-950 uppercase tracking-wider pl-2.5 pr-1 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+            <span>Campaign Posters:</span>
           </span>
           {OFFICIAL_POSTERS.map((p) => (
             <button
               key={p.id}
               onClick={() => handlePosterSelect(p.id)}
-              className={`px-2.5 py-1 rounded-full text-xs font-black transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-black transition-all ${
                 activePosterId === p.id
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xs'
-                  : 'text-stone-700 hover:bg-amber-100 hover:text-stone-900'
+                  ? 'bg-gradient-to-r from-[#FFC72C] via-amber-500 to-orange-600 text-stone-950 shadow-md border border-amber-300'
+                  : 'text-stone-700 hover:bg-amber-100 hover:text-stone-950'
               }`}
             >
               {p.shortLabel}
@@ -109,39 +181,112 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           ))}
         </div>
 
-        {/* Tri-Lingual Language Switcher */}
-        <div className="flex items-center bg-white/95 rounded-full p-1 border-2 border-amber-300 shadow-sm text-xs font-bold">
-          <button
-            onClick={() => onLanguageChange('en')}
-            className={`px-3.5 py-1.5 rounded-full transition-all ${
-              language === 'en'
-                ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-white shadow-sm font-black'
-                : 'text-stone-700 hover:text-stone-950'
-            }`}
-          >
-            English
-          </button>
-          <button
-            onClick={() => onLanguageChange('si')}
-            className={`px-3.5 py-1.5 rounded-full transition-all ${
-              language === 'si'
-                ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-white shadow-sm font-black font-sinhala'
-                : 'text-stone-700 hover:text-stone-950 font-sinhala'
-            }`}
-          >
-            සිංහල
-          </button>
-          <button
-            onClick={() => onLanguageChange('ta')}
-            className={`px-3.5 py-1.5 rounded-full transition-all ${
-              language === 'ta'
-                ? 'bg-gradient-to-r from-emerald-800 to-emerald-950 text-white shadow-sm font-black font-tamil'
-                : 'text-stone-700 hover:text-stone-950 font-tamil'
-            }`}
-          >
-            தமிழ்
-          </button>
+        {/* Right Tools: Background Controls + Tri-Lingual Language Switcher */}
+        <div className="flex items-center gap-2">
+          
+          {/* Background Settings Toggle */}
+          <div className="relative">
+            <button
+              onClick={() => setShowBgSettings(!showBgSettings)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 hover:bg-amber-100 text-stone-900 text-xs font-black border-2 border-amber-400 shadow-sm transition-all"
+              title="Customize Background Image"
+            >
+              <ImageIcon className="w-3.5 h-3.5 text-amber-600" />
+              <span className="hidden sm:inline">Background</span>
+              {bgImage && <span className="w-2 h-2 rounded-full bg-emerald-500" />}
+            </button>
+
+            {/* Background Settings Dropdown Modal */}
+            {showBgSettings && (
+              <div className="absolute right-0 top-10 w-72 p-4 bg-stone-950 text-white rounded-2xl shadow-2xl border-2 border-amber-400 z-50 space-y-3 backdrop-blur-md">
+                <div className="flex items-center justify-between pb-2 border-b border-stone-800">
+                  <span className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sliders className="w-3.5 h-3.5" />
+                    <span>Background Photo</span>
+                  </span>
+                  <button
+                    onClick={() => setShowBgSettings(false)}
+                    className="text-stone-400 hover:text-white text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <button
+                    onClick={() => bgFileInputRef.current?.click()}
+                    className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-stone-950 font-black flex items-center justify-center gap-2 shadow-md hover:from-amber-400 hover:to-orange-500 transition-all"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>Upload Background Photo</span>
+                  </button>
+
+                  {bgImage && (
+                    <>
+                      <div className="pt-2 space-y-1">
+                        <div className="flex justify-between text-[11px] text-stone-300">
+                          <span>Background Visibility:</span>
+                          <span className="font-mono text-amber-300 font-bold">{bgOpacity}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="10"
+                          max="90"
+                          value={bgOpacity}
+                          onChange={(e) => setBgOpacity(Number(e.target.value))}
+                          className="w-full accent-amber-400 cursor-pointer"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleResetBg}
+                        className="w-full py-1.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold flex items-center justify-center gap-1.5 text-xs transition-all"
+                      >
+                        <RefreshCw className="w-3 h-3" />
+                        <span>Reset to Default Poster</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tri-Lingual Language Switcher */}
+          <div className="flex items-center bg-white/95 rounded-full p-1 border-2 border-amber-400 shadow-md text-xs font-bold">
+            <button
+              onClick={() => onLanguageChange('en')}
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                language === 'en'
+                  ? 'bg-gradient-to-r from-emerald-800 to-[#134234] text-amber-300 shadow-sm font-black'
+                  : 'text-stone-700 hover:text-stone-950'
+              }`}
+            >
+              English
+            </button>
+            <button
+              onClick={() => onLanguageChange('si')}
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                language === 'si'
+                  ? 'bg-gradient-to-r from-emerald-800 to-[#134234] text-amber-300 shadow-sm font-black font-sinhala'
+                  : 'text-stone-700 hover:text-stone-950 font-sinhala'
+              }`}
+            >
+              සිංහල
+            </button>
+            <button
+              onClick={() => onLanguageChange('ta')}
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                language === 'ta'
+                  ? 'bg-gradient-to-r from-emerald-800 to-[#134234] text-amber-300 shadow-sm font-black font-tamil'
+                  : 'text-stone-700 hover:text-stone-950 font-tamil'
+              }`}
+            >
+              தமிழ்
+            </button>
+          </div>
         </div>
+
       </div>
 
       {/* MAIN HERO DASHBOARD WITH COUNCILLOR PHOTO & AUTHENTIC TYPOGRAPHY */}
@@ -150,29 +295,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           
           {/* LEFT COLUMN: Welcome Typography & Golden Pill Action Button */}
           <div className="lg:col-span-4 space-y-5 text-center lg:text-left order-2 lg:order-1">
-            <div className="space-y-1">
-              <span className="inline-block text-stone-900 text-xl sm:text-2xl font-black tracking-tight bg-amber-300/80 px-2.5 py-0.5 rounded-lg border border-amber-400">
-                {t.welcomeTo}
+            <div className="space-y-1.5">
+              <span className="inline-block text-stone-950 text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-300 px-3 py-1 rounded-xl border-2 border-amber-500 shadow-md">
+                {t不易.welcomeTo}
               </span>
-              <h1 className="font-heading font-black text-[#134234] text-3xl sm:text-5xl lg:text-[46px] tracking-tight leading-[1.08] drop-shadow-2xs">
+              <h1 className="font-heading font-black text-[#134234] text-3xl sm:text-5xl lg:text-[45px] tracking-tight leading-[1.08] drop-shadow-sm">
                 SAROOJ SATTAR
-                <span className="block text-[#1B4D3E] text-2xl sm:text-4xl lg:text-[38px] font-black tracking-tight mt-1">
+                <span className="block text-[#1B4D3E] text-2xl sm:text-4xl lg:text-[36px] font-black tracking-tight mt-1">
                   COMMUNITY FORUM
                 </span>
               </h1>
             </div>
 
             <p className="text-stone-900 text-base sm:text-lg font-bold leading-relaxed max-w-md mx-auto lg:mx-0">
-              {t.heroSubtitle}
+              {t不易.heroSubtitle}
             </p>
 
             {/* The Golden Action Button matching reference mockup */}
             <div className="pt-2">
               <button
                 onClick={onBuildCommunityClick}
-                className="w-full sm:w-auto inline-flex items-center justify-between gap-5 px-8 py-4 rounded-full text-base sm:text-lg font-black text-stone-950 bg-gradient-to-r from-[#FFC72C] via-[#E8A51D] to-[#D48806] hover:from-[#FFD24C] hover:to-[#E8A51D] shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 border-2 border-amber-300 group"
+                className="w-full sm:w-auto inline-flex items-center justify-between gap-5 px-8 py-4 rounded-full text-base sm:text-lg font-black text-stone-950 bg-gradient-to-r from-[#FFC72C] via-[#E8A51D] to-[#D48806] hover:from-[#FFD24C] hover:to-[#E8A51D] shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 border-2 border-amber-300 group cursor-pointer"
               >
-                <span>{t.buildCommunityBtn}</span>
+                <span>{t不易.buildCommunityBtn}</span>
                 <span className="w-8 h-8 rounded-full bg-white text-stone-950 flex items-center justify-center shadow-md group-hover:translate-x-1 transition-transform shrink-0">
                   <ChevronRight className="w-5 h-5 text-stone-950 stroke-[3]" />
                 </span>
@@ -180,14 +325,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Interactive Audio Voice Greeting Player */}
-            <div className="p-3.5 rounded-2xl bg-white/95 border-2 border-amber-300 shadow-md flex items-center justify-between gap-3 max-w-sm mx-auto lg:mx-0">
+            <div className="p-3.5 rounded-2xl bg-white/95 border-2 border-amber-400 shadow-lg flex items-center justify-between gap-3 max-w-sm mx-auto lg:mx-0">
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleToggleAudio}
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
                     isPlayingAudio
                       ? 'bg-amber-500 text-stone-950 shadow-inner'
-                      : 'bg-gradient-to-tr from-[#1B4D3E] to-emerald-700 text-white hover:bg-emerald-950 shadow-md'
+                      : 'bg-gradient-to-tr from-[#1B4D3E] to-emerald-700 text-amber-300 hover:bg-emerald-950 shadow-md'
                   }`}
                   aria-label="Play Councillor Voice Message"
                 >
@@ -195,8 +340,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </button>
                 <div className="text-left">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-stone-900">Councillor&apos;s Voice Note</span>
-                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900">
+                    <span className="text-xs font-black text-stone-950">Councillor&apos;s Voice Note</span>
+                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-950 border border-emerald-300">
                       {isPlayingAudio ? 'PLAYING' : 'AUDIO'}
                     </span>
                   </div>
@@ -223,6 +368,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <CouncillorPortrait
                 activePosterId={activePosterId}
                 onPosterChange={handlePosterSelect}
+                customImage={bgImage}
+                onImageChange={(img) => {
+                  setBgImage(img);
+                  if (img) localStorage.setItem('dashboard_bg_photo', img);
+                  else localStorage.removeItem('dashboard_bg_photo');
+                }}
               />
             </div>
           </div>
@@ -231,38 +382,55 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="lg:col-span-3 space-y-5 text-left order-3">
             
             {/* Quote Card */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-amber-300 shadow-xl space-y-4 relative overflow-hidden">
+            <div className="p-5 sm:p-6 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-amber-400 shadow-2xl space-y-4 relative overflow-hidden">
               
               {/* Decorative Poster Tag */}
-              <div className="flex items-center justify-between pb-2 border-b border-amber-200">
-                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${activePoster.badgeColor}`}>
-                  {activePoster.name}
+              <div className="flex items-center justify-between pb-2 border-b border-amber-300">
+                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${activePoster推进.badgeColor}`}>
+                  {activePoster推进.name}
                 </span>
                 <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               </div>
 
-              {/* Poster 4: Striped Shirt Tamil Style ("பதவியால் அல்ல... பாசத்தால்") */}
-              {activePoster.id === 'poster_ta_striped' && (
-                <div className="space-y-3 font-tamil">
-                  <div className="text-stone-800 text-lg font-bold">
+              {/* Poster 1 / Uploaded Image: Striped Shirt Tamil Style ("பதவியால் அல்ல... பாசத்தால்") */}
+              {activePosterId === 'poster_ta_striped' && (
+                <div className="space-y-3 font-tamil text-center">
+                  
+                  {/* Top Ornate Filigree Flourish matching reference */}
+                  <div className="flex items-center justify-center gap-2 text-amber-700 py-0.5">
+                    <span className="h-[1.5px] w-8 bg-amber-700/60" />
+                    <span className="text-sm font-serif">❦</span>
+                    <span className="h-[1.5px] w-8 bg-amber-700/60" />
+                  </div>
+
+                  {/* Heading Inscription */}
+                  <div className="text-stone-900 text-lg font-bold tracking-wide">
                     பதவியால் அல்ல...
                   </div>
-                  <div className="text-3xl sm:text-4xl font-black text-rose-900 leading-tight">
+
+                  {/* Highlighted Crimson Word "பாசத்தால்" */}
+                  <div className="text-3xl sm:text-4xl font-black text-[#8B1E1E] leading-tight drop-shadow-2xs">
                     பாசத்தால்
                   </div>
-                  <div className="text-lg sm:text-xl font-extrabold text-stone-900 leading-snug">
+
+                  {/* Subtitle */}
+                  <div className="text-base sm:text-lg font-extrabold text-stone-900 leading-snug">
                     என் மக்களோடு இணைந்தவன் நான்.
                   </div>
-                  <div className="flex justify-center pt-2">
-                    <div className="w-10 h-10 rounded-full bg-rose-100 border-2 border-rose-300 flex items-center justify-center text-rose-700 shadow-xs">
-                      <Heart className="w-5 h-5 fill-rose-600 text-rose-600" />
+
+                  {/* Bottom Community Heart Emblem */}
+                  <div className="flex items-center justify-center gap-2 pt-1 text-amber-700">
+                    <span className="h-[1px] w-6 bg-amber-700/50" />
+                    <div className="w-8 h-8 rounded-full bg-rose-100 border border-rose-300 flex items-center justify-center text-rose-700 shadow-xs">
+                      <Heart className="w-4 h-4 fill-[#8B1E1E] text-[#8B1E1E]" />
                     </div>
+                    <span className="h-[1px] w-6 bg-amber-700/50" />
                   </div>
                 </div>
               )}
 
-              {/* Poster 1 & 2: English White Shirt Style ("Until my last breath...") */}
-              {activePoster.id === 'poster_en_white' && (
+              {/* Poster 2: English White Shirt Style ("Until my last breath...") */}
+              {activePosterId === 'poster_en_white' && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <span className="font-serif-quote font-black text-3xl sm:text-4xl text-[#1B4D3E] leading-none">
@@ -294,7 +462,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               )}
 
               {/* Poster 3: Tamil Faith & Duty ("சேவை செய்வது என் பெருமை அல்ல") */}
-              {activePoster.id === 'poster_ta_duty' && (
+              {activePosterId === 'poster_ta_duty' && (
                 <div className="space-y-3 font-tamil">
                   <div className="flex items-center gap-3">
                     <span className="font-serif-quote font-black text-3xl sm:text-4xl text-amber-800 leading-none">
@@ -320,7 +488,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               )}
 
               {/* Poster 4: Sinhala Poetic Reflection ("මිනිසා සුවඳයි මලසේ") */}
-              {activePoster.id === 'poster_si_poem' && (
+              {activePosterId === 'poster_si_poem' && (
                 <div className="space-y-3 font-sinhala">
                   <div className="flex items-center gap-3">
                     <span className="font-serif-quote font-black text-3xl sm:text-4xl text-emerald-800 leading-none">
@@ -344,7 +512,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               )}
 
               {/* Poster 5: Tamil Promise & Duty */}
-              {activePoster.id === 'poster_ta_promise' && (
+              {activePosterId === 'poster_ta_promise' && (
                 <div className="space-y-3 font-tamil">
                   <div className="text-xs text-stone-600 italic font-sans">
                     &ldquo;Until my last breath, I will stand with those in need...&rdquo;
@@ -373,7 +541,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Quick Contact Hotline Mini-Card */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-xl border-2 border-amber-400/60 space-y-2">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-xl border-2 border-amber-400/80 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-amber-400" />

@@ -158,6 +158,8 @@ export default function App() {
       <Navbar
         onOpenModule={handleOpenModule}
         unreadCount={announcements.filter((a) => a.priority === 'high').length || 3}
+        language={language}
+        onLanguageChange={setLanguage}
       />
 
       {/* 2. Hero Section with verified portrait, tri-lingual switcher & voice audio */}
@@ -175,12 +177,14 @@ export default function App() {
         projectCount={projects.length}
         announcementCount={announcements.length}
         memberCount={18}
+        language={language}
       />
 
       {/* 4. Civic Photo Gallery & Ground Reality Documentation */}
       <CivicGallery
         onOpenSubmitModal={() => handleOpenModule('submit_complaint')}
         onOpenContactModal={() => handleOpenModule('whatsapp')}
+        language={language}
       />
 
       {/* 5. Quick Contact & Ongoing Project Section */}
@@ -188,16 +192,17 @@ export default function App() {
         ongoingProject={ongoingProject}
         onViewAllProjects={() => handleOpenModule('community_projects')}
         onOpenContactForm={() => handleOpenModule('whatsapp')}
+        language={language}
       />
 
       {/* 6. Stay Connected Newsletter Subscription */}
-      <NewsletterSubscribe />
+      <NewsletterSubscribe language={language} />
 
       {/* 7. Municipal Footer */}
-      <Footer onOpenModule={handleOpenModule} />
+      <Footer onOpenModule={handleOpenModule} language={language} />
 
       {/* 8. Floating AI Civic Assistant powered by Gemini */}
-      <AiCivicChatbot onOpenModule={handleOpenModule} />
+      <AiCivicChatbot onOpenModule={handleOpenModule} language={language} />
 
       {/* MODALS */}
       

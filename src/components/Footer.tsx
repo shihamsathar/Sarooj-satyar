@@ -1,12 +1,17 @@
 import React from 'react';
-import { Database, ShieldCheck, Heart } from 'lucide-react';
+import { Database, ShieldCheck } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
+import type { Language } from '../utils/translations.js';
+import { translations } from '../utils/translations.js';
 
 interface FooterProps {
   onOpenModule: (moduleId: string) => void;
+  language: Language;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenModule, language }) => {
+  const t = translations[language];
+
   return (
     <footer className="bg-stone-950 text-stone-300 border-t border-stone-800">
       
@@ -26,22 +31,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
               </div>
               <div>
                 <span className="font-heading font-extrabold text-white text-base tracking-tight block">
-                  SAROOJ SATTAR
+                  {t.councillorName}
                 </span>
                 <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider block">
-                  COMMUNITY FORUM • NEGOMBO MC
+                  {t.councillorTitle}
                 </span>
               </div>
             </div>
 
             <p className="text-xs sm:text-sm text-stone-400 leading-relaxed max-w-sm">
-              Empowering the residents of Periyamulla and Negombo with transparency, direct grievance redressal, and dedicated public infrastructure works.
+              {t.footerAboutDesc}
             </p>
 
             <div className="pt-2 flex items-center gap-3">
               <button
                 onClick={() => onOpenModule('render_blueprint')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 text-stone-300 hover:text-emerald-400 text-xs font-mono transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 text-stone-300 hover:text-emerald-400 text-xs font-mono transition-colors cursor-pointer"
               >
                 <Database className="w-3.5 h-3.5 text-cyan-400" />
                 <span>render.yaml • PostgreSQL Ready</span>
@@ -53,47 +58,47 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
           {/* Col 2: Quick Links */}
           <div className="md:col-span-2 space-y-3">
             <h4 className="font-heading font-bold text-white text-sm uppercase tracking-wider">
-              Quick Links
+              {t.footerQuickLinks}
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Home
+                  {t.navHome}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('about')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  About Us
+                  {t.navAbout}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('projects')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Projects
+                  {t.navProjects}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('gallery')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Gallery
+                  {t.navGallery}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('contact')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Contact Us
+                  {t.navContact}
                 </button>
               </li>
             </ul>
@@ -102,47 +107,47 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
           {/* Col 3: Resources */}
           <div className="md:col-span-2 space-y-3">
             <h4 className="font-heading font-bold text-white text-sm uppercase tracking-wider">
-              Resources
+              {t.footerResources}
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <button
                   onClick={() => onOpenModule('help_center')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Help Center
+                  {t.footerHelpCenter}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('faqs')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  FAQs
+                  {t.footerFAQs}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('privacy')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Privacy Policy
+                  {t.footerPrivacy}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('terms')}
-                  className="text-stone-400 hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  Terms & Conditions
+                  {t.footerTerms}
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenModule('emergency')}
-                  className="text-red-400 hover:text-red-300 font-semibold transition-colors"
+                  className="text-red-400 hover:text-red-300 font-semibold transition-colors cursor-pointer"
                 >
-                  Emergency Helplines
+                  {t.modules.emergencyContacts.title}
                 </button>
               </li>
             </ul>
@@ -151,10 +156,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
           {/* Col 4: Follow Us & Social Icons */}
           <div className="md:col-span-3 space-y-3">
             <h4 className="font-heading font-bold text-white text-sm uppercase tracking-wider">
-              Follow Us
+              {t.footerFollowUs}
             </h4>
             
-            {/* Social Icons Grid Matching Mockup */}
+            {/* Social Icons Grid */}
             <div className="flex items-center gap-2.5">
               
               {/* Facebook */}
@@ -212,7 +217,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule }) => {
             </div>
 
             <p className="text-xs text-amber-400 font-serif-quote italic pt-1">
-              Together for a better tomorrow.
+              {t.slogan}
             </p>
           </div>
 

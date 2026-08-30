@@ -5,18 +5,20 @@ import {
   MapPin, 
   HardHat, 
   ChevronRight, 
-  ExternalLink,
-  MessageCircle,
-  Clock,
-  Sparkles
+  MessageCircle, 
+  Clock, 
+  Sparkles 
 } from 'lucide-react';
 import type { CommunityProject } from '../types.js';
+import type { Language } from '../utils/translations.js';
+import { translations } from '../utils/translations.js';
 
 interface QuickContactAndOngoingProjectProps {
   ongoingProject?: CommunityProject;
   onViewAllProjects: () => void;
   onOpenProjectDetail?: (project: CommunityProject) => void;
   onOpenContactForm: () => void;
+  language: Language;
 }
 
 export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProjectProps> = ({
@@ -24,16 +26,19 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
   onViewAllProjects,
   onOpenProjectDetail,
   onOpenContactForm,
+  language,
 }) => {
+  const t = translations[language];
+
   const project = ongoingProject || {
     id: 'p1',
-    title: 'Road Development Project in Periyamulla',
+    title: t.ongoingProjectTitle,
     slug: 'road-development-periyamulla',
-    description: 'Comprehensive asphalt carpeting, concrete curbs, and stormwater drain construction along St. Lazarus Road.',
+    description: t.ongoingProjectSubtitle,
     category: 'Roads & Bridges',
     ward: 'Periyamulla',
     progressPercentage: 65,
-    status: 'ongoing',
+    status: 'ongoing' as const,
     budgetLKR: 18500000,
     spentLKR: 12025000,
     contractor: 'Western Provincial Road Development Authority & Negombo MC',
@@ -62,21 +67,21 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                   </div>
                   <div>
                     <h3 className="font-heading font-black text-[#134234] text-xl sm:text-2xl tracking-tight">
-                      Quick Contact
+                      {t.quickContactTitle}
                     </h3>
                     <p className="text-xs text-stone-600 font-bold">
-                      Negombo Secretariat & Field Office
+                      {t.quickContactSubtitle}
                     </p>
                   </div>
                 </div>
 
                 <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-950 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 shadow-2xs">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span>Open for Citizens</span>
+                  <span>{t.quickContactStatus}</span>
                 </span>
               </div>
 
-              {/* Main Content Grid: Details on Left, Negombo Landmark Photo on Right */}
+              {/* Main Content Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
                 {/* Contact List */}
@@ -133,7 +138,7 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
 
                 </div>
 
-                {/* Negombo Coastal Lighthouse / Lagoon Image Card */}
+                {/* Periyamulla Ward 05 Coastal Card */}
                 <div className="sm:col-span-5 h-48 sm:h-full rounded-2xl overflow-hidden shadow-md relative border-2 border-amber-200 group/img">
                   <div className="w-full h-full bg-gradient-to-tr from-amber-600 via-orange-500 to-teal-700 flex flex-col justify-end p-3 text-white">
                     <span className="text-xs font-black text-amber-200 uppercase tracking-wider mb-1 flex items-center gap-1">
@@ -141,7 +146,7 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                       <span>Periyamulla • Ward 05</span>
                     </span>
                     <p className="text-[11px] font-medium text-amber-100/90 leading-tight">
-                      Serving Negombo Municipal Council with dedication and open civic transparency.
+                      {t.footerAboutDesc}
                     </p>
                   </div>
                 </div>
@@ -153,13 +158,13 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
             <div className="mt-5 pt-3 border-t-2 border-emerald-100 flex items-center justify-between">
               <span className="text-xs text-stone-600 flex items-center gap-1.5 font-bold">
                 <Clock className="w-4 h-4 text-emerald-700" />
-                <span>Visiting Hours: 8:00 AM - 7:00 PM</span>
+                <span>{t.quickContactHoursValue}</span>
               </span>
               <button
                 onClick={onOpenContactForm}
-                className="text-xs font-black text-emerald-900 hover:text-emerald-950 bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-full border border-emerald-300 flex items-center gap-1 transition-all"
+                className="text-xs font-black text-emerald-900 hover:text-emerald-950 bg-emerald-100 hover:bg-emerald-200 px-3 py-1.5 rounded-full border border-emerald-300 flex items-center gap-1 transition-all cursor-pointer"
               >
-                <span>Send Direct Inquiry</span>
+                <span>{t.quickContactDirectBtn}</span>
                 <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             </div>
@@ -178,28 +183,28 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                   </div>
                   <div>
                     <h3 className="font-heading font-black text-stone-900 text-xl sm:text-2xl tracking-tight">
-                      Ongoing Project
+                      {t.ongoingProjectTitle}
                     </h3>
                     <p className="text-xs text-stone-600 font-bold">
-                      Municipal Public Works Tracking
+                      {t.ongoingProjectBadge}
                     </p>
                   </div>
                 </div>
 
                 <span className="inline-flex items-center gap-1.5 text-xs font-black text-amber-950 bg-amber-200 px-3 py-1 rounded-full border border-amber-300 shadow-2xs">
                   <Sparkles className="w-3 h-3 text-amber-800" />
-                  <span>Ward 05 Milestone</span>
+                  <span>Ward 05</span>
                 </span>
               </div>
 
-              {/* Project Card Content: Construction Info + Progress */}
+              {/* Project Card Content */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
                 {/* Project Badge Card */}
                 <div className="sm:col-span-5 h-40 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-300 bg-gradient-to-br from-amber-500 via-orange-600 to-amber-800 p-4 text-white flex flex-col justify-between">
                   <div className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-xs text-amber-200 text-[10px] font-black px-2.5 py-1 rounded-full w-fit">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Active Site</span>
+                    <span>{t.ongoingProjectStatusOngoing}</span>
                   </div>
                   <div>
                     <span className="text-[11px] font-extrabold text-amber-100 block">St. Lazarus Road</span>
@@ -210,18 +215,18 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                 {/* Project Details */}
                 <div className="sm:col-span-7 space-y-3">
                   <h4 className="font-heading font-black text-stone-900 text-base sm:text-lg leading-snug group-hover:text-amber-900 transition-colors">
-                    {project.title}
+                    {t.ongoingProjectTitle}
                   </h4>
                   
                   <p className="text-xs text-stone-700 line-clamp-2 leading-relaxed font-medium">
-                    {project.description}
+                    {t.ongoingProjectSubtitle}
                   </p>
 
                   {/* Progress Bar */}
                   <div className="space-y-1.5 pt-1">
                     <div className="flex items-center justify-between text-xs font-extrabold">
-                      <span className="text-stone-700">Execution Progress</span>
-                      <span className="text-amber-800 font-black">{project.progressPercentage}% Completed</span>
+                      <span className="text-stone-700">{t.ongoingProjectProgress}</span>
+                      <span className="text-amber-800 font-black">{project.progressPercentage}%</span>
                     </div>
                     <div className="w-full h-3 rounded-full bg-stone-200/80 overflow-hidden border border-amber-300">
                       <div 
@@ -239,13 +244,13 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
             {/* Bottom Link: View All Projects */}
             <div className="mt-5 pt-3 border-t-2 border-amber-100 flex items-center justify-between">
               <span className="text-xs text-stone-600 font-bold">
-                Contractor: {project.contractor.split('&')[0]}
+                {t.ongoingProjectBudget}
               </span>
               <button
                 onClick={onViewAllProjects}
-                className="text-xs font-black text-amber-950 bg-amber-200 hover:bg-amber-300 px-3 py-1.5 rounded-full border border-amber-400 flex items-center gap-1 transition-all"
+                className="text-xs font-black text-amber-950 bg-amber-200 hover:bg-amber-300 px-3 py-1.5 rounded-full border border-amber-400 flex items-center gap-1 transition-all cursor-pointer"
               >
-                <span>View All Projects</span>
+                <span>{t.ongoingProjectViewAllBtn}</span>
                 <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
               </button>
             </div>
