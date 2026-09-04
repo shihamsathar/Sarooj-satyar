@@ -42,7 +42,8 @@ export const VolunteerModal: React.FC<VolunteerModalProps> = ({
       role: 'Ward 5 Community Coordinator',
       ward: 'Periyamulla',
       badge: 'Senior Organizer',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+      initials: 'MR',
+      bgGrad: 'from-amber-600 to-amber-800',
       projects: 'Drainage clearing & Youth Sports',
     },
     {
@@ -50,7 +51,8 @@ export const VolunteerModal: React.FC<VolunteerModalProps> = ({
       role: 'Women & Elder Care Lead',
       ward: 'Dalupotha',
       badge: 'Welfare Champion',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+      initials: 'SF',
+      bgGrad: 'from-emerald-600 to-teal-800',
       projects: 'Medical Camps & Nutrition programs',
     },
     {
@@ -58,7 +60,8 @@ export const VolunteerModal: React.FC<VolunteerModalProps> = ({
       role: 'Youth Infrastructure Action Force',
       ward: 'Kochchikade',
       badge: 'Public Works Volunteer',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+      initials: 'KP',
+      bgGrad: 'from-blue-600 to-indigo-800',
       projects: 'Streetlight restoration & Road safety',
     },
     {
@@ -66,7 +69,8 @@ export const VolunteerModal: React.FC<VolunteerModalProps> = ({
       role: 'Sanitation & Green Negombo Lead',
       ward: 'Sea Street',
       badge: 'Eco Ambassador',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      initials: 'FN',
+      bgGrad: 'from-teal-600 to-emerald-900',
       projects: 'Beach Cleanups & Lagoon Preservation',
     },
   ];
@@ -168,11 +172,9 @@ export const VolunteerModal: React.FC<VolunteerModalProps> = ({
                     key={l.name}
                     className="p-5 rounded-2xl border border-stone-200 bg-white hover:border-teal-300 hover:shadow-md transition-all flex items-start gap-4"
                   >
-                    <img
-                      src={l.avatar}
-                      alt={l.name}
-                      className="w-14 h-14 rounded-2xl object-cover border-2 border-teal-600/30 shrink-0"
-                    />
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${l.bgGrad} text-white font-heading font-black text-lg flex items-center justify-center border-2 border-white shadow-md shrink-0`}>
+                      {l.initials}
+                    </div>
 
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center justify-between">

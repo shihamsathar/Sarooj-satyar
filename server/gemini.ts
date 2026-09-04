@@ -97,7 +97,7 @@ Respond ONLY with a JSON object strictly following this structure:
 `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.7-flash',
+      model: 'gemini-3.8-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
@@ -129,8 +129,80 @@ Respond ONLY with a JSON object strictly following this structure:
   }
 }
 
-export async function askCivicHelpline(query: string, chatHistory: Array<{ role: 'user' | 'model'; text: string }> = []): Promise<string> {
+export interface CivicChatMedia {
+  data: string; // base64 or dataUrl
+  mimeType?: string;
+}
+
+export interface CivicChatInput {
+  query?: string;
+  chatHistory?: Array<{ role: 'user' | 'model'; text: string }>;
+  image?: CivicChatMedia | string;
+  audio?: CivicChatMedia | string;
+  language?: string;
+}
+
+function extractMedia(media: CivicChatMedia | string | undefined, defaultMime: string) {
+  if (!media) return null;
+  if (typeof media === 'string') {
+    if (media.startsWith('data:')) {
+      const match = media.match(/^data:([^;]+);base64,(.+)$/);
+      if (match) {
+        return { mimeType: match[1], data: match[2] };
+      }
+    }
+    const clean = media.includes('base64,') ? media.split('base64,')[1] : media;
+    return { mimeType: defaultMime, data: clean };
+  }
+  const clean = media.data.includes('base64,') ? media.data.split('base64,')[1] : media.data;
+  return { mimeType: media.mimeType || defaultMime, data: clean };
+}
+
+export async function askCivicHelpline(
+  inputOrQuery: string | CivicChatInput,
+  chatHistoryFallback: Array<{ role: 'user' | 'model'; text: string }> = []
+): Promise<string> {
+  const isInputObj = typeof inputOrQuery === 'object' && inputOrQuery !== null;
+  const query = (isInputObj ? inputOrQuery.query : inputOrQuery) || '';
+  const chatHistory = (isInputObj && inputOrQuery.chatHistory ? inputOrQuery.chatHistory : chatHistoryFallback) || [];
+  const image = isInputObj ? inputOrQuery.image : undefined;
+  const audio = isInputObj ? inputOrQuery.audio : undefined;
+  const language = (isInputObj ? inputOrQuery.language : 'en') || 'en';
+
+  const parsedImage = extractMedia(image, 'image/jpeg');
+  const parsedAudio = extractMedia(audio, 'audio/webm');
+
   if (!ai) {
+    if (parsedAudio && parsedImage) {
+      if (language === 'ta') {
+        return '🎙️ உங்கள் குரல் பதிவும் 📷 புகைப்படமும் பெறப்பட்டுள்ளது. பெரியமுல்லை மற்றும் நீர்கொழும்பு மாநகர சபை பணிக் குழுவுடன் இணைந்து உறுப்பினர் சரூஜ் சத்தார் இதனை உடனடியாக பரிசீலிப்பார். அவசர உதவிக்கு: 0702475248.';
+      }
+      if (language === 'si') {
+        return '🎙️ ඔබගේ හඬ පණිවිඩය සහ 📷 ඡායාරූපය සාර්ථකව ලැබිණි. මීගමුව නගර සභා කාර්යාලය හා ක්ෂේත්‍ර ඉංජිනේරුවන් සමඟ එක්ව මන්ත්‍රී සරූජ් සත්තාර් මේ පිළිබඳව ක්ෂණික පියවර ගනු ඇත. හදිසි ඇමතුම්: 0702475248.';
+      }
+      return '🎙️ Your voice note and 📷 photo have been logged at Councillor Sarooj Sattar’s Civic Desk. Our community response team is reviewing both attachments to assist with the Negombo municipal complaint. Emergency hotline: 0702475248.';
+    }
+
+    if (parsedAudio) {
+      if (language === 'ta') {
+        return '🎙️ உங்கள் குரல் பதிவு பெறப்பட்டு பதிவு செய்யப்பட்டுள்ளது. உறுப்பினர் சரூஜ் சத்தாரின் மக்கள் உதவி மையம் இதனை பரிசீலித்து உரிய நடவடிக்கை எடுக்கும். நேரடி தொடர்புக்கு: 0702475248.';
+      }
+      if (language === 'si') {
+        return '🎙️ ඔබගේ හඬ පණිවිඩය සාර්ථකව සටහන් විය. මන්ත්‍රී සරූජ් සත්තාර්ගේ මහජන සේවා කාර්යාලය විසින් අදාළ නගර සභා නිලධාරීන් දැනුවත් කරනු ඇත. හදිසි ඇමතුම්: 0702475248.';
+      }
+      return '🎙️ Your voice note has been received and logged by Councillor Sarooj Sattar’s Civic Desk. Our secretariat is reviewing your audio message for municipal follow-up in Negombo. You may also call 0702475248 directly.';
+    }
+
+    if (parsedImage) {
+      if (language === 'ta') {
+        return '📷 களப் புகைப்படம் பெறப்பட்டுள்ளது! நீர்கொழும்பு மாநகர சபை பொறியியல் மற்றும் தூய்மைப் பிரிவுக்கு இது அனுப்பி வைக்கப்படும். அவசர தொடர்புக்கு: 0702475248.';
+      }
+      if (language === 'si') {
+        return '📷 ඔබ එවන ලද ක්ෂේත්‍ර ඡායාරූපය අප සටහන් කරගත්තෙමු. මීගමුව නගර සභා අංශ වෙත මෙය යොමු කර විමර්ශනය කෙරේ. හදිසි ඇමතුම්: 0702475248.';
+      }
+      return '📷 Thank you for providing on-site photographic evidence. Councillor Sarooj Sattar’s office has logged this visual record for the Negombo Municipal inspection team. For urgent action, contact 0702475248.';
+    }
+
     return `Hello! This is the automated civic helpline for Councillor Sarooj Sattar's Office in Negombo.
 For immediate emergency assistance, please call Councillor Sarooj Sattar directly on 0702475248 or 0768787382.
 You can also report streetlights, drainage, or road issues directly using our "Submit Complaint" form above to receive an instant tracking ID.`;
@@ -148,19 +220,51 @@ Key facts about Negombo & Councillor's Office:
 - Key Wards: Periyamulla, Dalupotha, Kochchikade, Sea Street, Pitipana, Munnakkara, Daluwakotuwa, Bolawalana, Kurana, Katuwapitiya, Ettukala, Mahahunupitiya.
 - Emergency numbers: Police 119/031-2222222, Ambulance 1990, Hospital 031-2222261, Fire 031-2222224, Electricity 1987, Water Board 1939.
 - You provide clear, helpful, courteous information regarding garbage schedules, road complaints, streetlight repairs, municipal taxes, welfare funds, and direct appointments with Councillor Sarooj Sattar.
+- If the resident attached a voice note (audio), transcribe and understand their spoken request (in English, Tamil, or Sinhala) and respond warmly in the same language or appropriate municipal English.
+- If the resident attached a picture / photo, inspect the visual evidence (e.g. road damage, blocked drains, uncollected garbage, streetlight faults, municipal documents) and provide an immediate assessment and guidance.
 - Tone: Highly respectful, empathetic, civic-minded, and actionable. Keep responses concise and well-formatted.
 `;
+
+    const userParts: any[] = [];
+
+    if (parsedImage) {
+      userParts.push({
+        inlineData: {
+          mimeType: parsedImage.mimeType,
+          data: parsedImage.data,
+        },
+      });
+    }
+
+    if (parsedAudio) {
+      userParts.push({
+        inlineData: {
+          mimeType: parsedAudio.mimeType,
+          data: parsedAudio.data,
+        },
+      });
+    }
+
+    const defaultPrompt = parsedAudio && parsedImage
+      ? 'Please listen to my voice note and inspect the attached picture. Provide helpful civic guidance from Councillor Sarooj Sattar’s desk.'
+      : parsedAudio
+      ? 'Please listen to my recorded voice note and provide civic advice or municipal complaint follow-up from Councillor Sarooj Sattar’s office.'
+      : parsedImage
+      ? 'Please examine the attached picture showing an issue in Negombo and provide helpful municipal guidance and next steps.'
+      : query;
+
+    userParts.push({ text: query || defaultPrompt });
 
     const contents = [
       ...chatHistory.map((m) => ({
         role: m.role === 'model' ? 'model' : 'user',
         parts: [{ text: m.text }],
       })),
-      { role: 'user', parts: [{ text: query }] },
+      { role: 'user', parts: userParts },
     ];
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.7-flash',
+      model: 'gemini-3.8-flash',
       contents: contents as any,
       config: {
         systemInstruction,

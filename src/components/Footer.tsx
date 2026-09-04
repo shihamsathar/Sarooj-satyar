@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
@@ -42,17 +42,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModule, language }) => {
             <p className="text-xs sm:text-sm text-stone-400 leading-relaxed max-w-sm">
               {t.footerAboutDesc}
             </p>
-
-            <div className="pt-2 flex items-center gap-3">
-              <button
-                onClick={() => onOpenModule('render_blueprint')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-800 text-stone-300 hover:text-emerald-400 text-xs font-mono transition-colors cursor-pointer"
-              >
-                <Database className="w-3.5 h-3.5 text-cyan-400" />
-                <span>render.yaml • PostgreSQL Ready</span>
-              </button>
-            </div>
-
           </div>
 
           {/* Col 2: Quick Links */}

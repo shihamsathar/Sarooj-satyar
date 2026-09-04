@@ -5,7 +5,6 @@ import {
   Menu, 
   X, 
   Bell,
-  Database,
   Globe
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
@@ -53,15 +52,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Phone className="w-3.5 h-3.5" />
               <span>{t.navHotline}</span>
             </a>
-            
-            <button
-              onClick={() => onOpenModule('render_blueprint')}
-              className="hidden md:flex items-center gap-1 text-emerald-200 hover:text-white bg-emerald-900/90 px-2.5 py-0.5 rounded-md border border-emerald-700 hover:border-emerald-500 transition-colors text-[11px]"
-              title="View render.yaml & PostgreSQL Configuration"
-            >
-              <Database className="w-3 h-3 text-amber-300" />
-              <span>{t.navRenderConfig}</span>
-            </button>
           </div>
         </div>
       </div>

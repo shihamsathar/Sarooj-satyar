@@ -12,7 +12,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Building2,
-  Phone
+  Phone,
+  Camera
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { Complaint } from '../types.js';
@@ -425,18 +426,28 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
                 <div className="flex gap-2">
                   <input
                     type="url"
-                    placeholder="https://... (or select sample below)"
+                    placeholder="https://... or attach file below"
                     value={photoUrl}
                     onChange={(e) => setPhotoUrl(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 bg-stone-50 text-xs font-medium focus:bg-white focus:ring-2 focus:ring-emerald-600"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setPhotoUrl('https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80')}
-                    className="px-3 py-2 bg-stone-200 hover:bg-stone-300 rounded-xl text-xs font-bold text-stone-700 shrink-0"
-                  >
-                    Use Sample Photo
-                  </button>
+                  <label className="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 rounded-xl text-xs font-bold text-emerald-950 cursor-pointer shrink-0 border border-emerald-300 flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-emerald-800" />
+                    <span>Attach Photo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = () => setPhotoUrl(reader.result as string);
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
                 </div>
                 {photoUrl && (
                   <div className="mt-2 h-28 w-full rounded-xl overflow-hidden border border-stone-300 relative">

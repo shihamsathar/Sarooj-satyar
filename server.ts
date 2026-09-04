@@ -22,7 +22,7 @@ import {
 import { analyzeCitizenComplaint, askCivicHelpline } from './server/gemini.js';
 
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const PORT = 3000;
 
 // Body Parsers
 app.use(express.json({ limit: '10mb' }));
@@ -78,6 +78,91 @@ app.get('/api/stats', async (req, res) => {
   try {
     const stats = await getStats();
     res.json({ success: true, data: stats });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Photo Management & Upload Endpoints for Authentic Councillor Campaign Photos
+app.get('/api/photos/active', (req, res) => {
+  try {
+    const publicDir = path.join(process.cwd(), 'public');
+    const uploadsDir = path.join(publicDir, 'uploads');
+    const imagesDir = path.join(publicDir, 'images');
+
+    const knownFiles = [
+      'active-background.jpg',
+      'active-portrait.jpg',
+      'WhatsApp Image 2026-09-04 at 2.57.06 PM.jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM.jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM (1).jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM (2).jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM (3).jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM (4).jpeg',
+      'WhatsApp Image 2026-09-04 at 2.57.07 PM (5).jpeg',
+    ];
+
+    const detected: Record<string, string> = {};
+
+    // Check uploads
+    if (fs.existsSync(uploadsDir)) {
+      const files = fs.readdirSync(uploadsDir);
+      for (const f of files) {
+        detected[f] = `/uploads/${encodeURIComponent(f)}`;
+      }
+    }
+
+    // Check public root
+    if (fs.existsSync(publicDir)) {
+      const files = fs.readdirSync(publicDir);
+      for (const f of files) {
+        if (f.endsWith('.jpeg') || f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp')) {
+          detected[f] = `/${encodeURIComponent(f)}`;
+        }
+      }
+    }
+
+    // Check images dir
+    if (fs.existsSync(imagesDir)) {
+      const files = fs.readdirSync(imagesDir);
+      for (const f of files) {
+        detected[f] = `/images/${encodeURIComponent(f)}`;
+      }
+    }
+
+    res.json({ success: true, photos: detected });
+  } catch (err: any) {
+    res.json({ success: false, error: err.message, photos: {} });
+  }
+});
+
+app.post('/api/photos/upload', (req, res) => {
+  try {
+    const { dataUrl, filename, slot } = req.body;
+    if (!dataUrl) {
+      return res.status(400).json({ success: false, error: 'No image data provided' });
+    }
+
+    const matches = dataUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return res.status(400).json({ success: false, error: 'Invalid base64 data' });
+    }
+
+    const buffer = Buffer.from(matches[2], 'base64');
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const safeFilename = slot === 'background' 
+      ? 'active-background.jpg' 
+      : (slot === 'portrait' ? 'active-portrait.jpg' : (filename ? path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_') : `photo-${Date.now()}.jpg`));
+
+    const filePath = path.join(uploadsDir, safeFilename);
+    fs.writeFileSync(filePath, buffer);
+
+    const publicUrl = `/uploads/${safeFilename}?t=${Date.now()}`;
+    res.json({ success: true, url: publicUrl, slot });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -315,11 +400,18 @@ app.post('/api/messages', async (req, res) => {
 // AI Civic Assistant Chat
 app.post('/api/ai/chat', async (req, res) => {
   try {
-    const { query, history } = req.body;
-    if (!query) {
-      return res.status(400).json({ success: false, error: 'Query is required.' });
+    const { query, message, history, conversationHistory, image, audio, language } = req.body;
+    const textQuery = query || message || '';
+    if (!textQuery && !image && !audio) {
+      return res.status(400).json({ success: false, error: 'A query, voice note, or picture is required.' });
     }
-    const reply = await askCivicHelpline(query, history || []);
+    const reply = await askCivicHelpline({
+      query: textQuery,
+      chatHistory: conversationHistory || history || [],
+      image,
+      audio,
+      language,
+    });
     res.json({ success: true, reply });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });

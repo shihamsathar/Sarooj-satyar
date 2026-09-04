@@ -17,19 +17,14 @@ import {
   Sun,
   Flame,
   Layers,
-  Heart,
-  Camera,
-  Image as ImageIcon,
-  Upload,
-  RefreshCw,
-  Sliders,
-  Check
+  Heart
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
 import { CouncillorPortrait } from './CouncillorPortrait.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
 import { OFFICIAL_POSTERS, OfficialPoster } from '../data/posters.js';
+import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 interface HeroSectionProps {
   onBuildCommunityClick: () => void;
@@ -46,17 +41,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onLanguageChange,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [activePosterId, setActivePosterId] = useState<string>('poster_ta_striped');
+  const [activePosterId, setActivePosterId] = useState<string>('poster_en_white');
   const [bgImage, setBgImage] = useState<string | null>(() => {
-    return localStorage.getItem('dashboard_bg_photo');
+    const saved = localStorage.getItem('dashboard_bg_photo');
+    if (saved && saved.startsWith('data:image/')) return saved;
+    return CAMPAIGN_IMAGES.heroBackground;
   });
-  const [bgOpacity, setBgOpacity] = useState<number>(30); // 0 to 100
-  const [showBgSettings, setShowBgSettings] = useState(false);
-  const bgFileInputRef = useRef<HTMLInputElement>(null);
+  const [bgOpacity, setBgOpacity] = useState<number>(65); // 0 to 100
+  const [isVividMode, setIsVividMode] = useState<boolean>(false);
 
   const t不易 = translations[language];
-
   const activePoster推进 = OFFICIAL_POSTERS.find((p) => p.id === activePosterId) || OFFICIAL_POSTERS[0];
+
+  // Auto-detect any photos stored on server or in public folder
+  React.useEffect(() => {
+    if (!bgImage) {
+      fetch('/api/photos/active')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.photos) {
+            const found = data.photos['active-background.jpg'] || 
+              data.photos['active-portrait.jpg'] ||
+              Object.values(data.photos)[0];
+            if (found) {
+              setBgImage(found as string);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+  }, [bgImage]);
 
   const handleToggleAudio = () => {
     setIsPlayingAudio(!isPlayingAudio);
@@ -72,71 +86,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
-  const handleBgFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file不易 = e.target.files?.[0];
-    if (file不易) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        setBgImage(result);
-        localStorage.setItem('dashboard_bg_photo', result);
-        localStorage.setItem('sarooj_custom_hero_photo', result);
-      };
-      reader.readAsDataURL(file不易);
-    }
-  };
-
-  const handleResetBg = () => {
-    setBgImage(null);
-    localStorage.removeItem('dashboard_bg_photo');
-  };
-
   return (
     <section className="relative overflow-hidden border-b-4 border-amber-400 transition-colors duration-500 bg-gradient-to-b from-[#FFF5E5] via-[#FDEBD0] to-[#F5D8B3]">
       
-      {/* HIDDEN BACKGROUND FILE INPUT */}
-      <input
-        type="file"
-        ref={bgFileInputRef}
-        onChange={handleBgFileUpload}
-        accept="image/*"
-        className="hidden"
-      />
-
-      {/* DYNAMIC BACKGROUND IMAGE LAYER (If user uploaded / custom background photo) */}
+      {/* DYNAMIC BACKGROUND IMAGE LAYER (Real Councillor Campaign Photos - No AI Images) */}
       {bgImage ? (
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
             src={bgImage}
-            alt="Dashboard Background Poster"
+            alt="Councillor Sarooj Sattar Campaign Background"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center filter saturate-125"
+            className="w-full h-full object-cover object-center filter saturate-110"
             style={{ opacity: bgOpacity / 100 }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5E5]/75 via-[#FDEBD0]/80 to-[#F5D8B3]/90 backdrop-blur-[1px]" />
+          {isVividMode ? (
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5E5]/60 via-[#FDEBD0]/70 to-[#F5D8B3]/80 backdrop-blur-[0.5px] pointer-events-none" />
+          )}
         </div>
       ) : (
-        /* DEFAULT HIGH-IMPACT GOLDEN SUNRISE VILLAGE BACKGROUND MATCHING THE ATTACHED PHOTO */
+        /* Clean Civic Gradient Backdrop with Sunburst Flare (No AI Hallucinations) */
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-85">
-          {/* Golden Sunrise Sunburst in Top-Left */}
           <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-gradient-to-br from-[#FFE082] via-[#FFA726] to-transparent rounded-full blur-3xl opacity-70" />
           <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-[#FFB74D]/40 via-[#FB8C00]/30 to-transparent rounded-full blur-3xl" />
-          
-          {/* Subtle Village Street & Palm Silhouettes SVG */}
-          <svg className="absolute bottom-0 left-0 right-0 w-full h-72 opacity-25" preserveAspectRatio="none" viewBox="0 0 1200 300">
-            <defs>
-              <linearGradient id="villageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#D97706" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#78350F" stopOpacity="0.95" />
-              </linearGradient>
-            </defs>
-            {/* Palm Trees & Rooflines */}
-            <path d="M0,240 Q150,180 300,240 T600,220 T900,250 T1200,210 L1200,300 L0,300 Z" fill="url(#villageGrad)" />
-            <circle cx="120" cy="180" r="45" fill="#B45309" opacity="0.4" />
-            <circle cx="480" cy="160" r="35" fill="#B45309" opacity="0.3" />
-            <circle cx="850" cy="170" r="50" fill="#B45309" opacity="0.35" />
-            <circle cx="1080" cy="150" r="40" fill="#B45309" opacity="0.4" />
-          </svg>
         </div>
       )}
 
@@ -181,77 +154,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           ))}
         </div>
 
-        {/* Right Tools: Background Controls + Tri-Lingual Language Switcher */}
+        {/* Right Tools: Tri-Lingual Language Switcher */}
         <div className="flex items-center gap-2">
-          
-          {/* Background Settings Toggle */}
-          <div className="relative">
-            <button
-              onClick={() => setShowBgSettings(!showBgSettings)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 hover:bg-amber-100 text-stone-900 text-xs font-black border-2 border-amber-400 shadow-sm transition-all"
-              title="Customize Background Image"
-            >
-              <ImageIcon className="w-3.5 h-3.5 text-amber-600" />
-              <span className="hidden sm:inline">Background</span>
-              {bgImage && <span className="w-2 h-2 rounded-full bg-emerald-500" />}
-            </button>
-
-            {/* Background Settings Dropdown Modal */}
-            {showBgSettings && (
-              <div className="absolute right-0 top-10 w-72 p-4 bg-stone-950 text-white rounded-2xl shadow-2xl border-2 border-amber-400 z-50 space-y-3 backdrop-blur-md">
-                <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-                  <span className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <Sliders className="w-3.5 h-3.5" />
-                    <span>Background Photo</span>
-                  </span>
-                  <button
-                    onClick={() => setShowBgSettings(false)}
-                    className="text-stone-400 hover:text-white text-xs font-bold"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <button
-                    onClick={() => bgFileInputRef.current?.click()}
-                    className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-stone-950 font-black flex items-center justify-center gap-2 shadow-md hover:from-amber-400 hover:to-orange-500 transition-all"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span>Upload Background Photo</span>
-                  </button>
-
-                  {bgImage && (
-                    <>
-                      <div className="pt-2 space-y-1">
-                        <div className="flex justify-between text-[11px] text-stone-300">
-                          <span>Background Visibility:</span>
-                          <span className="font-mono text-amber-300 font-bold">{bgOpacity}%</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="10"
-                          max="90"
-                          value={bgOpacity}
-                          onChange={(e) => setBgOpacity(Number(e.target.value))}
-                          className="w-full accent-amber-400 cursor-pointer"
-                        />
-                      </div>
-
-                      <button
-                        onClick={handleResetBg}
-                        className="w-full py-1.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold flex items-center justify-center gap-1.5 text-xs transition-all"
-                      >
-                        <RefreshCw className="w-3 h-3" />
-                        <span>Reset to Default Poster</span>
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Tri-Lingual Language Switcher */}
           <div className="flex items-center bg-white/95 rounded-full p-1 border-2 border-amber-400 shadow-md text-xs font-bold">
             <button

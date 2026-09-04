@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
+import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 export interface GalleryItem {
   id: string;
@@ -29,6 +30,7 @@ export interface GalleryItem {
   dateTa: string;
   gradient: string;
   border: string;
+  image: string;
   captionEn: string;
   captionSi: string;
   captionTa: string;
@@ -55,6 +57,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஆகஸ்ட் 2024',
     gradient: 'from-emerald-700 via-teal-800 to-[#134234]',
     border: 'border-emerald-300',
+    image: CAMPAIGN_IMAGES.portrait,
     captionEn: 'Councillor Sarooj Sattar listening to neighborhood elders and residents regarding drainage challenges and pension paperwork.',
     captionSi: 'කානු පද්ධති හා විශ්‍රාම වැටුප් ලිපි ලේඛන පිළිබඳව වැඩිහිටියන්ගේ ගැටලුවලට සවන් දීම.',
     captionTa: 'வடிகால் பிரச்சனை மற்றும் ஓய்வூதிய ஆவணங்கள் தொடர்பாக பெரியோர்களிடம் குறைகளைக் கேட்டறிதல்.',
@@ -79,6 +82,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஜூலை 2024',
     gradient: 'from-amber-600 via-orange-700 to-amber-900',
     border: 'border-amber-300',
+    image: CAMPAIGN_IMAGES.roadProject,
     captionEn: 'Heavy road-paving machinery executing sub-base asphalt carpeting to eliminate deep monsoon ruts.',
     captionSi: 'වැසි කාලයේ මාර්ග අබලන් වීම වැළැක්වීමට උසස් තත්ත්වයේ තාර ඇතිරීම.',
     captionTa: 'மழைக்கால பள்ளங்களை அகற்றி தரமான தார் இடும் பணிகள் முன்னெடுப்பு.',
@@ -103,6 +107,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஜூன் 2024',
     gradient: 'from-blue-600 via-indigo-700 to-blue-900',
     border: 'border-blue-300',
+    image: CAMPAIGN_IMAGES.medicalCamp,
     captionEn: 'Certified ophthalmologists and municipal medical officers providing free eye tests and prescription spectacles.',
     captionSi: 'සුදුසුකම්ලත් වෛද්‍යවරුන් මගින් නොමිලේ ඇස් පරීක්ෂාව සහ කණ්ණාඩි බෙදාදීම.',
     captionTa: 'சிறப்பு கண் மருத்துவர்கள் மூலம் இலவச பரிசோதனை மற்றும் மூக்குக்கண்ணாடிகள் வழங்கப்பட்டன.',
@@ -127,6 +132,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'மே 2024',
     gradient: 'from-amber-500 via-yellow-600 to-orange-700',
     border: 'border-amber-300',
+    image: CAMPAIGN_IMAGES.heroBackground,
     captionEn: 'Municipal technical crew mounting 90W high-lumen solar LED luminaires on concrete utility posts.',
     captionSi: 'රාත්‍රී කාලයේ ආරක්ෂාව තහවුරු කරමින් සූර්ය බලශක්ති වීදි ලාම්පු සවි කිරීම.',
     captionTa: 'இரவு நேர பாதுகாப்பை உறுதி செய்யும் 90W சூரிய ஒளி தெருவிளக்குகள் நிறுவல்.',
@@ -151,6 +157,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஏப்ரல் 2024',
     gradient: 'from-teal-600 via-cyan-700 to-teal-900',
     border: 'border-teal-300',
+    image: CAMPAIGN_IMAGES.ecoCleanup,
     captionEn: 'Excavator and municipal gully units clearing silt and water hyacinth before the southwestern monsoon.',
     captionSi: 'මෝසම් වැසි කාලයට පෙර ඇල මාර්ගවල රොන්මඩ හා ජපන් ජබර ඉවත් කිරීම.',
     captionTa: 'பருவமழைக்கு முன்னதாக கால்வாய்களை தூர்வாரி ஆகாயத்தாமரைகளை அகற்றுதல்.',
@@ -175,6 +182,7 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'மார்ச் 2024',
     gradient: 'from-purple-600 via-violet-700 to-purple-900',
     border: 'border-purple-300',
+    image: CAMPAIGN_IMAGES.portrait,
     captionEn: 'Handing over cricket kits, footballs, and track gear to Periyamulla youth sports clubs.',
     captionSi: 'පෙරියමුල්ල තරුණ ක්‍රීඩා සමාජ වෙත ක්‍රිකට් සහ පාපන්දු උපකරණ පරිත්‍යාග කිරීම.',
     captionTa: 'பெரியமுல்லை இளைஞர் விளையாட்டு கழகங்களுக்கு கிரிக்கெட் மற்றும் உதைபந்தாட்ட உபகரணங்கள் வழங்கல்.',
@@ -305,28 +313,44 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
                 onClick={() => setSelectedPhoto(item)}
                 className={`group rounded-3xl bg-white border-2 ${item.border} shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer transform hover:-translate-y-1.5`}
               >
-                {/* Visual Header Banner */}
-                <div className={`h-48 w-full bg-gradient-to-tr ${item.gradient} p-5 flex flex-col justify-between relative overflow-hidden text-white`}>
+                {/* Visual Header Banner with Real Photo */}
+                <div className="h-52 w-full relative overflow-hidden text-white group/cardimg">
+                  {item.image ? (
+                    <>
+                      <img
+                        src={item.image}
+                        alt={title}
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/cardimg:scale-105 transition-transform duration-500"
+                      />
+                      <div className={`absolute inset-0 bg-gradient-to-t ${item.gradient} opacity-60 mix-blend-multiply pointer-events-none`} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-transparent pointer-events-none" />
+                    </>
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-tr ${item.gradient}`} />
+                  )}
                   
                   {/* Decorative Elements */}
                   <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
                   
-                  <div className="flex items-center justify-between relative z-10">
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-amber-300">
-                      {date}
-                    </span>
-                    <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-400 group-hover:text-stone-950 transition-all text-white shadow-xs">
-                      <Eye className="w-4 h-4" />
-                    </span>
-                  </div>
+                  <div className="p-5 flex flex-col justify-between h-full relative z-10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-amber-400/40 text-amber-300 shadow-sm">
+                        {date}
+                      </span>
+                      <span className="w-8 h-8 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-400 group-hover:text-stone-950 transition-all text-white shadow-xs border border-white/20">
+                        <Eye className="w-4 h-4" />
+                      </span>
+                    </div>
 
-                  <div className="relative z-10 space-y-1">
-                    <h3 className="font-heading font-black text-white text-lg sm:text-xl leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
-                      {title}
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-emerald-100 text-xs font-semibold">
-                      <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                      <span className="truncate">{location}</span>
+                    <div className="space-y-1">
+                      <h3 className="font-heading font-black text-white text-lg sm:text-xl leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
+                        {title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-emerald-100 text-xs font-semibold drop-shadow-xs">
+                        <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                        <span className="truncate">{location}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -394,22 +418,39 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-amber-400 animate-in zoom-in-95 duration-200">
             
-            {/* Modal Header Banner */}
-            <div className={`p-6 bg-gradient-to-tr ${selectedPhoto.gradient} text-white relative`}>
+            {/* Modal Header Banner with Real Photo */}
+            <div className="h-64 w-full relative overflow-hidden text-white flex flex-col justify-end p-6">
+              {selectedPhoto.image ? (
+                <>
+                  <img
+                    src={selectedPhoto.image}
+                    alt={getTitle(selectedPhoto)}
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${selectedPhoto.gradient} opacity-50 mix-blend-multiply pointer-events-none`} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-black/30 pointer-events-none" />
+                </>
+              ) : (
+                <div className={`absolute inset-0 bg-gradient-to-tr ${selectedPhoto.gradient}`} />
+              )}
+
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/40 text-white hover:bg-black/60 flex items-center justify-center transition-colors"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-black/80 flex items-center justify-center transition-colors z-20 border border-white/20"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 text-amber-300 inline-block mb-3">
-                {getDate(selectedPhoto)} • {getLocation(selectedPhoto)}
-              </span>
+              <div className="relative z-10 space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/60 backdrop-blur-xs text-amber-300 inline-block border border-amber-400/40 shadow-sm">
+                  {getDate(selectedPhoto)} • {getLocation(selectedPhoto)}
+                </span>
 
-              <h3 className="font-heading font-black text-2xl text-white leading-tight">
-                {getTitle(selectedPhoto)}
-              </h3>
+                <h3 className="font-heading font-black text-2xl text-white leading-tight drop-shadow-md">
+                  {getTitle(selectedPhoto)}
+                </h3>
+              </div>
             </div>
 
             {/* Modal Body */}

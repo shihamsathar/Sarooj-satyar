@@ -8,6 +8,7 @@ export interface OfficialPoster {
   shirtType: 'white' | 'striped';
   badgeColor: string;
   themeGradient: string;
+  imageFileNames: string[];
   quoteTitle?: string;
   quoteSinhala?: string[];
   quoteTamil?: string[];
@@ -28,6 +29,13 @@ export const OFFICIAL_POSTERS: OfficialPoster[] = [
     shirtType: 'striped',
     badgeColor: 'bg-amber-100 text-amber-950 border-amber-400',
     themeGradient: 'from-[#FF9800] via-[#E65100] to-[#0A2540]',
+    imageFileNames: [
+      '/uploads/active-portrait.jpg',
+      '/uploads/active-background.jpg',
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM.jpeg',
+      '/images/councillor-striped.jpg',
+      '/images/WhatsApp Image 2026-09-04 at 2.57.07 PM.jpeg'
+    ],
     quoteTamil: [
       'பதவியால் அல்ல...',
       'பாசத்தால்',
@@ -48,6 +56,14 @@ export const OFFICIAL_POSTERS: OfficialPoster[] = [
     shirtType: 'white',
     badgeColor: 'bg-amber-100 text-amber-950 border-amber-300',
     themeGradient: 'from-[#FFA726] via-[#FB8C00] to-[#1B4D3E]',
+    imageFileNames: [
+      '/uploads/active-background.jpg',
+      '/uploads/active-portrait.jpg',
+      '/WhatsApp Image 2026-09-04 at 2.57.06 PM.jpeg',
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM (4).jpeg',
+      '/images/hero-banner.jpg',
+      '/images/WhatsApp Image 2026-09-04 at 2.57.06 PM.jpeg'
+    ],
     quoteEnglish: [
       'Until my',
       'last breath,',
@@ -68,6 +84,11 @@ export const OFFICIAL_POSTERS: OfficialPoster[] = [
     shirtType: 'white',
     badgeColor: 'bg-emerald-100 text-emerald-950 border-emerald-300',
     themeGradient: 'from-[#FF9800] via-[#F57C00] to-[#1B4D3E]',
+    imageFileNames: [
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM (3).jpeg',
+      '/images/WhatsApp Image 2026-09-04 at 2.57.07 PM (3).jpeg',
+      '/uploads/active-portrait.jpg'
+    ],
     quoteTamil: [
       'சேவை செய்வது',
       'என் பெருமை அல்ல —',
@@ -90,6 +111,11 @@ export const OFFICIAL_POSTERS: OfficialPoster[] = [
     shirtType: 'white',
     badgeColor: 'bg-amber-100 text-amber-950 border-amber-300',
     themeGradient: 'from-[#FFB74D] via-[#F57C00] to-[#2E7D32]',
+    imageFileNames: [
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM (5).jpeg',
+      '/images/WhatsApp Image 2026-09-04 at 2.57.07 PM (5).jpeg',
+      '/uploads/active-portrait.jpg'
+    ],
     quoteSinhala: [
       'මිනිසා සුවඳයි මලසේ,',
       'නුවනින් එළියයි හිරුසේ,',
@@ -110,6 +136,12 @@ export const OFFICIAL_POSTERS: OfficialPoster[] = [
     shirtType: 'white',
     badgeColor: 'bg-purple-100 text-purple-950 border-purple-300',
     themeGradient: 'from-[#FF9800] via-[#E65100] to-[#311B92]',
+    imageFileNames: [
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM (1).jpeg',
+      '/WhatsApp Image 2026-09-04 at 2.57.07 PM (2).jpeg',
+      '/images/WhatsApp Image 2026-09-04 at 2.57.07 PM (1).jpeg',
+      '/uploads/active-portrait.jpg'
+    ],
     quoteEnglish: [
       'Until my last breath,',
       'I will stand with those in need and serve the poor with compassion.',

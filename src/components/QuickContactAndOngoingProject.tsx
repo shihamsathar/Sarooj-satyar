@@ -12,6 +12,7 @@ import {
 import type { CommunityProject } from '../types.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
+import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 interface QuickContactAndOngoingProjectProps {
   ongoingProject?: CommunityProject;
@@ -44,7 +45,6 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
     contractor: 'Western Provincial Road Development Authority & Negombo MC',
     startDate: '2024-03-15',
     expectedEndDate: '2024-11-30',
-    imageUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80',
     impactMetric: 'Benefits 4,200+ households',
     highlights: ['First layer asphalt carpeting underway on Sector B (65%)']
   };
@@ -139,13 +139,20 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
                 </div>
 
                 {/* Periyamulla Ward 05 Coastal Card */}
-                <div className="sm:col-span-5 h-48 sm:h-full rounded-2xl overflow-hidden shadow-md relative border-2 border-amber-200 group/img">
-                  <div className="w-full h-full bg-gradient-to-tr from-amber-600 via-orange-500 to-teal-700 flex flex-col justify-end p-3 text-white">
-                    <span className="text-xs font-black text-amber-200 uppercase tracking-wider mb-1 flex items-center gap-1">
+                <div className="sm:col-span-5 h-48 sm:h-full min-h-[160px] rounded-2xl overflow-hidden shadow-md relative border-2 border-emerald-300 group/img">
+                  <img
+                    src={CAMPAIGN_IMAGES.heroBackground}
+                    alt="Periyamulla Coastal Lagoon Negombo"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/img:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#134234]/95 via-teal-950/50 to-black/20 pointer-events-none" />
+                  <div className="relative z-10 w-full h-full flex flex-col justify-end p-3.5 text-white">
+                    <span className="text-xs font-black text-amber-300 uppercase tracking-wider mb-1 flex items-center gap-1 drop-shadow-xs">
                       <MapPin className="w-3.5 h-3.5 text-amber-300" />
                       <span>Periyamulla • Ward 05</span>
                     </span>
-                    <p className="text-[11px] font-medium text-amber-100/90 leading-tight">
+                    <p className="text-[11px] font-medium text-amber-100/95 leading-tight drop-shadow-xs">
                       {t.footerAboutDesc}
                     </p>
                   </div>
@@ -200,15 +207,24 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
               {/* Project Card Content */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
-                {/* Project Badge Card */}
-                <div className="sm:col-span-5 h-40 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-300 bg-gradient-to-br from-amber-500 via-orange-600 to-amber-800 p-4 text-white flex flex-col justify-between">
-                  <div className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-xs text-amber-200 text-[10px] font-black px-2.5 py-1 rounded-full w-fit">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>{t.ongoingProjectStatusOngoing}</span>
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-extrabold text-amber-100 block">St. Lazarus Road</span>
-                    <span className="text-sm font-black text-white leading-tight block">Asphalt & Stormwater Drains</span>
+                {/* Project Badge Card with real campaign photo */}
+                <div className="sm:col-span-5 h-44 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-400 group/proj">
+                  <img
+                    src={CAMPAIGN_IMAGES.roadProject}
+                    alt="St. Lazarus Road Asphalt Carpeting"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/proj:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-black/20 pointer-events-none" />
+                  <div className="relative z-10 w-full h-full p-3.5 text-white flex flex-col justify-between">
+                    <div className="inline-flex items-center gap-1 bg-black/60 backdrop-blur-xs text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-full w-fit border border-amber-400/50">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>{t.ongoingProjectStatusOngoing}</span>
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-extrabold text-amber-200 block drop-shadow-xs">St. Lazarus Road</span>
+                      <span className="text-sm font-black text-white leading-tight block drop-shadow-xs">Asphalt & Stormwater Drains</span>
+                    </div>
                   </div>
                 </div>
 
