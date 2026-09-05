@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Building2,
   Phone,
-  Camera
+  Camera,
+  Paperclip
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { Complaint } from '../types.js';
@@ -450,12 +451,16 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
                   </label>
                 </div>
                 {photoUrl && (
-                  <div className="mt-2 h-28 w-full rounded-xl overflow-hidden border border-stone-300 relative">
-                    <img src={photoUrl} alt="Evidence Preview" className="w-full h-full object-cover" />
+                  <div className="mt-2 p-3 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
+                      <Paperclip className="w-4 h-4 text-emerald-700" />
+                      <span>Evidence file attached successfully</span>
+                    </div>
                     <button
                       type="button"
                       onClick={() => setPhotoUrl('')}
-                      className="absolute top-2 right-2 p-1 rounded-full bg-black/60 text-white hover:bg-black"
+                      className="p-1 rounded-full bg-emerald-200 text-emerald-900 hover:bg-emerald-300 transition-colors cursor-pointer"
+                      title="Remove attachment"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>

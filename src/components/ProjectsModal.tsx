@@ -147,18 +147,13 @@ export const ProjectsModal: React.FC<ProjectsModalProps> = ({
                   className="bg-white rounded-2xl border border-stone-200 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Project Image Banner */}
-                    <div className="relative h-48 w-full overflow-hidden bg-stone-900">
-                      <img
-                        src={p.imageUrl}
-                        alt={p.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 left-3 bg-stone-950/80 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
-                        {p.category}
-                      </div>
+                    {/* Project Vector Header Banner (No raster images) */}
+                    <div className="relative h-36 w-full overflow-hidden bg-gradient-to-br from-[#134234] via-[#1B4D3E] to-[#0A2540] p-4 flex flex-col justify-between">
+                      <div className="flex items-center justify-between z-10">
+                        <div className="bg-black/50 backdrop-blur-xs text-amber-300 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-400/30">
+                          {p.category}
+                        </div>
 
-                      <div className="absolute top-3 right-3">
                         <span className={`text-[11px] font-black uppercase px-2.5 py-1 rounded-lg ${
                           p.status === 'completed'
                             ? 'bg-emerald-600 text-white'
@@ -168,9 +163,12 @@ export const ProjectsModal: React.FC<ProjectsModalProps> = ({
                         </span>
                       </div>
 
-                      <div className="absolute bottom-2 left-3 text-white text-xs font-semibold flex items-center gap-1 drop-shadow-md">
-                        <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                        <span>{p.ward}</span>
+                      <div className="flex items-center justify-between z-10">
+                        <div className="text-white text-xs font-semibold flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{p.ward}</span>
+                        </div>
+                        <HardHat className="w-6 h-6 text-amber-300/80" />
                       </div>
                     </div>
 

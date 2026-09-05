@@ -168,6 +168,21 @@ app.post('/api/photos/upload', (req, res) => {
   }
 });
 
+app.delete('/api/photos/:slot', (req, res) => {
+  try {
+    const { slot } = req.params;
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    const filename = slot === 'background' ? 'active-background.jpg' : (slot === 'portrait' ? 'active-portrait.jpg' : slot);
+    const targetPath = path.join(uploadsDir, filename);
+    if (fs.existsSync(targetPath)) {
+      fs.unlinkSync(targetPath);
+    }
+    res.json({ success: true, removed: slot });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Complaints: List & Filter
 app.get('/api/complaints', async (req, res) => {
   try {

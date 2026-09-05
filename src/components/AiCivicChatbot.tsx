@@ -13,6 +13,7 @@ import {
   Trash2,
   Image as ImageIcon,
   Check,
+  Paperclip,
 } from 'lucide-react';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
@@ -483,14 +484,11 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ language = 'en' 
                       : 'bg-white text-stone-800 border border-stone-200 shadow-xs rounded-bl-xs'
                   }`}
                 >
-                  {/* Photo Attachment in message */}
+                  {/* Attachment in message */}
                   {m.image && (
-                    <div className="mb-2 rounded-xl overflow-hidden border border-black/10 bg-black/5">
-                      <img
-                        src={m.image}
-                        alt="Submitted attachment"
-                        className="w-full max-h-48 object-cover rounded-lg"
-                      />
+                    <div className="mb-2 p-2 rounded-xl bg-black/10 flex items-center gap-2 text-[11px] font-semibold">
+                      <Paperclip className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span>Citizen attachment submitted</span>
                     </div>
                   )}
 
@@ -546,16 +544,16 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ language = 'en' 
           {(selectedImage || selectedAudio) && (
             <div className="px-3 py-2 bg-emerald-50/80 border-t border-emerald-100 flex items-center gap-2">
               {selectedImage && (
-                <div className="relative inline-flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-emerald-300 shadow-xs text-xs text-emerald-900">
-                  <img src={selectedImage} alt="Thumbnail" className="w-6 h-6 object-cover rounded-md" />
+                <div className="relative inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-300 shadow-xs text-xs text-emerald-900">
+                  <Paperclip className="w-3.5 h-3.5 text-emerald-700" />
                   <span className="text-[11px] font-medium truncate max-w-[100px]">
-                    {currentLang === 'ta' ? 'புகைப்படம்' : currentLang === 'si' ? 'ඡායාරූපය' : 'Photo'}
+                    {currentLang === 'ta' ? 'இணைப்பு' : currentLang === 'si' ? 'ගොනුව' : 'Attachment'}
                   </span>
                   <button
                     type="button"
                     onClick={() => setSelectedImage(null)}
                     className="ml-1 text-stone-400 hover:text-red-500 cursor-pointer"
-                    title="Remove picture"
+                    title="Remove attachment"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>

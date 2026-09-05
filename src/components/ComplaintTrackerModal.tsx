@@ -14,7 +14,9 @@ import {
   MessageSquare,
   Sparkles,
   RefreshCw,
-  Plus
+  Plus,
+  Paperclip,
+  FileText
 } from 'lucide-react';
 import type { Complaint } from '../types.js';
 
@@ -403,18 +405,20 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
                   </p>
                 </div>
 
-                {/* Evidence Photo if present */}
+                {/* Evidence Attachment record if present */}
                 {selectedComplaint.photoUrl && (
                   <div className="space-y-1.5">
                     <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-                      Photo Evidence
+                      Attached Evidence File
                     </h4>
-                    <div className="h-48 rounded-xl overflow-hidden border border-stone-300">
-                      <img
-                        src={selectedComplaint.photoUrl}
-                        alt="Evidence"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="p-3.5 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5 text-xs font-bold text-stone-700">
+                        <Paperclip className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>Field Evidence File Attached</span>
+                      </div>
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded border border-emerald-300">
+                        Verified Record
+                      </span>
                     </div>
                   </div>
                 )}

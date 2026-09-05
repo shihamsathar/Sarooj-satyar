@@ -8,14 +8,16 @@ import {
   Mail, 
   Building2, 
   CheckCircle2, 
-  Sparkles,
-  Quote,
-  Camera,
-  ExternalLink,
-  ShieldCheck
+  Sparkles, 
+  Quote, 
+  ExternalLink, 
+  ShieldCheck,
+  Users,
+  HardHat,
+  HeartPulse,
+  Waves
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
-import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 interface AboutSaroojModalProps {
   isOpen: boolean;
@@ -37,28 +39,28 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
       title: 'Listening to Ward 5 Residents on St. Lazarus Road',
       date: 'Field Inspection 2024',
       badgeColor: 'from-amber-600 to-orange-700',
-      image: CAMPAIGN_IMAGES.portrait,
+      icon: Users,
       description: 'Councillor Sarooj Sattar conducting regular weekly grassroots hearings to address resident concerns directly.',
     },
     {
       title: 'Municipal Public Works & Stormwater Drain Review',
       date: 'Engineering Site Visit',
       badgeColor: 'from-emerald-700 to-teal-900',
-      image: CAMPAIGN_IMAGES.roadProject,
+      icon: HardHat,
       description: 'Supervising asphalt carpeting and concrete drainage culvert construction to ensure high quality and zero waste.',
     },
     {
       title: 'Free Community Health & Medical Care Drive',
       date: 'Periyamulla Health Clinic',
       badgeColor: 'from-rose-600 to-red-800',
-      image: CAMPAIGN_IMAGES.medicalCamp,
+      icon: HeartPulse,
       description: 'Organizing free vision checkups, medicine distribution, and pediatric health screening for underprivileged families.',
     },
     {
       title: 'Negombo Dutch Canal & Coastal Cleanliness Initiative',
       date: 'Environmental Campaign',
       badgeColor: 'from-blue-600 to-cyan-800',
-      image: CAMPAIGN_IMAGES.ecoCleanup,
+      icon: Waves,
       description: 'Mobilizing community volunteers and municipal sanitation units to desilt waterways and safeguard the ecosystem.',
     },
   ];
@@ -116,8 +118,8 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <Camera className="w-3.5 h-3.5" />
-            <span>Civic Photo Album</span>
+            <Award className="w-3.5 h-3.5" />
+            <span>Civic Action Archives</span>
           </button>
           <button
             onClick={() => setActiveTab('priorities')}
@@ -191,12 +193,11 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
                 
                 {/* Councillor Portrait Micro Card */}
                 <div className="flex items-center gap-3.5 pb-3 border-b border-stone-200">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0">
-                    <img
-                      src={CAMPAIGN_IMAGES.portrait}
-                      alt="Councillor Sarooj Sattar"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover object-top"
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0 flex items-center justify-center bg-gradient-to-tr from-[#134234] to-[#1B4D3E] p-1">
+                    <RoundLogo
+                      size={52}
+                      showText={false}
+                      showFlourish={false}
                     />
                   </div>
                   <div>
@@ -249,44 +250,38 @@ export const AboutSaroojModal: React.FC<AboutSaroojModalProps> = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-heading font-bold text-stone-900 text-lg">
-                  Photographic Records of Civic Engagement
+                  Civic Action & Field Reports
                 </h3>
                 <span className="text-xs text-stone-500 font-medium">Ward 05 Field Archives</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {leadershipMoments.map((m, i) => (
-                  <div key={i} className="bg-stone-50 rounded-2xl overflow-hidden border-2 border-stone-200 group hover:border-amber-400 hover:shadow-xl transition-all">
-                    <div className="aspect-[16/9] relative overflow-hidden text-white flex flex-col justify-between p-4 group/photo">
-                      <img
-                        src={m.image}
-                        alt={m.title}
-                        referrerPolicy="no-referrer"
-                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/photo:scale-105 transition-transform duration-500"
-                      />
-                      <div className={`absolute inset-0 bg-gradient-to-tr ${m.badgeColor} opacity-50 mix-blend-multiply pointer-events-none`} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/30 to-black/30 pointer-events-none" />
+                {leadershipMoments.map((m, i) => {
+                  const IconComp = m.icon;
+                  return (
+                    <div key={i} className="bg-stone-50 rounded-2xl overflow-hidden border-2 border-stone-200 group hover:border-amber-400 hover:shadow-xl transition-all">
+                      <div className={`aspect-[16/9] relative overflow-hidden text-white flex flex-col justify-between p-5 bg-gradient-to-br ${m.badgeColor}`}>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-xs text-amber-300 inline-block border border-amber-400/40 shadow-xs">
+                            {m.date}
+                          </span>
+                          <IconComp className="w-6 h-6 text-amber-300 drop-shadow-xs" />
+                        </div>
 
-                      <div className="relative z-10 flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-amber-300 inline-block border border-amber-400/40 shadow-xs">
-                          {m.date}
-                        </span>
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 drop-shadow-xs" />
+                        <div>
+                          <h4 className="font-heading font-black text-white text-base leading-snug drop-shadow-md">
+                            {m.title}
+                          </h4>
+                        </div>
                       </div>
-
-                      <div className="relative z-10">
-                        <h4 className="font-heading font-black text-white text-base leading-snug drop-shadow-md">
-                          {m.title}
-                        </h4>
+                      <div className="p-4 space-y-1.5 bg-white">
+                        <p className="text-xs text-stone-700 leading-relaxed font-medium">
+                          {m.description}
+                        </p>
                       </div>
                     </div>
-                    <div className="p-4 space-y-1.5 bg-white">
-                      <p className="text-xs text-stone-700 leading-relaxed font-medium">
-                        {m.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

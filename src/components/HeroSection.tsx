@@ -24,7 +24,6 @@ import { CouncillorPortrait } from './CouncillorPortrait.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
 import { OFFICIAL_POSTERS, OfficialPoster } from '../data/posters.js';
-import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 interface HeroSectionProps {
   onBuildCommunityClick: () => void;
@@ -42,35 +41,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activePosterId, setActivePosterId] = useState<string>('poster_en_white');
-  const [bgImage, setBgImage] = useState<string | null>(() => {
-    const saved = localStorage.getItem('dashboard_bg_photo');
-    if (saved && saved.startsWith('data:image/')) return saved;
-    return CAMPAIGN_IMAGES.heroBackground;
-  });
-  const [bgOpacity, setBgOpacity] = useState<number>(65); // 0 to 100
-  const [isVividMode, setIsVividMode] = useState<boolean>(false);
 
-  const t不易 = translations[language];
-  const activePoster推进 = OFFICIAL_POSTERS.find((p) => p.id === activePosterId) || OFFICIAL_POSTERS[0];
-
-  // Auto-detect any photos stored on server or in public folder
-  React.useEffect(() => {
-    if (!bgImage) {
-      fetch('/api/photos/active')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success && data.photos) {
-            const found = data.photos['active-background.jpg'] || 
-              data.photos['active-portrait.jpg'] ||
-              Object.values(data.photos)[0];
-            if (found) {
-              setBgImage(found as string);
-            }
-          }
-        })
-        .catch(() => {});
-    }
-  }, [bgImage]);
+  const t = translations[language];
+  const activePoster = OFFICIAL_POSTERS.find((p) => p.id === activePosterId) || OFFICIAL_POSTERS[0];
 
   const handleToggleAudio = () => {
     setIsPlayingAudio(!isPlayingAudio);
@@ -89,29 +62,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section className="relative overflow-hidden border-b-4 border-amber-400 transition-colors duration-500 bg-gradient-to-b from-[#FFF5E5] via-[#FDEBD0] to-[#F5D8B3]">
       
-      {/* DYNAMIC BACKGROUND IMAGE LAYER (Real Councillor Campaign Photos - No AI Images) */}
-      {bgImage ? (
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <img
-            src={bgImage}
-            alt="Councillor Sarooj Sattar Campaign Background"
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center filter saturate-110"
-            style={{ opacity: bgOpacity / 100 }}
-          />
-          {isVividMode ? (
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5E5]/60 via-[#FDEBD0]/70 to-[#F5D8B3]/80 backdrop-blur-[0.5px] pointer-events-none" />
-          )}
-        </div>
-      ) : (
-        /* Clean Civic Gradient Backdrop with Sunburst Flare (No AI Hallucinations) */
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-85">
-          <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-gradient-to-br from-[#FFE082] via-[#FFA726] to-transparent rounded-full blur-3xl opacity-70" />
-          <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-[#FFB74D]/40 via-[#FB8C00]/30 to-transparent rounded-full blur-3xl" />
-        </div>
-      )}
+      {/* Clean Civic Gradient Backdrop with Sunburst Flare (No Photos/Images) */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-85">
+        <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-gradient-to-br from-[#FFE082] via-[#FFA726] to-transparent rounded-full blur-3xl opacity-70" />
+        <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-[#FFB74D]/40 via-[#FB8C00]/30 to-transparent rounded-full blur-3xl" />
+      </div>
 
       {/* Top Center Hanging Arched Municipal Logo Badge */}
       <div className="relative flex justify-center -mt-1 z-30 pointer-events-auto">
@@ -130,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Ward Status Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-900 via-teal-950 to-[#134234] text-amber-300 text-xs font-black shadow-lg border-2 border-amber-400/70">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-xs shadow-amber-400" />
-          <span>{t不易.wardInfo}</span>
+          <span>{t.wardInfo}</span>
         </div>
 
         {/* 5 Official Campaign Photos Switcher */}
@@ -201,7 +156,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="lg:col-span-4 space-y-5 text-center lg:text-left order-2 lg:order-1">
             <div className="space-y-1.5">
               <span className="inline-block text-stone-950 text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-300 px-3 py-1 rounded-xl border-2 border-amber-500 shadow-md">
-                {t不易.welcomeTo}
+                {t.welcomeTo}
               </span>
               <h1 className="font-heading font-black text-[#134234] text-3xl sm:text-5xl lg:text-[45px] tracking-tight leading-[1.08] drop-shadow-sm">
                 SAROOJ SATTAR
@@ -212,7 +167,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             <p className="text-stone-900 text-base sm:text-lg font-bold leading-relaxed max-w-md mx-auto lg:mx-0">
-              {t不易.heroSubtitle}
+              {t.heroSubtitle}
             </p>
 
             {/* The Golden Action Button matching reference mockup */}
@@ -221,7 +176,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={onBuildCommunityClick}
                 className="w-full sm:w-auto inline-flex items-center justify-between gap-5 px-8 py-4 rounded-full text-base sm:text-lg font-black text-stone-950 bg-gradient-to-r from-[#FFC72C] via-[#E8A51D] to-[#D48806] hover:from-[#FFD24C] hover:to-[#E8A51D] shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 border-2 border-amber-300 group cursor-pointer"
               >
-                <span>{t不易.buildCommunityBtn}</span>
+                <span>{t.buildCommunityBtn}</span>
                 <span className="w-8 h-8 rounded-full bg-white text-stone-950 flex items-center justify-center shadow-md group-hover:translate-x-1 transition-transform shrink-0">
                   <ChevronRight className="w-5 h-5 text-stone-950 stroke-[3]" />
                 </span>
@@ -266,23 +221,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           </div>
 
-          {/* CENTER COLUMN: The Authentic Councillor Photographic Portrait & Community Scene */}
+          {/* CENTER COLUMN: The Authentic Councillor Civic Dignitary Card & Municipal Seal */}
           <div className="lg:col-span-5 relative order-1 lg:order-2 flex justify-center">
             <div className="w-full max-w-[440px]">
               <CouncillorPortrait
                 activePosterId={activePosterId}
                 onPosterChange={handlePosterSelect}
-                customImage={bgImage}
-                onImageChange={(img) => {
-                  setBgImage(img);
-                  if (img) localStorage.setItem('dashboard_bg_photo', img);
-                  else localStorage.removeItem('dashboard_bg_photo');
-                }}
               />
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Dynamic Campaign Quote Card matching Selected Photo Poster */}
+          {/* RIGHT COLUMN: Dynamic Campaign Quote Card matching Selected Civic Theme */}
           <div className="lg:col-span-3 space-y-5 text-left order-3">
             
             {/* Quote Card */}
@@ -290,8 +239,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               
               {/* Decorative Poster Tag */}
               <div className="flex items-center justify-between pb-2 border-b border-amber-300">
-                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${activePoster推进.badgeColor}`}>
-                  {activePoster推进.name}
+                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${activePoster.badgeColor}`}>
+                  {activePoster.name}
                 </span>
                 <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               </div>

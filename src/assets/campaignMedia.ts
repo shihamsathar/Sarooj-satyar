@@ -1,13 +1,8 @@
-import portraitImg from './images/councillor_portrait_1788523990640.jpg';
-import heroBgImg from './images/sarooj_forum_bg_1788524647333.jpg';
-import roadProjectImg from './images/road_project_1788524031807.jpg';
-import medicalCampImg from './images/medical_camp_1788524058198.jpg';
-import ecoCleanupImg from './images/eco_cleanup_1788524076121.jpg';
-
+// All raster images have been removed from the application
 export const CAMPAIGN_IMAGES = {
-  portrait: portraitImg,
-  heroBackground: heroBgImg,
-  roadProject: roadProjectImg,
-  medicalCamp: medicalCampImg,
-  ecoCleanup: ecoCleanupImg,
+  portrait: null as string | null,
+  heroBackground: null as string | null,
+  roadProject: null as string | null,
+  medicalCamp: null as string | null,
+  ecoCleanup: null as string | null,
 };

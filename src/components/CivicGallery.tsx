@@ -9,12 +9,18 @@ import {
   HeartHandshake, 
   ChevronRight,
   ExternalLink,
-  Camera,
-  Layers
+  Layers,
+  Users,
+  Construction,
+  HeartPulse,
+  SunMedium,
+  Waves,
+  Trophy,
+  Award,
+  FileText
 } from 'lucide-react';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
-import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 export interface GalleryItem {
   id: string;
@@ -30,7 +36,6 @@ export interface GalleryItem {
   dateTa: string;
   gradient: string;
   border: string;
-  image: string;
   captionEn: string;
   captionSi: string;
   captionTa: string;
@@ -57,7 +62,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஆகஸ்ட் 2024',
     gradient: 'from-emerald-700 via-teal-800 to-[#134234]',
     border: 'border-emerald-300',
-    image: CAMPAIGN_IMAGES.portrait,
     captionEn: 'Councillor Sarooj Sattar listening to neighborhood elders and residents regarding drainage challenges and pension paperwork.',
     captionSi: 'කානු පද්ධති හා විශ්‍රාම වැටුප් ලිපි ලේඛන පිළිබඳව වැඩිහිටියන්ගේ ගැටලුවලට සවන් දීම.',
     captionTa: 'வடிகால் பிரச்சனை மற்றும் ஓய்வூதிய ஆவணங்கள் தொடர்பாக பெரியோர்களிடம் குறைகளைக் கேட்டறிதல்.',
@@ -82,7 +86,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஜூலை 2024',
     gradient: 'from-amber-600 via-orange-700 to-amber-900',
     border: 'border-amber-300',
-    image: CAMPAIGN_IMAGES.roadProject,
     captionEn: 'Heavy road-paving machinery executing sub-base asphalt carpeting to eliminate deep monsoon ruts.',
     captionSi: 'වැසි කාලයේ මාර්ග අබලන් වීම වැළැක්වීමට උසස් තත්ත්වයේ තාර ඇතිරීම.',
     captionTa: 'மழைக்கால பள்ளங்களை அகற்றி தரமான தார் இடும் பணிகள் முன்னெடுப்பு.',
@@ -107,7 +110,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஜூன் 2024',
     gradient: 'from-blue-600 via-indigo-700 to-blue-900',
     border: 'border-blue-300',
-    image: CAMPAIGN_IMAGES.medicalCamp,
     captionEn: 'Certified ophthalmologists and municipal medical officers providing free eye tests and prescription spectacles.',
     captionSi: 'සුදුසුකම්ලත් වෛද්‍යවරුන් මගින් නොමිලේ ඇස් පරීක්ෂාව සහ කණ්ණාඩි බෙදාදීම.',
     captionTa: 'சிறப்பு கண் மருத்துவர்கள் மூலம் இலவச பரிசோதனை மற்றும் மூக்குக்கண்ணாடிகள் வழங்கப்பட்டன.',
@@ -132,7 +134,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'மே 2024',
     gradient: 'from-amber-500 via-yellow-600 to-orange-700',
     border: 'border-amber-300',
-    image: CAMPAIGN_IMAGES.heroBackground,
     captionEn: 'Municipal technical crew mounting 90W high-lumen solar LED luminaires on concrete utility posts.',
     captionSi: 'රාත්‍රී කාලයේ ආරක්ෂාව තහවුරු කරමින් සූර්ය බලශක්ති වීදි ලාම්පු සවි කිරීම.',
     captionTa: 'இரவு நேர பாதுகாப்பை உறுதி செய்யும் 90W சூரிய ஒளி தெருவிளக்குகள் நிறுவல்.',
@@ -157,7 +158,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'ஏப்ரல் 2024',
     gradient: 'from-teal-600 via-cyan-700 to-teal-900',
     border: 'border-teal-300',
-    image: CAMPAIGN_IMAGES.ecoCleanup,
     captionEn: 'Excavator and municipal gully units clearing silt and water hyacinth before the southwestern monsoon.',
     captionSi: 'මෝසම් වැසි කාලයට පෙර ඇල මාර්ගවල රොන්මඩ හා ජපන් ජබර ඉවත් කිරීම.',
     captionTa: 'பருவமழைக்கு முன்னதாக கால்வாய்களை தூர்வாரி ஆகாயத்தாமரைகளை அகற்றுதல்.',
@@ -182,7 +182,6 @@ export const civicGalleryItems: GalleryItem[] = [
     dateTa: 'மார்ச் 2024',
     gradient: 'from-purple-600 via-violet-700 to-purple-900',
     border: 'border-purple-300',
-    image: CAMPAIGN_IMAGES.portrait,
     captionEn: 'Handing over cricket kits, footballs, and track gear to Periyamulla youth sports clubs.',
     captionSi: 'පෙරියමුල්ල තරුණ ක්‍රීඩා සමාජ වෙත ක්‍රිකට් සහ පාපන්දු උපකරණ පරිත්‍යාග කිරීම.',
     captionTa: 'பெரியமுல்லை இளைஞர் விளையாட்டு கழகங்களுக்கு கிரிக்கெட் மற்றும் உதைபந்தாட்ட உபகரணங்கள் வழங்கல்.',
@@ -194,6 +193,14 @@ export const civicGalleryItems: GalleryItem[] = [
     councillorNoteTa: 'இளைஞர்களே நீர்கொழும்பின் உயிர்நாடி. அவர்களின் திறமைகளை நாம் வளர்த்தெடுக்க வேண்டும்.',
   },
 ];
+
+const categoryIcons = {
+  Meetings: Users,
+  Infrastructure: Construction,
+  Healthcare: HeartPulse,
+  Environment: Waves,
+  Youth: Trophy,
+};
 
 interface CivicGalleryProps {
   onOpenSubmitModal: () => void;
@@ -208,20 +215,21 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+
   const t = translations[language];
 
   const categories = [
-    { key: 'All', label: t.galleryFilterAll },
-    { key: 'Infrastructure', label: t.galleryFilterInfrastructure },
-    { key: 'Healthcare', label: t.galleryFilterHealth },
-    { key: 'Youth', label: t.galleryFilterYouth },
-    { key: 'Meetings', label: t.galleryFilterMeetings },
-    { key: 'Environment', label: t.galleryFilterEnvironment },
+    { key: 'All', label: language === 'si' ? 'සියල්ල' : language === 'ta' ? 'அனைத்தும்' : 'All Milestones' },
+    { key: 'Meetings', label: language === 'si' ? 'මහජන හමු' : language === 'ta' ? 'மக்கள் சந்திப்பு' : 'Citizen Hearings' },
+    { key: 'Infrastructure', label: language === 'si' ? 'යටිතල පහසුකම්' : language === 'ta' ? 'கட்டமைப்பு' : 'Infrastructure' },
+    { key: 'Healthcare', label: language === 'si' ? 'සෞඛ්‍ය සේවා' : language === 'ta' ? 'சுகாதாரம்' : 'Healthcare' },
+    { key: 'Environment', label: language === 'si' ? 'පරිසරය' : language === 'ta' ? 'சுற்றாடல்' : 'Environment' },
+    { key: 'Youth', label: language === 'si' ? 'තරුණ ක්‍රීඩා' : language === 'ta' ? 'இளைஞர்' : 'Youth & Sports' },
   ];
 
   const filteredItems = activeCategory === 'All'
     ? civicGalleryItems
-    : civicGalleryItems.filter(item => item.categoryKey === activeCategory);
+    : civicGalleryItems.filter((i) => i.categoryKey === activeCategory);
 
   const getTitle = (item: GalleryItem) => {
     if (language === 'si') return item.titleSi;
@@ -241,7 +249,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
     return item.dateEn;
   };
 
-  const getCaption力 = (item: GalleryItem) => {
+  const getCaption = (item: GalleryItem) => {
     if (language === 'si') return item.captionSi;
     if (language === 'ta') return item.captionTa;
     return item.captionEn;
@@ -270,7 +278,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border-2 border-amber-300 text-xs font-black text-amber-950 uppercase tracking-wider shadow-2xs">
-            <Camera className="w-3.5 h-3.5 text-amber-700" />
+            <Award className="w-3.5 h-3.5 text-amber-700" />
             <span>{t.civicGalleryBadge}</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-[#134234] tracking-tight">
@@ -287,7 +295,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
             <button
               key={cat.key}
               onClick={() => setActiveCategory(cat.key)}
-              className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${
+              className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
                 activeCategory === cat.key
                   ? 'bg-gradient-to-r from-[#1B4D3E] to-emerald-900 text-amber-300 shadow-md border border-emerald-700'
                   : 'bg-stone-100 text-stone-700 hover:bg-amber-100 hover:text-stone-950 border border-stone-300'
@@ -304,8 +312,9 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
             const title = getTitle(item);
             const location = getLocation(item);
             const date = getDate(item);
-            const caption = getCaption力(item);
+            const caption = getCaption(item);
             const impact = getImpact(item);
+            const CategoryIcon = categoryIcons[item.categoryKey] || Award;
 
             return (
               <div
@@ -313,44 +322,27 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
                 onClick={() => setSelectedPhoto(item)}
                 className={`group rounded-3xl bg-white border-2 ${item.border} shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between cursor-pointer transform hover:-translate-y-1.5`}
               >
-                {/* Visual Header Banner with Real Photo */}
-                <div className="h-52 w-full relative overflow-hidden text-white group/cardimg">
-                  {item.image ? (
-                    <>
-                      <img
-                        src={item.image}
-                        alt={title}
-                        referrerPolicy="no-referrer"
-                        className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/cardimg:scale-105 transition-transform duration-500"
-                      />
-                      <div className={`absolute inset-0 bg-gradient-to-t ${item.gradient} opacity-60 mix-blend-multiply pointer-events-none`} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-transparent pointer-events-none" />
-                    </>
-                  ) : (
-                    <div className={`w-full h-full bg-gradient-to-tr ${item.gradient}`} />
-                  )}
-                  
+                {/* Visual Header Banner with Vector Civic Gradient (Zero raster images) */}
+                <div className={`h-52 w-full relative overflow-hidden text-white bg-gradient-to-br ${item.gradient} p-5 flex flex-col justify-between`}>
                   {/* Decorative Elements */}
                   <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
                   
-                  <div className="p-5 flex flex-col justify-between h-full relative z-10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-amber-400/40 text-amber-300 shadow-sm">
-                        {date}
-                      </span>
-                      <span className="w-8 h-8 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center group-hover:bg-amber-400 group-hover:text-stone-950 transition-all text-white shadow-xs border border-white/20">
-                        <Eye className="w-4 h-4" />
-                      </span>
+                  <div className="flex items-center justify-between relative z-10">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-amber-400/40 text-amber-300 shadow-sm">
+                      {date}
+                    </span>
+                    <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-amber-300 shadow-sm border border-white/20">
+                      <CategoryIcon className="w-5 h-5" />
                     </div>
+                  </div>
 
-                    <div className="space-y-1">
-                      <h3 className="font-heading font-black text-white text-lg sm:text-xl leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
-                        {title}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-emerald-100 text-xs font-semibold drop-shadow-xs">
-                        <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                        <span className="truncate">{location}</span>
-                      </div>
+                  <div className="space-y-1.5 relative z-10">
+                    <h3 className="font-heading font-black text-white text-lg sm:text-xl leading-snug drop-shadow-sm group-hover:text-amber-200 transition-colors">
+                      {title}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-emerald-100 text-xs font-semibold drop-shadow-xs">
+                      <MapPin className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span className="truncate">{location}</span>
                     </div>
                   </div>
                 </div>
@@ -361,7 +353,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
                     {caption}
                   </p>
 
-                  <div className="pt-3 border-t border-stone-200 space-y-1.5">
+                  <div className="pt-3 border-t border-stone-200 space-y-2">
                     <div className="flex items-start gap-2 text-xs font-bold text-[#134234] bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
                       <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                       <span>{impact}</span>
@@ -372,9 +364,10 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
                         e.stopPropagation();
                         setSelectedPhoto(item);
                       }}
-                      className="w-full mt-2 py-2 px-3 rounded-xl bg-stone-100 group-hover:bg-amber-400 text-stone-800 group-hover:text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
+                      className="w-full mt-1 py-2 px-3 rounded-xl bg-stone-100 group-hover:bg-amber-400 text-stone-800 group-hover:text-stone-950 font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
-                      <span>{t.galleryViewPhotoBtn}</span>
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>View Field Report</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -404,7 +397,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
             </button>
             <button
               onClick={onOpenContactModal}
-              className="px-5 py-3.5 rounded-full bg-emerald-900/80 hover:bg-emerald-900 text-emerald-200 hover:text-white font-bold text-xs sm:text-sm border border-emerald-600 transition-colors"
+              className="px-5 py-3.5 rounded-full bg-emerald-900/80 hover:bg-emerald-900 text-emerald-200 hover:text-white font-bold text-xs sm:text-sm border border-emerald-600 transition-colors cursor-pointer"
             >
               {t.openWhatsApp}
             </button>
@@ -418,36 +411,23 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-amber-400 animate-in zoom-in-95 duration-200">
             
-            {/* Modal Header Banner with Real Photo */}
-            <div className="h-64 w-full relative overflow-hidden text-white flex flex-col justify-end p-6">
-              {selectedPhoto.image ? (
-                <>
-                  <img
-                    src={selectedPhoto.image}
-                    alt={getTitle(selectedPhoto)}
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${selectedPhoto.gradient} opacity-50 mix-blend-multiply pointer-events-none`} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-black/30 pointer-events-none" />
-                </>
-              ) : (
-                <div className={`absolute inset-0 bg-gradient-to-tr ${selectedPhoto.gradient}`} />
-              )}
-
+            {/* Modal Header Banner with Vector Civic Gradient (Zero raster images) */}
+            <div className={`h-48 w-full relative overflow-hidden text-white bg-gradient-to-br ${selectedPhoto.gradient} p-6 flex flex-col justify-between`}>
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-black/80 flex items-center justify-center transition-colors z-20 border border-white/20"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 text-white hover:bg-black/70 flex items-center justify-center transition-colors z-20 border border-white/20 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              <div className="relative z-10 space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/60 backdrop-blur-xs text-amber-300 inline-block border border-amber-400/40 shadow-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 backdrop-blur-xs text-amber-300 inline-block border border-amber-400/40 shadow-sm">
                   {getDate(selectedPhoto)} • {getLocation(selectedPhoto)}
                 </span>
+              </div>
 
-                <h3 className="font-heading font-black text-2xl text-white leading-tight drop-shadow-md">
+              <div className="relative z-10 space-y-1">
+                <h3 className="font-heading font-black text-xl sm:text-2xl text-white leading-tight drop-shadow-md">
                   {getTitle(selectedPhoto)}
                 </h3>
               </div>
@@ -460,7 +440,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
                   {t.serviceDashboardTitle}
                 </span>
                 <p className="text-sm text-stone-800 leading-relaxed font-medium">
-                  {getCaption力(selectedPhoto)}
+                  {getCaption(selectedPhoto)}
                 </p>
               </div>
 
@@ -487,7 +467,7 @@ export const CivicGallery: React.FC<CivicGalleryProps> = ({
               <div className="pt-2 flex justify-end gap-2">
                 <button
                   onClick={() => setSelectedPhoto(null)}
-                  className="px-5 py-2.5 rounded-full bg-stone-900 text-white text-xs font-black hover:bg-stone-800 transition-colors"
+                  className="px-5 py-2.5 rounded-full bg-stone-900 text-white text-xs font-black hover:bg-stone-800 transition-colors cursor-pointer"
                 >
                   {t.formCloseBtn}
                 </button>

@@ -22,7 +22,6 @@ import { AiCivicChatbot } from './components/AiCivicChatbot.js';
 
 import type { Complaint, CommunityProject, Announcement } from './types.js';
 import type { Language } from './utils/translations.js';
-import { CAMPAIGN_IMAGES } from './assets/campaignMedia.js';
 
 export default function App() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
@@ -155,12 +154,8 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-stone-900 selection:bg-amber-200 selection:text-stone-900 relative">
       
-      {/* Global App Background Layer with Sarooj Sattar Community Photo */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0 opacity-[0.04] bg-cover bg-center bg-fixed filter saturate-150"
-        style={{ backgroundImage: `url(${CAMPAIGN_IMAGES.heroBackground})` }}
-      />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#FFFDF9]/60 via-transparent to-[#FBF7F0]/80" />
+      {/* Clean Civic Ambient Background Layer */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F7F2E7]" />
       
       {/* 1. Municipal Top Header & Navbar */}
       <Navbar

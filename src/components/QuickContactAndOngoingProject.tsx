@@ -7,12 +7,14 @@ import {
   ChevronRight, 
   MessageCircle, 
   Clock, 
-  Sparkles 
+  Sparkles,
+  ShieldCheck,
+  Building2,
+  Construction
 } from 'lucide-react';
 import type { CommunityProject } from '../types.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
-import { CAMPAIGN_IMAGES } from '../assets/campaignMedia.js';
 
 interface QuickContactAndOngoingProjectProps {
   ongoingProject?: CommunityProject;
@@ -138,21 +140,18 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
 
                 </div>
 
-                {/* Periyamulla Ward 05 Coastal Card */}
-                <div className="sm:col-span-5 h-48 sm:h-full min-h-[160px] rounded-2xl overflow-hidden shadow-md relative border-2 border-emerald-300 group/img">
-                  <img
-                    src={CAMPAIGN_IMAGES.heroBackground}
-                    alt="Periyamulla Coastal Lagoon Negombo"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/img:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#134234]/95 via-teal-950/50 to-black/20 pointer-events-none" />
-                  <div className="relative z-10 w-full h-full flex flex-col justify-end p-3.5 text-white">
-                    <span className="text-xs font-black text-amber-300 uppercase tracking-wider mb-1 flex items-center gap-1 drop-shadow-xs">
+                {/* Periyamulla Ward 05 Civic Card */}
+                <div className="sm:col-span-5 h-48 sm:h-full min-h-[160px] rounded-2xl overflow-hidden shadow-md relative border-2 border-emerald-300 bg-gradient-to-br from-[#134234] via-[#1B4D3E] to-[#0A2540] p-4 text-white flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-amber-300" />
-                      <span>Periyamulla • Ward 05</span>
+                      <span>Ward 05 • Periyamulla</span>
                     </span>
-                    <p className="text-[11px] font-medium text-amber-100/95 leading-tight drop-shadow-xs">
+                    <Building2 className="w-4 h-4 text-emerald-300" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-amber-200 block mb-1">Negombo Municipal Council</span>
+                    <p className="text-[11px] font-medium text-emerald-100/90 leading-tight">
                       {t.footerAboutDesc}
                     </p>
                   </div>
@@ -207,24 +206,18 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
               {/* Project Card Content */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
-                {/* Project Badge Card with real campaign photo */}
-                <div className="sm:col-span-5 h-44 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-400 group/proj">
-                  <img
-                    src={CAMPAIGN_IMAGES.roadProject}
-                    alt="St. Lazarus Road Asphalt Carpeting"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95 group-hover/proj:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/40 to-black/20 pointer-events-none" />
-                  <div className="relative z-10 w-full h-full p-3.5 text-white flex flex-col justify-between">
+                {/* Project Badge Card with vector civic scheme */}
+                <div className="sm:col-span-5 h-44 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-400 bg-gradient-to-br from-[#1B4D3E] via-[#134234] to-stone-900 p-4 text-white flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
                     <div className="inline-flex items-center gap-1 bg-black/60 backdrop-blur-xs text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-full w-fit border border-amber-400/50">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>{t.ongoingProjectStatusOngoing}</span>
                     </div>
-                    <div>
-                      <span className="text-[11px] font-extrabold text-amber-200 block drop-shadow-xs">St. Lazarus Road</span>
-                      <span className="text-sm font-black text-white leading-tight block drop-shadow-xs">Asphalt & Stormwater Drains</span>
-                    </div>
+                    <Construction className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-extrabold text-amber-300 block">St. Lazarus Road</span>
+                    <span className="text-sm font-black text-white leading-tight block">Asphalt & Stormwater Drains</span>
                   </div>
                 </div>
 
