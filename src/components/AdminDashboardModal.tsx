@@ -24,9 +24,11 @@ import {
   Lock,
   Eye,
   EyeOff,
-  ShieldAlert
+  ShieldAlert,
+  Image as ImageIcon
 } from 'lucide-react';
-import type { Complaint, AdminUser, Announcement, CouncillorMessage } from '../types.js';
+import type { Complaint, AdminUser, Announcement, CouncillorMessage, AppPhotoConfig } from '../types.js';
+import { AdminPhotoManager } from './AdminPhotoManager.js';
 
 interface AdminDashboardModalProps {
   isOpen: boolean;
@@ -36,7 +38,9 @@ interface AdminDashboardModalProps {
   complaints: Complaint[];
   onUpdateComplaintStatus: (id: string, status: Complaint['status'], feedback?: string, resolutionNote?: string) => Promise<void>;
   onAnnouncementCreated: (newAnn: Announcement) => void;
-  initialTab?: 'grievances' | 'announcements' | 'messages' | 'citizens' | 'security';
+  initialTab?: 'grievances' | 'announcements' | 'messages' | 'citizens' | 'security' | 'photos';
+  photoConfig: AppPhotoConfig;
+  onUpdatePhotoConfig: (newConfig: AppPhotoConfig) => Promise<void>;
 }
 
 export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
@@ -48,8 +52,10 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   onUpdateComplaintStatus,
   onAnnouncementCreated,
   initialTab = 'grievances',
+  photoConfig,
+  onUpdatePhotoConfig,
 }) => {
-  const [activeTab, setActiveTab] = useState<'grievances' | 'announcements' | 'messages' | 'citizens' | 'security'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'grievances' | 'announcements' | 'messages' | 'citizens' | 'security' | 'photos'>(initialTab);
 
   // Sync tab if initialTab changes
   useEffect(() => {
@@ -280,18 +286,18 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   const resolved = complaints.filter((c) => c.status === 'resolved').length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/70 backdrop-blur-xs overflow-y-auto animate-fadeIn">
-      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-6 max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-stone-950/70 backdrop-blur-xs overflow-y-auto animate-fadeIn">
+      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-auto max-h-[96dvh] sm:max-h-[92vh] flex flex-col">
         
         {/* Top Header Banner */}
-        <div className="bg-gradient-to-r from-emerald-950 via-stone-900 to-emerald-900 text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-emerald-800 shrink-0">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center shadow-md font-bold shrink-0">
-              <ShieldCheck className="w-7 h-7" />
+        <div className="bg-gradient-to-r from-emerald-950 via-stone-900 to-emerald-900 text-white p-3.5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-emerald-800 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center shadow-md font-bold shrink-0">
+              <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-heading font-extrabold text-lg sm:text-xl text-white tracking-tight">
+                <h2 className="font-heading font-extrabold text-base sm:text-xl text-white tracking-tight">
                   Admin Control Console
                 </h2>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-stone-950">
@@ -304,14 +310,28 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
+            {/* Direct Add Photos & Background Quick-Action Button */}
+            <button
+              onClick={() => setActiveTab('photos')}
+              className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-black transition-all cursor-pointer shadow-md min-h-[38px] ${
+                activeTab === 'photos'
+                  ? 'bg-amber-400 text-stone-950 ring-2 ring-amber-300'
+                  : 'bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-stone-950 hover:scale-105 active:scale-95'
+              }`}
+              title="Add Background Photos & Manage Photo Slots"
+            >
+              <ImageIcon className="w-4 h-4 text-stone-950" />
+              <span>+ Add Photos</span>
+            </button>
+
             <button
               onClick={() => {
                 setActiveTab('security');
                 setPassError(null);
                 setPassSuccess(null);
               }}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
+              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold border transition-all min-h-[38px] ${
                 activeTab === 'security'
                   ? 'bg-amber-400 text-stone-950 border-amber-300 shadow-sm'
                   : 'bg-white/10 hover:bg-white/20 text-amber-200 border-white/20'
@@ -324,7 +344,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
             <button
               onClick={onLogout}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-900/80 hover:bg-red-800 text-red-100 text-xs font-bold border border-red-700 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-900/80 hover:bg-red-800 text-red-100 text-xs font-bold border border-red-700 transition-colors min-h-[38px]"
               title="Log out of Admin session"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -333,36 +353,36 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 sm:p-2 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors ml-auto sm:ml-0"
               aria-label="Close"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>
 
         {/* Quick KPI Stat Bar */}
-        <div className="bg-stone-50 border-b border-stone-200 px-6 py-3 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center shrink-0">
-          <div className="bg-white p-2.5 rounded-xl border border-stone-200 shadow-2xs">
-            <span className="text-stone-500 text-[11px] block font-medium">Total Grievances</span>
-            <span className="text-xl font-black text-stone-900 font-mono">{total}</span>
+        <div className="bg-stone-50 border-b border-stone-200 px-3 sm:px-6 py-2.5 sm:py-3 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-center shrink-0">
+          <div className="bg-white p-2 sm:p-2.5 rounded-xl border border-stone-200 shadow-2xs">
+            <span className="text-stone-500 text-[10px] sm:text-[11px] block font-medium">Total Grievances</span>
+            <span className="text-lg sm:text-xl font-black text-stone-900 font-mono">{total}</span>
           </div>
-          <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs">
-            <span className="text-amber-700 text-[11px] block font-medium">Under Review</span>
-            <span className="text-xl font-black text-amber-900 font-mono">{underReview}</span>
+          <div className="bg-white p-2 sm:p-2.5 rounded-xl border border-amber-200 shadow-2xs">
+            <span className="text-amber-700 text-[10px] sm:text-[11px] block font-medium">Under Review</span>
+            <span className="text-lg sm:text-xl font-black text-amber-900 font-mono">{underReview}</span>
           </div>
-          <div className="bg-white p-2.5 rounded-xl border border-blue-200 shadow-2xs">
-            <span className="text-blue-700 text-[11px] block font-medium">In Progress</span>
-            <span className="text-xl font-black text-blue-900 font-mono">{inProgress}</span>
+          <div className="bg-white p-2 sm:p-2.5 rounded-xl border border-blue-200 shadow-2xs">
+            <span className="text-blue-700 text-[10px] sm:text-[11px] block font-medium">In Progress</span>
+            <span className="text-lg sm:text-xl font-black text-blue-900 font-mono">{inProgress}</span>
           </div>
-          <div className="bg-white p-2.5 rounded-xl border border-emerald-200 shadow-2xs">
-            <span className="text-emerald-700 text-[11px] block font-medium">Resolved</span>
-            <span className="text-xl font-black text-emerald-900 font-mono">{resolved}</span>
+          <div className="bg-white p-2 sm:p-2.5 rounded-xl border border-emerald-200 shadow-2xs">
+            <span className="text-emerald-700 text-[10px] sm:text-[11px] block font-medium">Resolved</span>
+            <span className="text-lg sm:text-xl font-black text-emerald-900 font-mono">{resolved}</span>
           </div>
         </div>
 
         {/* Tabs Bar */}
-        <div className="flex border-b border-stone-200 bg-stone-100/70 px-6 overflow-x-auto text-xs sm:text-sm font-bold shrink-0">
+        <div className="flex border-b border-stone-200 bg-stone-100/70 px-3 sm:px-6 overflow-x-auto no-scrollbar text-xs sm:text-sm font-bold shrink-0">
           <button
             onClick={() => setActiveTab('grievances')}
             className={`py-3 px-4 border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${
@@ -412,6 +432,21 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('photos')}
+            className={`py-3 px-4 border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              activeTab === 'photos'
+                ? 'border-amber-500 text-amber-950 bg-amber-50/90 shadow-2xs font-black'
+                : 'border-transparent text-stone-700 hover:text-stone-950 font-bold'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4 text-amber-600" />
+            <span>+ Add Photos &amp; Background</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-amber-400 text-stone-950 font-black">
+              Visual Slots
+            </span>
+          </button>
+
+          <button
             onClick={() => {
               setActiveTab('security');
               setPassError(null);
@@ -429,7 +464,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
         </div>
 
         {/* Tab Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-4 sm:space-y-6">
 
           {/* ========================================================= */}
           {/* TAB 1: MANAGE GRIEVANCES                                  */}
@@ -1173,6 +1208,16 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
               </div>
 
             </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* TAB 6: PHOTO SLOTS & APP BACKGROUND (ADMIN ONLY)          */}
+          {/* ========================================================= */}
+          {activeTab === 'photos' && (
+            <AdminPhotoManager
+              photoConfig={photoConfig}
+              onUpdateConfig={onUpdatePhotoConfig}
+            />
           )}
 
         </div>

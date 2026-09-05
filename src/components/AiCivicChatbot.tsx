@@ -411,16 +411,20 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ language = 'en' 
   ]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className={`fixed z-40 transition-all ${
+      isOpen 
+        ? 'inset-x-3 bottom-20 sm:bottom-6 sm:right-6 sm:left-auto sm:w-[410px]' 
+        : 'bottom-20 sm:bottom-6 right-3 sm:right-6'
+    }`}>
       {/* Floating Toggle Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2.5 px-4 py-3.5 bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-emerald-500/40 cursor-pointer"
+          className="group relative flex items-center gap-2.5 px-3.5 sm:px-4 py-3 sm:py-3.5 bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-900 hover:from-emerald-900 hover:to-teal-950 text-white rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-emerald-500/40 cursor-pointer min-h-[44px]"
           aria-label="Open Civic AI Assistant"
         >
           <div className="relative">
-            <Bot className="w-6 h-6 text-amber-300" />
+            <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
           </div>
           <div className="text-left hidden sm:block">
@@ -436,7 +440,7 @@ export const AiCivicChatbot: React.FC<AiCivicChatbotProps> = ({ language = 'en' 
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="w-[92vw] sm:w-[410px] h-[550px] bg-white rounded-3xl shadow-2xl border border-stone-300 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="w-full sm:w-[410px] max-h-[calc(100dvh-5.5rem)] sm:max-h-[82vh] h-[520px] bg-white rounded-3xl shadow-2xl border border-stone-300 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-300">
           
           {/* Chat Header */}
           <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white p-4 flex items-center justify-between shadow-xs">

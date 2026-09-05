@@ -22,13 +22,23 @@ import { AiCivicChatbot } from './components/AiCivicChatbot.js';
 import { AuthModal } from './components/AuthModal.js';
 import { AdminDashboardModal } from './components/AdminDashboardModal.js';
 
-import type { Complaint, CommunityProject, Announcement, AuthUser, AdminUser } from './types.js';
+import { 
+  Home, 
+  Search, 
+  Plus, 
+  AlertTriangle, 
+  ShieldCheck, 
+  User,
+  MessageSquare
+} from 'lucide-react';
+import type { Complaint, CommunityProject, Announcement, AuthUser, AdminUser, AppPhotoConfig } from './types.js';
 import type { Language } from './utils/translations.js';
 
 export default function App() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [projects, setProjects] = useState<CommunityProject[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [photoConfig, setPhotoConfig] = useState<AppPhotoConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState<Language>('en');
 
@@ -69,13 +79,14 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  // Fetch initial forum data from API / PostgreSQL
+  // Fetch initial forum data & photo config from API / persistent storage
   const fetchData = async () => {
     try {
-      const [cRes, pRes, aRes] = await Promise.all([
+      const [cRes, pRes, aRes, photoRes] = await Promise.all([
         fetch('/api/complaints'),
         fetch('/api/projects'),
         fetch('/api/announcements'),
+        fetch('/api/photos/config').catch(() => null),
       ]);
 
       const [cData, pData, aData] = await Promise.all([
@@ -87,6 +98,13 @@ export default function App() {
       if (cData.success && cData.data) setComplaints(cData.data);
       if (pData.success && pData.data) setProjects(pData.data);
       if (aData.success && aData.data) setAnnouncements(aData.data);
+
+      if (photoRes && photoRes.ok) {
+        const photoData = await photoRes.json();
+        if (photoData.success && photoData.data) {
+          setPhotoConfig(photoData.data);
+        }
+      }
     } catch (e) {
       console.warn('Backend loading using local cache / initial mock data:', e);
     } finally {
@@ -246,14 +264,58 @@ export default function App() {
     }
   };
 
+  const handleUpdatePhotoConfig = async (newConfig: AppPhotoConfig) => {
+    try {
+      const res = await fetch('/api/photos/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig),
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setPhotoConfig(data.data);
+      } else {
+        setPhotoConfig(newConfig);
+      }
+    } catch (e) {
+      console.error('Failed to update photo config on server:', e);
+      setPhotoConfig(newConfig);
+    }
+  };
+
   const ongoingProject = projects.find((p) => p.status === 'ongoing') || projects[0];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-stone-900 selection:bg-amber-200 selection:text-stone-900 relative">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-stone-900 selection:bg-amber-200 selection:text-stone-900 relative pb-16 sm:pb-0">
       
       {/* Clean Civic Ambient Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F7F2E7]" />
       
+      {/* Dynamic App-Wide Background Photo (If Admin Enabled with 'entire_app' scope) */}
+      {photoConfig?.background?.enabled && photoConfig?.background?.url && photoConfig?.background?.scope === 'entire_app' && (
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <img
+            src={photoConfig.background.url}
+            alt="Municipal Portal Background"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+            style={{
+              opacity: photoConfig.background.opacity ?? 0.18,
+              filter: photoConfig.background.blur ? `blur(${photoConfig.background.blur}px)` : undefined,
+            }}
+          />
+          {photoConfig.background.overlayStyle === 'emerald' && (
+            <div className="absolute inset-0 bg-emerald-950/20" />
+          )}
+          {photoConfig.background.overlayStyle === 'dark' && (
+            <div className="absolute inset-0 bg-stone-950/30" />
+          )}
+          {photoConfig.background.overlayStyle === 'warm' && (
+            <div className="absolute inset-0 bg-amber-900/10" />
+          )}
+        </div>
+      )}
+
       {/* 1. Municipal Top Header & Navbar */}
       <Navbar
         onOpenModule={handleOpenModule}
@@ -275,6 +337,7 @@ export default function App() {
         onLanguageChange={setLanguage}
         onBuildCommunityClick={() => handleOpenModule('submit_complaint')}
         onExploreProjectsClick={() => handleOpenModule('community_projects')}
+        photoConfig={photoConfig || undefined}
       />
 
       {/* 3. 8-Card Interactive Service Grid matching reference mockup */}
@@ -292,6 +355,7 @@ export default function App() {
         onOpenSubmitModal={() => handleOpenModule('submit_complaint')}
         onOpenContactModal={() => handleOpenModule('whatsapp')}
         language={language}
+        customGalleryItems={photoConfig?.customGalleryItems}
       />
 
       {/* 5. Quick Contact & Ongoing Project Section */}
@@ -300,6 +364,7 @@ export default function App() {
         onViewAllProjects={() => handleOpenModule('community_projects')}
         onOpenContactForm={() => handleOpenModule('whatsapp')}
         language={language}
+        projectPhotoUrl={photoConfig?.ongoingProject?.url}
       />
 
       {/* 6. Stay Connected Newsletter Subscription */}
@@ -310,6 +375,74 @@ export default function App() {
 
       {/* 8. Floating AI Civic Assistant powered by Gemini */}
       <AiCivicChatbot onOpenModule={handleOpenModule} language={language} />
+
+      {/* 9. Mobile Bottom Quick Action Navigation Bar (Smartphones only) */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 py-1.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-around select-none">
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="flex flex-col items-center justify-center py-1 px-2 text-stone-600 active:text-emerald-800 transition-colors cursor-pointer"
+        >
+          <Home className="w-5 h-5" />
+          <span className="text-[10px] font-bold mt-0.5">Home</span>
+        </button>
+
+        <button
+          onClick={() => handleOpenModule('my_complaints')}
+          className="flex flex-col items-center justify-center py-1 px-2 text-stone-600 active:text-emerald-800 transition-colors cursor-pointer"
+        >
+          <Search className="w-5 h-5" />
+          <span className="text-[10px] font-bold mt-0.5">Track</span>
+        </button>
+
+        {/* Center Golden Quick Submit Button */}
+        <button
+          onClick={() => handleOpenModule('submit_complaint')}
+          className="flex flex-col items-center justify-center -mt-5 p-3 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-stone-950 font-black shadow-xl border-2 border-amber-300 active:scale-90 transition-transform cursor-pointer"
+          aria-label="Submit Grievance"
+        >
+          <Plus className="w-5 h-5 stroke-[3]" />
+          <span className="sr-only">Submit</span>
+        </button>
+
+        <button
+          onClick={() => handleOpenModule('emergency_contacts')}
+          className="flex flex-col items-center justify-center py-1 px-2 text-red-600 active:text-red-800 transition-colors cursor-pointer"
+        >
+          <AlertTriangle className="w-5 h-5" />
+          <span className="text-[10px] font-bold mt-0.5">Emergency</span>
+        </button>
+
+        <button
+          onClick={() => {
+            if (!currentUser) {
+              handleOpenLogin('citizen');
+            } else if (currentUser.role === 'admin') {
+              setAdminInitialTab('grievances');
+              setActiveModal('admin_dashboard');
+            } else {
+              handleOpenModule('profile');
+            }
+          }}
+          className="flex flex-col items-center justify-center py-1 px-2 text-stone-600 active:text-emerald-800 transition-colors cursor-pointer"
+        >
+          {currentUser?.role === 'admin' ? (
+            <>
+              <ShieldCheck className="w-5 h-5 text-amber-600" />
+              <span className="text-[10px] font-bold mt-0.5 text-stone-900">Admin</span>
+            </>
+          ) : currentUser ? (
+            <>
+              <User className="w-5 h-5 text-emerald-700" />
+              <span className="text-[10px] font-bold mt-0.5 text-emerald-800 truncate max-w-[48px]">{currentUser.name.split(' ')[0]}</span>
+            </>
+          ) : (
+            <>
+              <User className="w-5 h-5" />
+              <span className="text-[10px] font-bold mt-0.5">Sign In</span>
+            </>
+          )}
+        </button>
+      </nav>
 
       {/* ============================================================ */}
       {/* AUTHENTICATION MODAL (People Mobile OTP + Admin Login)       */}
@@ -342,6 +475,8 @@ export default function App() {
           onUpdateComplaintStatus={handleUpdateStatus}
           onAnnouncementCreated={(newAnn) => setAnnouncements((prev) => [newAnn, ...prev])}
           initialTab={adminInitialTab}
+          photoConfig={photoConfig || undefined}
+          onUpdatePhotoConfig={handleUpdatePhotoConfig}
         />
       )}
 

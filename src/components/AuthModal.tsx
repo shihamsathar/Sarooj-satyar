@@ -315,7 +315,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-4 sm:p-7 space-y-5 sm:space-y-6 max-h-[80vh] overflow-y-auto">
 
           {/* Logged Out Return Banner */}
           {loggedOutNotice && (
@@ -524,7 +524,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     <label className="block text-xs font-bold text-stone-700 mb-2 text-center uppercase tracking-wider">
                       Enter 6-Digit Verification Code
                     </label>
-                    <div className="flex items-center justify-center gap-2 sm:gap-3">
+                    <div className="flex items-center justify-center gap-1.5 sm:gap-3 max-w-full">
                       {otpCode.map((digit, idx) => (
                         <input
                           key={idx}
@@ -535,7 +535,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           value={digit}
                           onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                          className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-black font-mono rounded-xl bg-stone-50 border-2 border-stone-300 focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 outline-hidden transition-all shadow-xs"
+                          className="w-9 h-12 sm:w-12 sm:h-14 text-center text-lg sm:text-2xl font-black font-mono rounded-xl bg-stone-50 border-2 border-stone-300 focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 outline-hidden transition-all shadow-xs"
                         />
                       ))}
                     </div>

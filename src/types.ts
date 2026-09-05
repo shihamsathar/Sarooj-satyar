@@ -151,3 +151,44 @@ export interface CitizenUser {
 
 export type AuthUser = AdminUser | CitizenUser;
 
+export interface CustomGalleryItem {
+  id: string;
+  title: string;
+  titleTa?: string;
+  titleSi?: string;
+  category: 'Meetings' | 'Infrastructure' | 'Healthcare' | 'Environment' | 'Youth' | 'Community';
+  location: string;
+  locationTa?: string;
+  locationSi?: string;
+  date: string;
+  photoUrl: string;
+  caption: string;
+  captionTa?: string;
+  captionSi?: string;
+  impact?: string;
+  councillorNote?: string;
+}
+
+export interface AppPhotoConfig {
+  background: {
+    url: string;
+    enabled: boolean;
+    opacity: number; // 0.05 to 0.90
+    blur: number; // 0 to 12px
+    overlayStyle: 'warm' | 'emerald' | 'subtle' | 'dark';
+    scope: 'hero' | 'entire_app';
+  };
+  portrait: {
+    url: string;
+    enabled: boolean;
+    caption?: string;
+  };
+  ongoingProject: {
+    url: string;
+    caption?: string;
+    title?: string;
+  };
+  customGalleryItems: CustomGalleryItem[];
+}
+
+

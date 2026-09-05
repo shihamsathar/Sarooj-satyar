@@ -31,6 +31,14 @@ const PORT = 3000;
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Ensure upload directories exist and serve them statically
+const rootUploads = path.join(process.cwd(), 'uploads');
+const pubUploads = path.join(process.cwd(), 'public', 'uploads');
+if (!fs.existsSync(rootUploads)) fs.mkdirSync(rootUploads, { recursive: true });
+if (!fs.existsSync(pubUploads)) fs.mkdirSync(pubUploads, { recursive: true });
+app.use('/uploads', express.static(rootUploads));
+app.use('/uploads', express.static(pubUploads));
+
 // CORS & Logging Middleware
 app.use((req, res, next) => {
   res.setHeader('X-Powered-By', 'Sarooj-Sattar-Community-Forum');
@@ -172,59 +180,85 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// Photo Management & Upload Endpoints for Authentic Councillor Campaign Photos
-app.get('/api/photos/active', (req, res) => {
+// =========================================================================
+// Photo Management & Persistent Slot Configuration (Admin Controlled)
+// =========================================================================
+const PHOTO_CONFIG_FILE = path.join(process.cwd(), 'app_photo_slots.json');
+
+const defaultPhotoConfig = {
+  background: {
+    url: '',
+    enabled: false,
+    opacity: 0.25,
+    blur: 0,
+    overlayStyle: 'warm',
+    scope: 'hero',
+  },
+  portrait: {
+    url: '',
+    enabled: false,
+    caption: 'Official Portrait of Councillor Sarooj Sattar',
+  },
+  ongoingProject: {
+    url: '',
+    caption: 'St. Lazarus Road Drainage & Sub-base Asphalt Carpeting',
+    title: 'Periyamulla Flood Mitigation Project',
+  },
+  customGalleryItems: [],
+};
+
+function getSavedPhotoConfig() {
   try {
-    const publicDir = path.join(process.cwd(), 'public');
-    const uploadsDir = path.join(publicDir, 'uploads');
-    const imagesDir = path.join(publicDir, 'images');
-
-    const knownFiles = [
-      'active-background.jpg',
-      'active-portrait.jpg',
-      'WhatsApp Image 2026-09-04 at 2.57.06 PM.jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM.jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM (1).jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM (2).jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM (3).jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM (4).jpeg',
-      'WhatsApp Image 2026-09-04 at 2.57.07 PM (5).jpeg',
-    ];
-
-    const detected: Record<string, string> = {};
-
-    // Check uploads
-    if (fs.existsSync(uploadsDir)) {
-      const files = fs.readdirSync(uploadsDir);
-      for (const f of files) {
-        detected[f] = `/uploads/${encodeURIComponent(f)}`;
-      }
+    if (fs.existsSync(PHOTO_CONFIG_FILE)) {
+      const raw = fs.readFileSync(PHOTO_CONFIG_FILE, 'utf8');
+      return { ...defaultPhotoConfig, ...JSON.parse(raw) };
     }
+  } catch (e) {
+    console.error('Failed to read app_photo_slots.json:', e);
+  }
+  return defaultPhotoConfig;
+}
 
-    // Check public root
-    if (fs.existsSync(publicDir)) {
-      const files = fs.readdirSync(publicDir);
-      for (const f of files) {
-        if (f.endsWith('.jpeg') || f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp')) {
-          detected[f] = `/${encodeURIComponent(f)}`;
-        }
-      }
-    }
+function savePhotoConfig(cfg: any) {
+  try {
+    fs.writeFileSync(PHOTO_CONFIG_FILE, JSON.stringify(cfg, null, 2), 'utf8');
+    return true;
+  } catch (e) {
+    console.error('Failed to write app_photo_slots.json:', e);
+    return false;
+  }
+}
 
-    // Check images dir
-    if (fs.existsSync(imagesDir)) {
-      const files = fs.readdirSync(imagesDir);
-      for (const f of files) {
-        detected[f] = `/images/${encodeURIComponent(f)}`;
-      }
-    }
-
-    res.json({ success: true, photos: detected });
+// 1. Get current active photo slots configuration (Public for all visitors)
+app.get('/api/photos/config', (req, res) => {
+  try {
+    const config = getSavedPhotoConfig();
+    res.json({ success: true, data: config });
   } catch (err: any) {
-    res.json({ success: false, error: err.message, photos: {} });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
+// 2. Save active photo slots configuration (Admin only)
+app.post('/api/photos/config', (req, res) => {
+  try {
+    const current = getSavedPhotoConfig();
+    const updated = {
+      ...current,
+      ...req.body,
+      background: { ...current.background, ...(req.body.background || {}) },
+      portrait: { ...current.portrait, ...(req.body.portrait || {}) },
+      ongoingProject: { ...current.ongoingProject, ...(req.body.ongoingProject || {}) },
+      customGalleryItems: req.body.customGalleryItems !== undefined ? req.body.customGalleryItems : current.customGalleryItems,
+    };
+    savePhotoConfig(updated);
+    res.json({ success: true, data: updated, message: 'Photo slots configuration saved successfully!' });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 3. Upload photo endpoint (Handles base64 dataUrl -> file, or direct URL)
 app.post('/api/photos/upload', (req, res) => {
   try {
     const { dataUrl, filename, slot } = req.body;
@@ -232,25 +266,46 @@ app.post('/api/photos/upload', (req, res) => {
       return res.status(400).json({ success: false, error: 'No image data provided' });
     }
 
+    // Check if it's already a web URL
+    if (dataUrl.startsWith('http://') || dataUrl.startsWith('https://')) {
+      return res.json({ success: true, url: dataUrl, slot });
+    }
+
     const matches = dataUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (!matches || matches.length !== 3) {
-      return res.status(400).json({ success: false, error: 'Invalid base64 data' });
+      // If it's already a relative path or direct url
+      if (dataUrl.startsWith('/')) {
+        return res.json({ success: true, url: dataUrl, slot });
+      }
+      return res.status(400).json({ success: false, error: 'Invalid image data format' });
     }
 
     const buffer = Buffer.from(matches[2], 'base64');
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    const safeFilename = slot === 'background' 
+      ? `active-background-${Date.now()}.jpg` 
+      : (slot === 'portrait' 
+        ? `active-portrait-${Date.now()}.jpg` 
+        : (slot === 'project' 
+          ? `active-project-${Date.now()}.jpg` 
+          : (filename ? path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_') : `photo-${Date.now()}.jpg`)));
+
+    // Write to both root uploads and public uploads
+    const targets = [
+      path.join(process.cwd(), 'uploads', safeFilename),
+      path.join(process.cwd(), 'public', 'uploads', safeFilename)
+    ];
+
+    for (const target of targets) {
+      try {
+        const dir = path.dirname(target);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(target, buffer);
+      } catch (e) {
+        // ignore secondary target failure
+      }
     }
 
-    const safeFilename = slot === 'background' 
-      ? 'active-background.jpg' 
-      : (slot === 'portrait' ? 'active-portrait.jpg' : (filename ? path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_') : `photo-${Date.now()}.jpg`));
-
-    const filePath = path.join(uploadsDir, safeFilename);
-    fs.writeFileSync(filePath, buffer);
-
-    const publicUrl = `/uploads/${safeFilename}?t=${Date.now()}`;
+    const publicUrl = `/uploads/${safeFilename}`;
     res.json({ success: true, url: publicUrl, slot });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
@@ -260,15 +315,61 @@ app.post('/api/photos/upload', (req, res) => {
 app.delete('/api/photos/:slot', (req, res) => {
   try {
     const { slot } = req.params;
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    const filename = slot === 'background' ? 'active-background.jpg' : (slot === 'portrait' ? 'active-portrait.jpg' : slot);
-    const targetPath = path.join(uploadsDir, filename);
-    if (fs.existsSync(targetPath)) {
-      fs.unlinkSync(targetPath);
+    const current = getSavedPhotoConfig();
+    if (slot === 'background') {
+      current.background = { ...defaultPhotoConfig.background };
+    } else if (slot === 'portrait') {
+      current.portrait = { ...defaultPhotoConfig.portrait };
+    } else if (slot === 'project') {
+      current.ongoingProject = { ...defaultPhotoConfig.ongoingProject };
     }
-    res.json({ success: true, removed: slot });
+    savePhotoConfig(current);
+    res.json({ success: true, removed: slot, data: current });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Photo Management & Upload Endpoints for Authentic Councillor Campaign Photos
+app.get('/api/photos/active', (req, res) => {
+  try {
+    const publicDir = path.join(process.cwd(), 'public');
+    const uploadsDir = path.join(process.cwd(), 'uploads');
+    const pubUploadsDir = path.join(publicDir, 'uploads');
+    const imagesDir = path.join(publicDir, 'images');
+
+    const detected: Record<string, string> = {};
+
+    [uploadsDir, pubUploadsDir].forEach((dir) => {
+      if (fs.existsSync(dir)) {
+        const files = fs.readdirSync(dir);
+        for (const f of files) {
+          if (f.endsWith('.jpeg') || f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp')) {
+            detected[f] = `/uploads/${encodeURIComponent(f)}`;
+          }
+        }
+      }
+    });
+
+    if (fs.existsSync(publicDir)) {
+      const files = fs.readdirSync(publicDir);
+      for (const f of files) {
+        if (f.endsWith('.jpeg') || f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp')) {
+          detected[f] = `/${encodeURIComponent(f)}`;
+        }
+      }
+    }
+
+    if (fs.existsSync(imagesDir)) {
+      const files = fs.readdirSync(imagesDir);
+      for (const f of files) {
+        detected[f] = `/images/${encodeURIComponent(f)}`;
+      }
+    }
+
+    res.json({ success: true, photos: detected, config: getSavedPhotoConfig() });
+  } catch (err: any) {
+    res.json({ success: false, error: err.message, photos: {} });
   }
 });
 

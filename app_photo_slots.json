@@ -1,0 +1,21 @@
+{
+  "background": {
+    "url": "",
+    "enabled": false,
+    "opacity": 0.25,
+    "blur": 0,
+    "overlayStyle": "warm",
+    "scope": "hero"
+  },
+  "portrait": {
+    "url": "",
+    "enabled": false,
+    "caption": "Official Portrait of Councillor Sarooj Sattar"
+  },
+  "ongoingProject": {
+    "url": "",
+    "caption": "St. Lazarus Road Drainage & Sub-base Asphalt Carpeting",
+    "title": "Periyamulla Flood Mitigation Project"
+  },
+  "customGalleryItems": []
+}

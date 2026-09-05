@@ -11,7 +11,8 @@ import {
   Smartphone,
   LogOut,
   ChevronDown,
-  KeyRound
+  KeyRound,
+  ImagePlus
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
 import type { Language } from '../utils/translations.js';
@@ -25,7 +26,7 @@ interface NavbarProps {
   onLanguageChange: (lang: Language) => void;
   currentUser: AuthUser | null;
   onOpenLogin: (initialTab?: 'citizen' | 'admin') => void;
-  onOpenAdminDashboard: (tab?: 'grievances' | 'announcements' | 'messages' | 'citizens' | 'security') => void;
+  onOpenAdminDashboard: (tab?: 'grievances' | 'announcements' | 'messages' | 'citizens' | 'security' | 'photos') => void;
   onLogout: () => void;
 }
 
@@ -215,67 +216,91 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
           ) : currentUser.role === 'admin' ? (
-            // LOGGED IN AS ADMIN: Show Admin Console badge & control
-            <div className="relative">
+            // LOGGED IN AS ADMIN: Show Admin Quick Add Photos + Admin Console badge & control
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
-                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900 hover:bg-black text-amber-300 text-xs font-bold shadow-xs border border-amber-400/60 transition-all"
+                onClick={() => onOpenAdminDashboard('photos')}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-stone-950 text-xs font-black shadow-xs border border-amber-300 transition-all hover:scale-105 cursor-pointer"
+                title="Add Background Photos & Manage Photo Slots"
               >
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <span className="hidden sm:inline">Admin Console</span>
-                <span className="sm:hidden">Admin</span>
-                <ChevronDown className="w-3 h-3 text-stone-400" />
+                <ImagePlus className="w-3.5 h-3.5 text-stone-950" />
+                <span>+ Add Photos</span>
               </button>
 
-              {userDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50 text-xs animate-fadeIn">
-                  <div className="px-3.5 py-2 border-b border-stone-100 bg-stone-50">
-                    <div className="font-bold text-stone-900">{currentUser.name}</div>
-                    <div className="text-[10px] text-emerald-800 font-semibold">{currentUser.title}</div>
+              <div className="relative">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900 hover:bg-black text-amber-300 text-xs font-bold shadow-xs border border-amber-400/60 transition-all"
+                >
+                  <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  <span className="hidden sm:inline">Admin Console</span>
+                  <span className="sm:hidden">Admin</span>
+                  <ChevronDown className="w-3 h-3 text-stone-400" />
+                </button>
+
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50 text-xs animate-fadeIn">
+                    <div className="px-3.5 py-2 border-b border-stone-100 bg-stone-50">
+                      <div className="font-bold text-stone-900">{currentUser.name}</div>
+                      <div className="text-[10px] text-emerald-800 font-semibold">{currentUser.title}</div>
+                    </div>
+                    
+                    {/* Direct Add Photos in Dropdown */}
+                    <button
+                      onClick={() => {
+                        onOpenAdminDashboard('photos');
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2.5 text-stone-900 bg-amber-50/60 hover:bg-amber-100/80 font-black flex items-center gap-2 text-amber-950 border-b border-amber-100/60 cursor-pointer"
+                    >
+                      <ImagePlus className="w-4 h-4 text-amber-600" />
+                      <span>+ Add Photos & Background</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        onOpenAdminDashboard();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2 text-stone-800 hover:bg-stone-100 font-bold flex items-center gap-2 cursor-pointer"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                      <span>Open Admin Console</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        onOpenAdminDashboard('security');
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 font-medium flex items-center gap-2 cursor-pointer"
+                    >
+                      <KeyRound className="w-4 h-4 text-amber-600" />
+                      <span>Change Password</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        onOpenModule('my_complaints');
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 flex items-center gap-2 cursor-pointer"
+                    >
+                      <Phone className="w-4 h-4 text-stone-500" />
+                      <span>View All Complaints</span>
+                    </button>
+                    <div className="border-t border-stone-100 my-1"></div>
+                    <button
+                      onClick={() => {
+                        onLogout();
+                        setUserDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3.5 py-2 text-red-600 hover:bg-red-50 font-bold flex items-center gap-2 cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log Out</span>
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      onOpenAdminDashboard();
-                      setUserDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3.5 py-2.5 text-stone-800 hover:bg-stone-100 font-bold flex items-center gap-2"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-amber-600" />
-                    <span>Open Admin Console</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      onOpenAdminDashboard('security');
-                      setUserDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 font-medium flex items-center gap-2"
-                  >
-                    <KeyRound className="w-4 h-4 text-amber-600" />
-                    <span>Change Password</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      onOpenModule('my_complaints');
-                      setUserDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 flex items-center gap-2"
-                  >
-                    <Phone className="w-4 h-4 text-stone-500" />
-                    <span>View All Complaints</span>
-                  </button>
-                  <div className="border-t border-stone-100 my-1"></div>
-                  <button
-                    onClick={() => {
-                      onLogout();
-                      setUserDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3.5 py-2 text-red-600 hover:bg-red-50 font-bold flex items-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Log Out</span>
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ) : (
             // LOGGED IN AS CITIZEN (PEOPLE): Show Citizen profile badge

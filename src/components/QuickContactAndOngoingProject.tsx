@@ -22,6 +22,7 @@ interface QuickContactAndOngoingProjectProps {
   onOpenProjectDetail?: (project: CommunityProject) => void;
   onOpenContactForm: () => void;
   language: Language;
+  projectPhotoUrl?: string;
 }
 
 export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProjectProps> = ({
@@ -30,6 +31,7 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
   onOpenProjectDetail,
   onOpenContactForm,
   language,
+  projectPhotoUrl,
 }) => {
   const t = translations[language];
 
@@ -206,18 +208,30 @@ export const QuickContactAndOngoingProject: React.FC<QuickContactAndOngoingProje
               {/* Project Card Content */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-5 items-center">
                 
-                {/* Project Badge Card with vector civic scheme */}
-                <div className="sm:col-span-5 h-44 rounded-2xl overflow-hidden shadow-inner relative border-2 border-amber-400 bg-gradient-to-br from-[#1B4D3E] via-[#134234] to-stone-900 p-4 text-white flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <div className="inline-flex items-center gap-1 bg-black/60 backdrop-blur-xs text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-full w-fit border border-amber-400/50">
+                {/* Project Badge Card with vector civic scheme or Admin Uploaded Photo */}
+                <div className="sm:col-span-5 h-44 rounded-2xl overflow-hidden shadow-md relative border-2 border-amber-400 bg-gradient-to-br from-[#1B4D3E] via-[#134234] to-stone-900 p-4 text-white flex flex-col justify-between">
+                  {projectPhotoUrl && (
+                    <img
+                      src={projectPhotoUrl}
+                      alt={project.title}
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
+                  {projectPhotoUrl && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/40 to-black/30 z-0" />
+                  )}
+
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="inline-flex items-center gap-1 bg-black/60 backdrop-blur-xs text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-full w-fit border border-amber-400/50 shadow-xs">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>{t.ongoingProjectStatusOngoing}</span>
                     </div>
-                    <Construction className="w-5 h-5 text-amber-400" />
+                    <Construction className="w-5 h-5 text-amber-400 drop-shadow-xs" />
                   </div>
-                  <div>
-                    <span className="text-[11px] font-extrabold text-amber-300 block">St. Lazarus Road</span>
-                    <span className="text-sm font-black text-white leading-tight block">Asphalt & Stormwater Drains</span>
+                  <div className="relative z-10">
+                    <span className="text-[11px] font-extrabold text-amber-300 block drop-shadow-sm">St. Lazarus Road</span>
+                    <span className="text-sm font-black text-white leading-tight block drop-shadow-md">Asphalt & Stormwater Drains</span>
                   </div>
                 </div>
 

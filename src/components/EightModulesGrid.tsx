@@ -182,44 +182,44 @@ export const EightModulesGrid: React.FC<EightModulesGridProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
         
         {/* Top Key Metrics Banner */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-950 via-teal-950 to-emerald-900 border-2 border-amber-400 shadow-xl text-white">
-          <div className="flex items-center gap-3 p-2 sm:border-r border-emerald-800/80">
-            <div className="w-10 h-10 rounded-2xl bg-amber-400/20 border border-amber-400 flex items-center justify-center text-amber-300 shrink-0">
-              <CheckCircle2 className="w-5 h-5 text-amber-300" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-3xl bg-gradient-to-r from-emerald-950 via-teal-950 to-emerald-900 border-2 border-amber-400 shadow-xl text-white">
+          <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 sm:border-r border-emerald-800/80">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-amber-400/20 border border-amber-400 flex items-center justify-center text-amber-300 shrink-0">
+              <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-amber-300">{t.metricResolutionRate}</div>
-              <div className="text-[11px] text-emerald-200 font-bold">{t.metricResolutionLabel}</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-2 sm:border-r border-emerald-800/80">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-400/20 border border-emerald-400 flex items-center justify-center text-emerald-300 shrink-0">
-              <Clock className="w-5 h-5 text-emerald-300" />
-            </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-300">{t.metricResponseTime}</div>
-              <div className="text-[11px] text-emerald-200 font-bold">{t.metricResponseLabel}</div>
+            <div className="min-w-0">
+              <div className="text-lg sm:text-2xl font-black font-mono text-amber-300 leading-tight">{t.metricResolutionRate}</div>
+              <div className="text-[10px] sm:text-[11px] text-emerald-200 font-bold leading-tight truncate">{t.metricResolutionLabel}</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-2 sm:border-r border-emerald-800/80">
-            <div className="w-10 h-10 rounded-2xl bg-teal-400/20 border border-teal-400 flex items-center justify-center text-teal-300 shrink-0">
-              <ShieldCheck className="w-5 h-5 text-teal-300" />
+          <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 sm:border-r border-emerald-800/80">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-emerald-400/20 border border-emerald-400 flex items-center justify-center text-emerald-300 shrink-0">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-300" />
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-teal-300">{t.metricCoverage}</div>
-              <div className="text-[11px] text-emerald-200 font-bold">{t.metricCoverageLabel}</div>
+            <div className="min-w-0">
+              <div className="text-lg sm:text-2xl font-black font-mono text-emerald-300 leading-tight">{t.metricResponseTime}</div>
+              <div className="text-[10px] sm:text-[11px] text-emerald-200 font-bold leading-tight truncate">{t.metricResponseLabel}</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-2xl bg-orange-400/20 border border-orange-400 flex items-center justify-center text-orange-300 shrink-0">
-              <Award className="w-5 h-5 text-orange-300" />
+          <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 sm:border-r border-emerald-800/80">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-teal-400/20 border border-teal-400 flex items-center justify-center text-teal-300 shrink-0">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-teal-300" />
             </div>
-            <div>
-              <div className="text-xl sm:text-2xl font-black font-mono text-orange-300">{t.metricHelpline}</div>
-              <div className="text-[11px] text-emerald-200 font-bold">{t.metricHelplineLabel}</div>
+            <div className="min-w-0">
+              <div className="text-lg sm:text-2xl font-black font-mono text-teal-300 leading-tight">{t.metricCoverage}</div>
+              <div className="text-[10px] sm:text-[11px] text-emerald-200 font-bold leading-tight truncate">{t.metricCoverageLabel}</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-orange-400/20 border border-orange-400 flex items-center justify-center text-orange-300 shrink-0">
+              <Award className="w-4 h-4 sm:w-5 sm:h-5 text-orange-300" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-lg sm:text-2xl font-black font-mono text-orange-300 leading-tight">{t.metricHelpline}</div>
+              <div className="text-[10px] sm:text-[11px] text-emerald-200 font-bold leading-tight truncate">{t.metricHelplineLabel}</div>
             </div>
           </div>
         </div>

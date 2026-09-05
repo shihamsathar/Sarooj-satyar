@@ -199,35 +199,35 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-3 sm:my-8">
         
         {/* Modal Top Header */}
-        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white p-6 sm:p-7 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white p-4 sm:p-7 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-700/80 border border-emerald-500/40 text-amber-300 flex items-center justify-center shadow-md">
-              <FileEdit className="w-6 h-6" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-700/80 border border-emerald-500/40 text-amber-300 flex items-center justify-center shadow-md shrink-0">
+              <FileEdit className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h2 className="font-heading font-extrabold text-xl sm:text-2xl text-white tracking-tight">
+              <h2 className="font-heading font-extrabold text-lg sm:text-2xl text-white tracking-tight">
                 Submit Public Grievance
               </h2>
-              <p className="text-xs text-emerald-200 font-medium">
-                Direct Report to Councillor Sarooj Sattar & Negombo MC Engineering Unit
+              <p className="text-[11px] sm:text-xs text-emerald-200 font-medium line-clamp-1">
+                Direct Report to Councillor Sarooj Sattar & Negombo MC
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-800/80 transition-colors"
+            className="p-1.5 sm:p-2 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-800/80 transition-colors shrink-0"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto space-y-6">
+        <div className="p-4 sm:p-8 max-h-[78vh] overflow-y-auto space-y-5 sm:space-y-6">
           
           {submittedComplaint ? (
             /* Success View */

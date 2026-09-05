@@ -263,11 +263,11 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
           </div>
         </div>
 
-        {/* Main Split Content: List on Left, Detail on Right */}
-        <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+        {/* Main Split Content: List on Left, Detail on Right with Mobile Tab-Switching */}
+        <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-0">
           
           {/* Complaints List (Left Column) */}
-          <div className="lg:col-span-5 border-r border-stone-200 overflow-y-auto p-4 space-y-3 bg-stone-50/50">
+          <div className={`lg:col-span-5 border-r border-stone-200 overflow-y-auto p-4 space-y-3 bg-stone-50/50 ${selectedComplaint ? 'hidden lg:block' : 'block'}`}>
             {filteredComplaints.length === 0 ? (
               <div className="text-center py-12 text-stone-400 space-y-2">
                 <FolderKanban className="w-10 h-10 mx-auto text-stone-300" />
@@ -286,7 +286,7 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
                   <button
                     key={c.id}
                     onClick={() => setSelectedComplaint(c)}
-                    className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 ${
+                    className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 cursor-pointer ${
                       isSelected
                         ? 'bg-white border-blue-600 shadow-md ring-2 ring-blue-500/20'
                         : 'bg-white border-stone-200 hover:border-stone-300 hover:shadow-xs'
@@ -325,9 +325,20 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
           </div>
 
           {/* Complaint Details & Timeline (Right Column) */}
-          <div className="lg:col-span-7 overflow-y-auto p-6 sm:p-8 bg-white">
+          <div className={`lg:col-span-7 overflow-y-auto p-4 sm:p-8 bg-white ${selectedComplaint ? 'block' : 'hidden lg:block'}`}>
             {selectedComplaint ? (
               <div className="space-y-6">
+                
+                {/* Mobile Back Button */}
+                <div className="lg:hidden pb-2 border-b border-stone-100">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedComplaint(null)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    <span>← Back to all complaints</span>
+                  </button>
+                </div>
                 
                 {/* Header Info */}
                 <div className="space-y-2 pb-4 border-b border-stone-200">

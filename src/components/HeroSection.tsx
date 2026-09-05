@@ -24,6 +24,7 @@ import { CouncillorPortrait } from './CouncillorPortrait.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
 import { OFFICIAL_POSTERS, OfficialPoster } from '../data/posters.js';
+import type { AppPhotoConfig } from '../types.js';
 
 interface HeroSectionProps {
   onBuildCommunityClick: () => void;
@@ -31,6 +32,7 @@ interface HeroSectionProps {
   language: Language;
   onLanguageChange: (lang: Language) => void;
   onOpenAudioModal?: () => void;
+  photoConfig?: AppPhotoConfig;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
@@ -38,6 +40,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onExploreProjectsClick,
   language,
   onLanguageChange,
+  photoConfig,
 }) => {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activePosterId, setActivePosterId] = useState<string>('poster_en_white');
@@ -62,7 +65,35 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section className="relative overflow-hidden border-b-4 border-amber-400 transition-colors duration-500 bg-gradient-to-b from-[#FFF5E5] via-[#FDEBD0] to-[#F5D8B3]">
       
-      {/* Clean Civic Gradient Backdrop with Sunburst Flare (No Photos/Images) */}
+      {/* Dynamic App Background Photo Layer (Admin Configured, Visible Online to Everyone) */}
+      {photoConfig?.background?.enabled && photoConfig?.background?.url && (
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src={photoConfig.background.url}
+            alt="Municipal Civic Backdrop"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+            style={{
+              opacity: photoConfig.background.opacity ?? 0.25,
+              filter: photoConfig.background.blur ? `blur(${photoConfig.background.blur}px)` : undefined,
+            }}
+          />
+          {photoConfig.background.overlayStyle === 'emerald' && (
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/40 via-stone-900/20 to-[#FFF5E5]/60" />
+          )}
+          {photoConfig.background.overlayStyle === 'dark' && (
+            <div className="absolute inset-0 bg-stone-950/40" />
+          )}
+          {photoConfig.background.overlayStyle === 'warm' && (
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-500/15 via-orange-400/10 to-[#FFF5E5]/40" />
+          )}
+          {photoConfig.background.overlayStyle === 'subtle' && (
+            <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px]" />
+          )}
+        </div>
+      )}
+
+      {/* Clean Civic Gradient Backdrop with Sunburst Flare */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-85">
         <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-gradient-to-br from-[#FFE082] via-[#FFA726] to-transparent rounded-full blur-3xl opacity-70" />
         <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-gradient-to-bl from-[#FFB74D]/40 via-[#FB8C00]/30 to-transparent rounded-full blur-3xl" />
@@ -88,25 +119,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <span>{t.wardInfo}</span>
         </div>
 
-        {/* 5 Official Campaign Photos Switcher */}
-        <div className="hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-full border-2 border-amber-400 shadow-md">
-          <span className="text-[11px] font-black text-amber-950 uppercase tracking-wider pl-2.5 pr-1 flex items-center gap-1.5">
+        {/* 5 Official Campaign Photos Switcher - Visible & scrollable on mobile and desktop */}
+        <div className="w-full md:w-auto flex items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl md:rounded-full border-2 border-amber-400 shadow-md overflow-x-auto no-scrollbar order-3 md:order-2">
+          <span className="text-[10px] sm:text-[11px] font-black text-amber-950 uppercase tracking-wider pl-2 pr-1 flex items-center gap-1 shrink-0">
             <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-spin" />
-            <span>Campaign Posters:</span>
+            <span className="hidden sm:inline">Campaign Posters:</span>
+            <span className="sm:hidden">Posters:</span>
           </span>
-          {OFFICIAL_POSTERS.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => handlePosterSelect(p.id)}
-              className={`px-3 py-1 rounded-full text-xs font-black transition-all ${
-                activePosterId === p.id
-                  ? 'bg-gradient-to-r from-[#FFC72C] via-amber-500 to-orange-600 text-stone-950 shadow-md border border-amber-300'
-                  : 'text-stone-700 hover:bg-amber-100 hover:text-stone-950'
-              }`}
-            >
-              {p.shortLabel}
-            </button>
-          ))}
+          <div className="flex items-center gap-1 shrink-0">
+            {OFFICIAL_POSTERS.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => handlePosterSelect(p.id)}
+                className={`px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-black transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                  activePosterId === p.id
+                    ? 'bg-gradient-to-r from-[#FFC72C] via-amber-500 to-orange-600 text-stone-950 shadow-md border border-amber-300'
+                    : 'text-stone-700 hover:bg-amber-100 hover:text-stone-950'
+                }`}
+              >
+                {p.shortLabel}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Right Tools: Tri-Lingual Language Switcher */}
@@ -227,6 +261,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <CouncillorPortrait
                 activePosterId={activePosterId}
                 onPosterChange={handlePosterSelect}
+                portraitPhotoUrl={photoConfig?.portrait?.url}
+                showPhoto={photoConfig?.portrait?.enabled}
               />
             </div>
           </div>
