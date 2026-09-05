@@ -18,7 +18,8 @@ import {
   Paperclip,
   FileText
 } from 'lucide-react';
-import type { Complaint } from '../types.js';
+import confetti from 'canvas-confetti';
+import type { Complaint, AuthUser } from '../types.js';
 
 interface ComplaintTrackerModalProps {
   isOpen: boolean;
@@ -28,6 +29,8 @@ interface ComplaintTrackerModalProps {
   onUpvote: (id: string) => void;
   onUpdateStatus: (id: string, status: Complaint['status'], feedback?: string, resolutionNote?: string) => void;
   initialSearchCode?: string;
+  currentUser?: AuthUser | null;
+  onOpenLogin?: () => void;
 }
 
 export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
@@ -38,11 +41,14 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
   onUpvote,
   onUpdateStatus,
   initialSearchCode = '',
+  currentUser,
+  onOpenLogin,
 }) => {
   const [searchTerm, setSearchTerm] = useState(initialSearchCode);
   const [selectedWard, setSelectedWard] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
+  const [onlyMyTickets, setOnlyMyTickets] = useState(false);
 
   // Admin / Councillor resolution response state
   const [showResolveForm, setShowResolveForm] = useState(false);
@@ -61,6 +67,9 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
   if (!isOpen) return null;
 
   const filteredComplaints = complaints.filter((c) => {
+    if (onlyMyTickets && currentUser?.role === 'citizen') {
+      if (c.citizenPhone !== currentUser.phone) return false;
+    }
     if (selectedWard !== 'all' && c.ward !== selectedWard) return false;
     if (selectedStatus !== 'all' && c.status !== selectedStatus) return false;
     if (searchTerm.trim()) {
@@ -212,9 +221,45 @@ export const ComplaintTrackerModal: React.FC<ComplaintTrackerModalProps> = ({
 
           </div>
 
-          <div className="flex items-center justify-between text-xs text-stone-500">
-            <span>Showing <b>{filteredComplaints.length}</b> grievances</span>
-            <span>Click any ticket to view detailed engineer timeline & councillor notes</span>
+          {/* Quick Citizen Filter Strip */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-stone-200">
+            {currentUser?.role === 'citizen' ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-stone-600 font-medium">Viewing mode:</span>
+                <button
+                  onClick={() => setOnlyMyTickets(false)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    !onlyMyTickets ? 'bg-blue-900 text-white shadow-2xs' : 'bg-stone-200 text-stone-700 hover:bg-stone-300'
+                  }`}
+                >
+                  All Negombo Issues ({complaints.length})
+                </button>
+                <button
+                  onClick={() => setOnlyMyTickets(true)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    onlyMyTickets ? 'bg-emerald-800 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200'
+                  }`}
+                >
+                  <span>My Submissions ({complaints.filter((c) => c.citizenPhone === currentUser.phone).length})</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-stone-500">Are you tracking your personal civic complaints?</span>
+                {onOpenLogin && (
+                  <button
+                    onClick={onOpenLogin}
+                    className="text-blue-700 hover:text-blue-900 font-bold underline cursor-pointer"
+                  >
+                    Log in with Mobile Number & OTP
+                  </button>
+                )}
+              </div>
+            )}
+            
+            <div className="text-xs text-stone-500">
+              Showing <b>{filteredComplaints.length}</b> grievances
+            </div>
           </div>
         </div>
 

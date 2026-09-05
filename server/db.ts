@@ -911,6 +911,26 @@ export async function getAnnouncements(): Promise<Announcement[]> {
   return memoryStore.announcements;
 }
 
+export async function createAnnouncement(announcement: Omit<Announcement, 'id' | 'date'>): Promise<Announcement> {
+  const newAnn: Announcement = {
+    ...announcement,
+    id: `a_${Date.now()}`,
+    date: new Date().toISOString().split('T')[0],
+  };
+  if (isPostgresConnected && pool) {
+    try {
+      await pool.query(`
+        INSERT INTO announcements (id, title, category, content, date, priority, author, tags, action_link, action_text)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `, [newAnn.id, newAnn.title, newAnn.category, newAnn.content, newAnn.date, newAnn.priority, newAnn.author, JSON.stringify(newAnn.tags || []), newAnn.actionLink || null, newAnn.actionText || null]);
+    } catch (e) {
+      console.warn('PostgreSQL createAnnouncement failed:', e);
+    }
+  }
+  memoryStore.announcements.unshift(newAnn);
+  return newAnn;
+}
+
 export async function getMembers(): Promise<CommunityMember[]> {
   if (isPostgresConnected && pool) {
     try {
@@ -1022,6 +1042,28 @@ export async function createCouncillorMessage(msg: Omit<CouncillorMessage, 'id' 
 
   memoryStore.messages.unshift(newMsg);
   return newMsg;
+}
+
+export async function getCouncillorMessages(): Promise<CouncillorMessage[]> {
+  if (isPostgresConnected && pool) {
+    try {
+      const { rows } = await pool.query('SELECT * FROM councillor_messages ORDER BY created_at DESC');
+      return rows.map((r: any) => ({
+        id: r.id,
+        senderName: r.sender_name,
+        senderPhone: r.sender_phone,
+        senderEmail: r.sender_email || undefined,
+        subject: r.subject,
+        message: r.message,
+        ward: r.ward || undefined,
+        channel: r.channel,
+        createdAt: r.created_at,
+      }));
+    } catch (e) {
+      console.warn('PostgreSQL getCouncillorMessages failed:', e);
+    }
+  }
+  return memoryStore.messages;
 }
 
 export async function getStats(): Promise<CommunityStats> {

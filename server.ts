@@ -11,15 +11,18 @@ import {
   updateComplaintStatus,
   getProjects,
   getAnnouncements,
+  createAnnouncement,
   getMembers,
   addMember,
   getEmergencyContacts,
   addSubscriber,
   createCouncillorMessage,
+  getCouncillorMessages,
   getStats,
   getDbConnectionStatus,
 } from './server/db.js';
 import { analyzeCitizenComplaint, askCivicHelpline } from './server/gemini.js';
+import { requestOtp, verifyOtp, loginAdmin, changeAdminPassword, getAllCitizens } from './server/auth.js';
 
 const app = express();
 const PORT = 3000;
@@ -57,6 +60,92 @@ app.get('/api/health', (req, res) => {
 // Database & Render Blueprint Inspection
 app.get('/api/db/status', (req, res) => {
   res.json(getDbConnectionStatus());
+});
+
+// ==========================================
+// AUTHENTICATION ROUTES (ADMIN & PEOPLE)
+// ==========================================
+
+// 1. Admin Login: Username + Password
+app.post('/api/auth/admin/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter both Admin username and password.',
+      });
+    }
+
+    const authResult = loginAdmin(username, password);
+    res.json(authResult);
+  } catch (err: any) {
+    res.status(401).json({ success: false, error: err.message });
+  }
+});
+
+// 1b. Admin Change Password
+app.post('/api/auth/admin/change-password', (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+    if (!username || !currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'Admin username, current password, and new password are all required.',
+      });
+    }
+
+    const result = changeAdminPassword(username, currentPassword, newPassword);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// 2. People (Citizens) Step 1: Request Mobile OTP
+app.post('/api/auth/otp/send', (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter a valid mobile number.',
+      });
+    }
+
+    const result = requestOtp(phone);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// 3. People (Citizens) Step 2: Verify Mobile OTP & Log In
+app.post('/api/auth/otp/verify', (req, res) => {
+  try {
+    const { phone, otp, name, ward } = req.body;
+    if (!phone || !otp) {
+      return res.status(400).json({
+        success: false,
+        error: 'Both mobile number and 6-digit OTP code are required.',
+      });
+    }
+
+    const result = verifyOtp(phone, otp, name, ward);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// 4. Admin View: List of all citizens who logged in
+app.get('/api/auth/citizens', (req, res) => {
+  try {
+    const citizens = getAllCitizens();
+    res.json({ success: true, count: citizens.length, data: citizens });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 app.get('/api/render-blueprint', (req, res) => {
@@ -322,6 +411,29 @@ app.get('/api/announcements', async (req, res) => {
   }
 });
 
+// Announcements: Create (Admin action)
+app.post('/api/announcements', async (req, res) => {
+  try {
+    const { title, category, content, priority, author, tags, actionLink, actionText } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ success: false, error: 'Title and content are required for announcement.' });
+    }
+    const created = await createAnnouncement({
+      title,
+      category: category || 'Municipal Council',
+      content,
+      priority: priority || 'normal',
+      author: author || 'Negombo MC Administration',
+      tags: tags || ['Notice'],
+      actionLink,
+      actionText,
+    });
+    res.status(201).json({ success: true, data: created });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Members: List
 app.get('/api/members', async (req, res) => {
   try {
@@ -379,6 +491,16 @@ app.post('/api/subscribe', async (req, res) => {
     }
     const result = await addSubscriber(name, email);
     res.json(result);
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Councillor Direct Message: List (Admin view)
+app.get('/api/messages', async (req, res) => {
+  try {
+    const messages = await getCouncillorMessages();
+    res.json({ success: true, count: messages.length, data: messages });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }

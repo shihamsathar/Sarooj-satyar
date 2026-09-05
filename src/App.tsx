@@ -19,8 +19,10 @@ import { MyProfileModal } from './components/MyProfileModal.js';
 import { RenderDeploymentModal } from './components/RenderDeploymentModal.js';
 import { AboutSaroojModal } from './components/AboutSaroojModal.js';
 import { AiCivicChatbot } from './components/AiCivicChatbot.js';
+import { AuthModal } from './components/AuthModal.js';
+import { AdminDashboardModal } from './components/AdminDashboardModal.js';
 
-import type { Complaint, CommunityProject, Announcement } from './types.js';
+import type { Complaint, CommunityProject, Announcement, AuthUser, AdminUser } from './types.js';
 import type { Language } from './utils/translations.js';
 
 export default function App() {
@@ -30,9 +32,42 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState<Language>('en');
 
+  // Authentication State with local persistence
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
+    try {
+      const saved = localStorage.getItem('sarooj_community_auth_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [authModalInitialTab, setAuthModalInitialTab] = useState<'citizen' | 'admin'>('citizen');
+  const [loggedOutNotice, setLoggedOutNotice] = useState<string | null>(null);
+  const [adminInitialTab, setAdminInitialTab] = useState<'grievances' | 'announcements' | 'messages' | 'citizens' | 'security'>('grievances');
+
   // Active Modal State
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [trackerSearchCode, setTrackerSearchCode] = useState<string>('');
+
+  // Sync with URL hashes for #login and #admin_login
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash;
+      if (hash === '#login' || hash === '#auth') {
+        setAuthModalInitialTab('citizen');
+        setActiveModal('auth_modal');
+      } else if (hash === '#admin_login' || hash === '#admin') {
+        setAuthModalInitialTab('admin');
+        setActiveModal('auth_modal');
+      } else if (hash === '#change_password' || hash === '#admin_security') {
+        setAdminInitialTab('security');
+        setActiveModal('admin_dashboard');
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Fetch initial forum data from API / PostgreSQL
   const fetchData = async () => {
@@ -62,6 +97,54 @@ export default function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleOpenLogin = (initialTab: 'citizen' | 'admin' = 'citizen') => {
+    setAuthModalInitialTab(initialTab);
+    setActiveModal('auth_modal');
+  };
+
+  const handleLoginSuccess = (user: AuthUser) => {
+    setCurrentUser(user);
+    setLoggedOutNotice(null);
+    try {
+      localStorage.setItem('sarooj_community_auth_user', JSON.stringify(user));
+    } catch (e) {
+      console.error('Failed to save session to localStorage:', e);
+    }
+
+    // Clean auth hashes from URL bar
+    if (window.location.hash === '#login' || window.location.hash === '#admin_login' || window.location.hash === '#auth') {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+    
+    // If admin logged in, open the Admin Console immediately
+    if (user.role === 'admin') {
+      setActiveModal('admin_dashboard');
+    } else {
+      setActiveModal(null);
+    }
+  };
+
+  const handleLogout = () => {
+    const wasAdmin = currentUser?.role === 'admin';
+    setCurrentUser(null);
+    try {
+      localStorage.removeItem('sarooj_community_auth_user');
+    } catch (e) {
+      console.error(e);
+    }
+
+    const targetTab: 'citizen' | 'admin' = wasAdmin ? 'admin' : 'citizen';
+    setAuthModalInitialTab(targetTab);
+    setLoggedOutNotice(
+      wasAdmin
+        ? 'Admin session ended. You have been returned to the Login Page.'
+        : 'You have been logged out. You have been returned to the Login Page.'
+    );
+    // Explicitly return to the Login Page (Auth modal)
+    setActiveModal('auth_modal');
+    window.location.hash = targetTab === 'admin' ? '#admin_login' : '#login';
+  };
 
   const handleOpenModule = (moduleId: string) => {
     switch (moduleId) {
@@ -101,6 +184,20 @@ export default function App() {
         break;
       case 'about':
         setActiveModal('about');
+        break;
+      case 'auth':
+      case 'login':
+        handleOpenLogin('citizen');
+        break;
+      case 'admin_login':
+        handleOpenLogin('admin');
+        break;
+      case 'admin_dashboard':
+        if (currentUser?.role === 'admin') {
+          setActiveModal('admin_dashboard');
+        } else {
+          handleOpenLogin('admin');
+        }
         break;
       default:
         setActiveModal(moduleId);
@@ -163,6 +260,13 @@ export default function App() {
         unreadCount={announcements.filter((a) => a.priority === 'high').length || 3}
         language={language}
         onLanguageChange={setLanguage}
+        currentUser={currentUser}
+        onOpenLogin={handleOpenLogin}
+        onOpenAdminDashboard={(tab) => {
+          setAdminInitialTab(tab || 'grievances');
+          setActiveModal('admin_dashboard');
+        }}
+        onLogout={handleLogout}
       />
 
       {/* 2. Hero Section with verified portrait, tri-lingual switcher & voice audio */}
@@ -207,13 +311,50 @@ export default function App() {
       {/* 8. Floating AI Civic Assistant powered by Gemini */}
       <AiCivicChatbot onOpenModule={handleOpenModule} language={language} />
 
-      {/* MODALS */}
+      {/* ============================================================ */}
+      {/* AUTHENTICATION MODAL (People Mobile OTP + Admin Login)       */}
+      {/* ============================================================ */}
+      <AuthModal
+        isOpen={activeModal === 'auth_modal'}
+        onClose={() => {
+          setActiveModal(null);
+          setLoggedOutNotice(null);
+          if (window.location.hash === '#login' || window.location.hash === '#admin_login' || window.location.hash === '#auth') {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }}
+        onLoginSuccess={handleLoginSuccess}
+        initialTab={authModalInitialTab}
+        loggedOutNotice={loggedOutNotice}
+        onClearNotice={() => setLoggedOutNotice(null)}
+      />
+
+      {/* ============================================================ */}
+      {/* ADMIN CONTROL CONSOLE (Councillor Sarooj Sattar)             */}
+      {/* ============================================================ */}
+      {currentUser?.role === 'admin' && (
+        <AdminDashboardModal
+          isOpen={activeModal === 'admin_dashboard'}
+          onClose={() => setActiveModal(null)}
+          adminUser={currentUser as AdminUser}
+          onLogout={handleLogout}
+          complaints={complaints}
+          onUpdateComplaintStatus={handleUpdateStatus}
+          onAnnouncementCreated={(newAnn) => setAnnouncements((prev) => [newAnn, ...prev])}
+          initialTab={adminInitialTab}
+        />
+      )}
+
+      {/* ============================================================ */}
+      {/* CIVIC ACTION MODALS                                          */}
+      {/* ============================================================ */}
       
       {/* Submit Grievance Modal */}
       <SubmitComplaintModal
         isOpen={activeModal === 'submit_complaint'}
         onClose={() => setActiveModal(null)}
         onComplaintCreated={handleComplaintCreated}
+        currentUser={currentUser}
         onViewTracker={(code) => {
           setTrackerSearchCode(code);
           setActiveModal('my_complaints');
@@ -225,6 +366,8 @@ export default function App() {
         isOpen={activeModal === 'my_complaints'}
         onClose={() => setActiveModal(null)}
         complaints={complaints}
+        currentUser={currentUser}
+        onOpenLogin={() => handleOpenLogin('citizen')}
         onOpenSubmit={() => setActiveModal('submit_complaint')}
         onUpvote={handleUpvoteComplaint}
         onUpdateStatus={handleUpdateStatus}
@@ -268,6 +411,13 @@ export default function App() {
         isOpen={activeModal === 'my_profile'}
         onClose={() => setActiveModal(null)}
         complaints={complaints}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onOpenLogin={() => handleOpenLogin('citizen')}
+        onOpenAdminSecurity={() => {
+          setAdminInitialTab('security');
+          setActiveModal('admin_dashboard');
+        }}
         onSelectComplaint={(code) => {
           setTrackerSearchCode(code);
           setActiveModal('my_complaints');

@@ -5,26 +5,42 @@ import {
   Menu, 
   X, 
   Bell,
-  Globe
+  Globe,
+  User,
+  ShieldCheck,
+  Smartphone,
+  LogOut,
+  ChevronDown,
+  KeyRound
 } from 'lucide-react';
 import { RoundLogo } from './RoundLogo.js';
 import type { Language } from '../utils/translations.js';
 import { translations } from '../utils/translations.js';
+import type { AuthUser } from '../types.js';
 
 interface NavbarProps {
   onOpenModule: (moduleName: string) => void;
   unreadCount?: number;
   language: Language;
   onLanguageChange: (lang: Language) => void;
+  currentUser: AuthUser | null;
+  onOpenLogin: (initialTab?: 'citizen' | 'admin') => void;
+  onOpenAdminDashboard: (tab?: 'grievances' | 'announcements' | 'messages' | 'citizens' | 'security') => void;
+  onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
   onOpenModule, 
   unreadCount = 3,
   language,
-  onLanguageChange
+  onLanguageChange,
+  currentUser,
+  onOpenLogin,
+  onOpenAdminDashboard,
+  onLogout,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const t = translations[language];
 
   return (
@@ -180,18 +196,159 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Quick Submit Complaint CTA */}
           <button
             onClick={() => onOpenModule('submit_complaint')}
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white text-xs sm:text-sm font-bold shadow-xs transition-all hover:shadow-md"
+            className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white text-xs sm:text-sm font-bold shadow-xs transition-all hover:shadow-md"
           >
             <span>{t.navSubmitGrievance}</span>
           </button>
 
+          {/* USER AUTH CONTROLS */}
+          {!currentUser ? (
+            // LOGGED OUT: Show Login button opening AuthModal
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => onOpenLogin('citizen')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-black shadow-xs transition-all hover:scale-105"
+                title="Sign in with Mobile OTP or Admin credentials"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-stone-950" />
+                <span>Log In</span>
+              </button>
+            </div>
+          ) : currentUser.role === 'admin' ? (
+            // LOGGED IN AS ADMIN: Show Admin Console badge & control
+            <div className="relative">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900 hover:bg-black text-amber-300 text-xs font-bold shadow-xs border border-amber-400/60 transition-all"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">Admin Console</span>
+                <span className="sm:hidden">Admin</span>
+                <ChevronDown className="w-3 h-3 text-stone-400" />
+              </button>
+
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50 text-xs animate-fadeIn">
+                  <div className="px-3.5 py-2 border-b border-stone-100 bg-stone-50">
+                    <div className="font-bold text-stone-900">{currentUser.name}</div>
+                    <div className="text-[10px] text-emerald-800 font-semibold">{currentUser.title}</div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onOpenAdminDashboard();
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2.5 text-stone-800 hover:bg-stone-100 font-bold flex items-center gap-2"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-amber-600" />
+                    <span>Open Admin Console</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenAdminDashboard('security');
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 font-medium flex items-center gap-2"
+                  >
+                    <KeyRound className="w-4 h-4 text-amber-600" />
+                    <span>Change Password</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenModule('my_complaints');
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 flex items-center gap-2"
+                  >
+                    <Phone className="w-4 h-4 text-stone-500" />
+                    <span>View All Complaints</span>
+                  </button>
+                  <div className="border-t border-stone-100 my-1"></div>
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-red-600 hover:bg-red-50 font-bold flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            // LOGGED IN AS CITIZEN (PEOPLE): Show Citizen profile badge
+            <div className="relative">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-950 text-xs font-bold border border-emerald-300 transition-colors"
+              >
+                <div className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span className="font-mono text-xs">{currentUser.phone}</span>
+                <ChevronDown className="w-3 h-3 text-emerald-800" />
+              </button>
+
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50 text-xs animate-fadeIn">
+                  <div className="px-3.5 py-2 border-b border-stone-100 bg-stone-50">
+                    <div className="font-bold text-stone-900">{currentUser.name}</div>
+                    <div className="text-[10px] text-stone-500">{currentUser.ward}</div>
+                    <div className="text-[10px] font-mono text-emerald-800 font-bold mt-0.5">
+                      Verified: {currentUser.phone}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onOpenModule('my_complaints');
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2.5 text-stone-800 hover:bg-stone-100 font-bold flex items-center gap-2"
+                  >
+                    <span>📋 My Grievance Tickets</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenModule('my_profile');
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 flex items-center gap-2"
+                  >
+                    <User className="w-4 h-4 text-stone-500" />
+                    <span>Citizen Profile & Activity</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenModule('submit_complaint');
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-stone-700 hover:bg-stone-100 flex items-center gap-2"
+                  >
+                    <span>✍️ Submit New Grievance</span>
+                  </button>
+                  <div className="border-t border-stone-100 my-1"></div>
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3.5 py-2 text-red-600 hover:bg-red-50 font-bold flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* WhatsApp Direct Line */}
           <button
             onClick={() => onOpenModule('contact_sarooj')}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold border border-emerald-300 transition-colors"
+            className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold border border-emerald-300 transition-colors"
           >
             <MessageSquare className="w-4 h-4 text-emerald-700" />
-            <span className="hidden md:inline">{t.openWhatsApp}</span>
+            <span>{t.openWhatsApp}</span>
           </button>
         </div>
 
@@ -200,6 +357,97 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-stone-200 bg-white px-4 py-4 space-y-3 shadow-lg">
+          
+          {/* Mobile Auth Banner */}
+          <div className="p-3 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-between gap-3">
+            {!currentUser ? (
+              <div className="flex items-center justify-between w-full">
+                <div>
+                  <div className="text-xs font-bold text-stone-900">Sign in to Citizen Portal</div>
+                  <div className="text-[10px] text-stone-500">Track complaints & get SMS alerts</div>
+                </div>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => {
+                      onOpenLogin('citizen');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-amber-400 text-stone-950 font-bold text-xs shadow-xs"
+                  >
+                    People OTP
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenLogin('admin');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-2.5 py-1.5 rounded-xl bg-stone-900 text-amber-300 font-bold text-xs"
+                  >
+                    Admin
+                  </button>
+                </div>
+              </div>
+            ) : currentUser.role === 'admin' ? (
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-600" />
+                  <div>
+                    <div className="text-xs font-bold text-stone-900">{currentUser.name} (Admin)</div>
+                    <div className="text-[10px] text-stone-500">{currentUser.title}</div>
+                  </div>
+                </div>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => {
+                      onOpenAdminDashboard('security');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-amber-400 text-stone-950 text-xs font-bold flex items-center gap-1"
+                    title="Change Admin Password"
+                  >
+                    <KeyRound className="w-3 h-3" />
+                    <span>Pass</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onOpenAdminDashboard();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-stone-900 text-amber-300 text-xs font-bold"
+                  >
+                    Console
+                  </button>
+                  <button
+                    onClick={() => {
+                      onLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="p-1 text-red-600 font-bold text-xs"
+                    title="Log Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between w-full">
+                <div>
+                  <div className="text-xs font-bold text-stone-900">{currentUser.name}</div>
+                  <div className="text-[10px] text-emerald-800 font-mono font-bold">📱 {currentUser.phone}</div>
+                </div>
+                <button
+                  onClick={() => {
+                    onLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-red-100 text-red-800 text-xs font-bold flex items-center gap-1"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Exit</span>
+                </button>
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-2 text-sm font-medium">
             <button
               onClick={() => {

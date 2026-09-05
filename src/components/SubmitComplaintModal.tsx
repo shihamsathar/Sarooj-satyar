@@ -17,13 +17,14 @@ import {
   Paperclip
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import type { Complaint } from '../types.js';
+import type { Complaint, AuthUser } from '../types.js';
 
 interface SubmitComplaintModalProps {
   isOpen: boolean;
   onClose: () => void;
   onComplaintCreated: (complaint: Complaint) => void;
   onViewTracker: (refCode: string) => void;
+  currentUser?: AuthUser | null;
 }
 
 const NEGOMBO_WARDS = [
@@ -62,6 +63,7 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
   onClose,
   onComplaintCreated,
   onViewTracker,
+  currentUser,
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -75,6 +77,20 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
   const [citizenPhone, setCitizenPhone] = useState('');
   const [citizenEmail, setCitizenEmail] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
+
+  // Auto-populate when user is logged in
+  React.useEffect(() => {
+    if (currentUser) {
+      if (currentUser.role === 'citizen') {
+        if (currentUser.phone) setCitizenPhone(currentUser.phone);
+        if (currentUser.name) setCitizenName(currentUser.name);
+        if (currentUser.ward) setWard(currentUser.ward);
+      } else if (currentUser.role === 'admin') {
+        setCitizenName(`Councillor ${currentUser.name} (Admin)`);
+        setCitizenPhone('0702475248');
+      }
+    }
+  }, [currentUser, isOpen]);
 
   // AI Triage State
   const [isTriaging, setIsTriaging] = useState(false);
@@ -491,9 +507,16 @@ export const SubmitComplaintModal: React.FC<SubmitComplaintModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-stone-600 mb-1">
-                      Mobile Number <span className="text-red-500">*</span>
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-bold text-stone-600">
+                        Mobile Number <span className="text-red-500">*</span>
+                      </label>
+                      {currentUser?.role === 'citizen' && currentUser.phone === citizenPhone && (
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
+                          ✓ OTP Verified
+                        </span>
+                      )}
+                    </div>
                     <input
                       type="tel"
                       required

@@ -125,3 +125,29 @@ export interface CommunityStats {
   resolutionRatePercent: number;
   fundsDisbursedLKR: number;
 }
+
+export type UserRole = 'admin' | 'citizen';
+
+export interface AdminUser {
+  id: string;
+  role: 'admin';
+  username: string;
+  name: string;
+  title: string;
+  email?: string;
+  token: string;
+  loginTime: string;
+}
+
+export interface CitizenUser {
+  id: string;
+  role: 'citizen';
+  phone: string;
+  name: string;
+  ward: string;
+  token: string;
+  loginTime: string;
+}
+
+export type AuthUser = AdminUser | CitizenUser;
+
